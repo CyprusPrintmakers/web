@@ -1,0 +1,299 @@
+{
+  "members": [
+  {
+    "_id": "member-georgiou",
+    "slug": "georgiou",
+    "order": 1,
+    "featured": true,
+    "status": "active",
+    "membershipType": "Individual",
+    "joinedYear": 2011,
+    "website": "https://mariageorgiou.example",
+    "instagram": "mariageorgiou.print",
+    "portrait": {
+      "_type": "image",
+      "asset": { "_ref": "image-georgiou-portrait-1200x1500-jpg" },
+      "alt": "Maria Georgiou in her Nicosia studio",
+      "dimensions": { "width": 1200, "height": 1500 }
+    },
+    "name": [
+      { "_key": "en", "language": "en", "value": "Maria Georgiou" },
+      { "_key": "el", "language": "el", "value": "Μαρία Γεωργίου" }
+    ],
+    "discipline": [
+      { "_key": "en", "language": "en", "value": "Etching and collagraph" },
+      { "_key": "el", "language": "el", "value": "Χαρακτική και κολλαγραφία" }
+    ],
+    "bio": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "Maria Georgiou is a Nicosia-based printmaker whose etchings trace the coastline between Paphos and Cape Greco. She studied at the Athens School of Fine Arts and has exhibited in Cyprus, Greece and Italy.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "en-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s2", "text": "Her plates combine hard ground with collagraph texture, and she teaches etching at the association's studio.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Η Μαρία Γεωργίου είναι χαράκτρια με έδρα τη Λευκωσία. Τα χαρακτικά της ακολουθούν την ακτογραμμή από την Πάφο έως το Κάβο Γκρέκο. Σπούδασε στην Ανώτατη Σχολή Καλών Τεχνών της Αθήνας και έχει εκθέσει στην Κύπρο, την Ελλάδα και την Ιταλία.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "el-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s2", "text": "Οι πλάκες της συνδυάζουν σκληρό βερνίκι με την υφή της κολλαγραφίας, και διδάσκει χαρακτική στο στούντιο του συλλόγου.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "member-athanasiou",
+    "slug": "athanasiou",
+    "order": 2,
+    "featured": true,
+    "status": "active",
+    "membershipType": "Individual",
+    "joinedYear": 2014,
+    "website": "https://eleniathanasiou.example",
+    "instagram": "eleni.ath.print",
+    "portrait": {
+      "_type": "image",
+      "asset": { "_ref": "image-athanasiou-portrait-1200x1500-jpg" },
+      "alt": "Eleni Athanasiou beside one of her lithography stones",
+      "dimensions": { "width": 1200, "height": 1500 }
+    },
+    "name": [
+      { "_key": "en", "language": "en", "value": "Eleni Athanasiou" },
+      { "_key": "el", "language": "el", "value": "Ελένη Αθανασίου" }
+    ],
+    "discipline": [
+      { "_key": "en", "language": "en", "value": "Lithography and screen printing" },
+      { "_key": "el", "language": "el", "value": "Λιθογραφία και μεταξοτυπία" }
+    ],
+    "bio": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "Eleni Athanasiou works between Limassol and Athens, printing limestones and screens that record the surfaces of the city. Her editioned work is held in private collections across Europe.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "en-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s2", "text": "She coordinates the association's open studio programme and mentors early-career printmakers.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Η Ελένη Αθανασίου εργάζεται μεταξύ Λεμεσού και Αθήνας, τυπώνοντας λιθόπλακες και μεταξοτυπίες που καταγράφουν τις επιφάνειες της πόλης. Έργα της βρίσκονται σε ιδιωτικές συλλογές σε όλη την Ευρώπη.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "el-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s2", "text": "Συντονίζει το πρόγραμμα ανοιχτού στούντιο του συλλόγου και στηρίζει νέους χαράκτες στα πρώτα τους βήματα.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "member-andreas-petrou",
+    "slug": "andreas-petrou",
+    "order": 3,
+    "featured": false,
+    "status": "active",
+    "membershipType": "Individual",
+    "joinedYear": 2017,
+    "website": "https://andreaspetrou.example",
+    "portrait": {
+      "_type": "image",
+      "asset": { "_ref": "image-petrou-portrait-1200x1500-jpg" },
+      "alt": "Andreas Petrou at the printing press",
+      "dimensions": { "width": 1200, "height": 1500 }
+    },
+    "name": [
+      { "_key": "en", "language": "en", "value": "Andreas Petrou" }
+    ],
+    "discipline": [
+      { "_key": "en", "language": "en", "value": "Relief printing and book arts" }
+    ],
+    "bio": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "Andreas Petrou carves linocut and woodcut blocks for small-press books. His work pairs dense botanical pattern with hand-set type, and he runs bookbinding workshops from his studio in Paphos.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  ],
+  "committee": [
+    {
+      "_id": "committee-maria-georgiou",
+      "slug": "committee-georgiou",
+      "order": 1,
+      "memberRef": "georgiou",
+      "image": {
+        "_type": "image",
+        "asset": { "_ref": "image-georgiou-portrait-1200x1500-jpg" },
+        "alt": "Maria Georgiou",
+        "dimensions": { "width": 1200, "height": 1500 }
+      },
+      "name": [
+        { "_key": "en", "language": "en", "value": "Maria Georgiou" },
+        { "_key": "el", "language": "el", "value": "Μαρία Γεωργίου" }
+      ],
+      "role": [
+        { "_key": "en", "language": "en", "value": "President" },
+        { "_key": "el", "language": "el", "value": "Πρόεδρος" }
+      ],
+      "bio": [
+        {
+          "_key": "en",
+          "language": "en",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "en-b1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "en-s1", "text": "Maria has led the association since 2019 and represents it in the national printmaking network.", "marks": [] }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "el-b1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "el-s1", "text": "Η Μαρία ηγείται του συλλόγου από το 2019 και τον εκπροσωπεί στο εθνικό δίκτυο χαρακτικής.", "marks": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "committee-eleni-athanasiou",
+      "slug": "committee-athanasiou",
+      "order": 2,
+      "memberRef": "athanasiou",
+      "image": {
+        "_type": "image",
+        "asset": { "_ref": "image-athanasiou-portrait-1200x1500-jpg" },
+        "alt": "Eleni Athanasiou",
+        "dimensions": { "width": 1200, "height": 1500 }
+      },
+      "name": [
+        { "_key": "en", "language": "en", "value": "Eleni Athanasiou" },
+        { "_key": "el", "language": "el", "value": "Ελένη Αθανασίου" }
+      ],
+      "role": [
+        { "_key": "en", "language": "en", "value": "Treasurer" },
+        { "_key": "el", "language": "el", "value": "Ταμίας" }
+      ],
+      "bio": [
+        {
+          "_key": "en",
+          "language": "en",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "en-b1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "en-s1", "text": "Eleni looks after the association's accounts and the annual Printmaking Days budget.", "marks": [] }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "el-b1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "el-s1", "text": "Η Ελένη επιμελείται τα οικονομικά του συλλόγου και τον ετήσιο προϋπολογισμό των Ημερών Χαρακτικής.", "marks": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

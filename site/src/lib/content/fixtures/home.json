@@ -1,0 +1,21 @@
+{
+  "_id": "homePage",
+  "slug": "home",
+  "title": [
+    { "_key": "en", "language": "en", "value": "CYPRUS PRINTMAKERS ASSOCIATION" },
+    { "_key": "el", "language": "el", "value": "ΣΥΛΛΟΓΟΣ ΧΑΡΑΚΤΩΝ ΚΥΠΡΟΥ" }
+  ],
+  "currentLabel": [
+    { "_key": "en", "language": "en", "value": "CURRENT" },
+    { "_key": "el", "language": "el", "value": "ΤΩΡΑ" }
+  ],
+  "currentTitle": [
+    { "_key": "en", "language": "en", "value": "Printmaking Days 2019 — Nicosia" },
+    { "_key": "el", "language": "el", "value": "Ημέρες Χαρακτικής 2019 — Λευκωσία" }
+  ],
+  "currentHref": "/projects/printmaking-days-2019",
+  "seo": {
+    "title": "Cyprus Printmakers Association",
+    "description": "Printmaking in Cyprus: members, exhibitions and the association's archive."
+  }
+}

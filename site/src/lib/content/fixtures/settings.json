@@ -1,0 +1,28 @@
+{
+  "_id": "siteSettings",
+  "slug": "settings",
+  "siteName": [
+    { "_key": "en", "language": "en", "value": "Cyprus Printmakers Association" },
+    { "_key": "el", "language": "el", "value": "Σύλλογος Χαρακτών Κύπρου" }
+  ],
+  "contact": {
+    "address": [
+      "Cyprus Printmakers Association",
+      "Agiou 7",
+      "1010 Nicosia",
+      "Cyprus"
+    ],
+    "phone": "0035799351153",
+    "phoneHref": "tel:+35799351153",
+    "email": "cyprintmakers@gmail.com"
+  },
+  "socialLinks": [
+    { "platform": "Instagram", "url": "https://www.instagram.com/cyprintmakers/" },
+    { "platform": "Facebook", "url": "https://www.facebook.com/cyprintmakers" }
+  ],
+  "defaultSeo": {
+    "title": "Cyprus Printmakers Association",
+    "description": "The association for printmakers in Cyprus: members, projects, news and membership."
+  },
+  "footerNote": "© Cyprus Printmakers Association"
+}

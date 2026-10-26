@@ -1,0 +1,152 @@
+{
+  "_id": "supportPage",
+  "slug": "support",
+  "intro": [
+    {
+      "_key": "en",
+      "language": "en",
+      "value": "Sponsorship keeps our exhibitions free to enter and our archive open to researchers. Support a specific project or the association's year-round work."
+    },
+    {
+      "_key": "el",
+      "language": "el",
+      "value": "Η χορηγία κρατά τις εκθέσεις μας δωρεάν και το αρχείο μας ανοιχτό στους ερευνητές. Στηρίξτε ένα συγκεκριμένο έργο ή τη συνεχή δράση του συλλόγου."
+    }
+  ],
+  "tiers": [
+    {
+      "name": [
+        { "_key": "en", "language": "en", "value": "Supporter" },
+        { "_key": "el", "language": "el", "value": "Υποστηρικτής" }
+      ],
+      "price": "€100",
+      "benefits": [
+        {
+          "_key": "en",
+          "language": "en",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "en-s1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "en-ss1", "text": "Name listed on the supporters page", "marks": [] }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "el-s1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "el-ss1", "text": "Το όνομά σας στη σελίδα υποστηρικτών", "marks": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": [
+        { "_key": "en", "language": "en", "value": "Patron" },
+        { "_key": "el", "language": "el", "value": "Χορηγός" }
+      ],
+      "price": "€500",
+      "benefits": [
+        {
+          "_key": "en",
+          "language": "en",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "en-p1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "en-ps1", "text": "Recognition at one exhibition and on the supporters page", "marks": [] }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "el-p1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "el-ps1", "text": "Αναγνώριση σε μία έκθεση και στη σελίδα υποστηρικτών", "marks": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": [
+        { "_key": "en", "language": "en", "value": "Institutional" },
+        { "_key": "el", "language": "el", "value": "Θεσμικός" }
+      ],
+      "price": "€1000",
+      "benefits": [
+        {
+          "_key": "en",
+          "language": "en",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "en-i1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "en-is1", "text": "Partnership across the Printmaking Days programme", "marks": [] }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": [
+            {
+              "_type": "block",
+              "_key": "el-i1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                { "_type": "span", "_key": "el-is1", "text": "Συνεργασία σε όλο το πρόγραμμα των Ημερών Χαρακτικής", "marks": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "_key": "en",
+      "language": "en",
+      "value": "Sponsorship terms are agreed with the committee. Fees shown here are indicative until confirmed."
+    },
+    {
+      "_key": "el",
+      "language": "el",
+      "value": "Οι όροι χορηγίας συμφωνούνται με την επιτροπή. Τα ποσά εδώ είναι ενδεικτικά μέχρι να επιβεβαιωθούν."
+    }
+  ],
+  "tiersConfirmed": false,
+  "seo": {
+    "title": "Support",
+    "description": "Sponsor the Cyprus Printmakers Association's exhibitions, workshops and archive."
+  }
+}

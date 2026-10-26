@@ -1,0 +1,100 @@
+{
+  "_id": "aboutPage",
+  "slug": "about",
+  "headline": [
+    { "_key": "en", "language": "en", "value": "A community for printmakers in Cyprus" },
+    { "_key": "el", "language": "el", "value": "Μια κοινότητα για τους χαράκτες της Κύπρου" }
+  ],
+  "body": [
+    {
+      "_key": "en",
+      "language": "en",
+      "value": [
+        {
+          "_type": "block",
+          "_key": "en-b1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "en-s1",
+              "text": "The Cyprus Printmakers Association brings together artists working in etching, lithography, screen printing, relief and contemporary print practices across the island.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_key": "el",
+      "language": "el",
+      "value": [
+        {
+          "_type": "block",
+          "_key": "el-b1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "el-s1",
+              "text": "Ο Σύλλογος Χαρακτών Κύπρου ενώνει καλλιτέχνες που εργάζονται με χαρακτική, λιθογραφία, μεταξοτυπία, ανάγλυφη εκτύπωση και σύγχρονες πρακτικές σε όλο το νησί.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "history": [
+    {
+      "_key": "en",
+      "language": "en",
+      "value": [
+        {
+          "_type": "block",
+          "_key": "en-h1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "en-hs1",
+              "text": "Founded by a small group of Nicosia printmakers, the association has organised exhibitions, workshops and open studios since the early 2000s. Its archive documents a decade of Printmaking Days and the artists who shaped them.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_key": "el",
+      "language": "el",
+      "value": [
+        {
+          "_type": "block",
+          "_key": "el-h1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "el-hs1",
+              "text": "Ο σύλλογος ιδρύθηκε από μια μικρή ομάδα χαρακτών της Λευκωσίας και διοργανώνει εκθέσεις, εργαστήρια και ανοιχτά στούντιο από τις αρχές της δεκαετίας του 2000. Το αρχείο του τεκμηριώνει δέκα χρόνια Ημερών Χαρακτικής και τους καλλιτέχνες που τις διαμόρφωσαν.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "partners": [
+    { "name": "Nicosia Municipality", "url": "https://www.nicosia.org.cy" },
+    { "name": "Cultural Services, Ministry of Education", "url": "https://www.moec.gov.cy" }
+  ],
+  "seo": {
+    "title": "About the association",
+    "description": "The history, partners and committee of the Cyprus Printmakers Association."
+  }
+}

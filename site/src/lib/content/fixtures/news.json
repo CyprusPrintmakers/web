@@ -1,0 +1,144 @@
+[
+  {
+    "_id": "news-printmaking-days-2026",
+    "slug": "printmaking-days-2026",
+    "publishedAt": "2026-09-12T09:00:00.000Z",
+    "featured": true,
+    "author": "Cyprus Printmakers Association",
+    "relatedProject": "printmaking-days-2019",
+    "coverImage": {
+      "_type": "image",
+      "asset": { "_ref": "image-news-printmaking-days-2026-1600x1000-jpg" },
+      "alt": "A printing press prepared for an open studio",
+      "dimensions": { "width": 1600, "height": 1000 }
+    },
+    "title": [
+      { "_key": "en", "language": "en", "value": "Printmaking Days return in October" },
+      { "_key": "el", "language": "el", "value": "Οι Ημέρες Χαρακτικής επιστρέφουν τον Οκτώβριο" }
+    ],
+    "excerpt": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "The 2026 programme brings open studios, a lithography demonstration and a new archive display to Nicosia."
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Το πρόγραμμα του 2026 φέρνει ανοιχτά στούντιο, επίδειξη λιθογραφίας και νέα παρουσίαση του αρχείου στη Λευκωσία."
+      }
+    ],
+    "body": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "Printmaking Days will return from 9 to 18 October 2026. This year's programme includes open studios across Nicosia, a stone lithography demonstration and a display drawn from the association's archive.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "en-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s2", "text": "Members who would like to take part can write to the committee before 30 September. Full times and venues will be published here and in the newsletter.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Οι Ημέρες Χαρακτικής επιστρέφουν από τις 9 έως τις 18 Οκτωβρίου 2026. Το φετινό πρόγραμμα περιλαμβάνει ανοιχτά στούντιο σε όλη τη Λευκωσία, επίδειξη λιθογραφίας σε πέτρα και παρουσίαση έργων από το αρχείο του συλλόγου.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "el-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s2", "text": "Τα μέλη που θέλουν να συμμετάσχουν μπορούν να γράψουν στην επιτροπή έως τις 30 Σεπτεμβρίου. Οι ώρες και οι χώροι θα ανακοινωθούν εδώ και στο ενημερωτικό δελτίο.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "news-spring-workshops-2025",
+    "slug": "spring-workshops-2025",
+    "publishedAt": "2025-03-04T09:00:00.000Z",
+    "featured": false,
+    "author": "Eleni Athanasiou",
+    "relatedProject": "printmaking-days-2017",
+    "coverImage": {
+      "_type": "image",
+      "asset": { "_ref": "image-news-spring-workshops-2025-1600x1000-jpg" },
+      "alt": "Ink rollers and a stack of proofs on a workshop table",
+      "dimensions": { "width": 1600, "height": 1000 }
+    },
+    "title": [
+      { "_key": "en", "language": "en", "value": "Spring workshops open for booking" },
+      { "_key": "el", "language": "el", "value": "Ανοιχτές οι εγγραφές για τα εαρινά εργαστήρια" }
+    ],
+    "excerpt": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "Four Saturday workshops cover monotype, linocut, bookbinding and photo-etching, with places for beginners and experienced printers."
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Τέσσερα εργαστήρια Σαββάτου καλύπτουν μονοτυπία, λινοτυπία, βιβλιοδεσία και φωτοχαρακτική, με θέσεις για αρχάριους και έμπειρους."
+      }
+    ],
+    "body": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "Booking is now open for the spring workshop series. Each session runs from 10:00 to 16:00 at the association's studio and includes materials, ink and paper. No previous experience is needed for the monotype and linocut sessions.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Οι εγγραφές για τη σειρά εαρινών εργαστηρίων είναι ανοιχτές. Κάθε συνάντηση διαρκεί από τις 10:00 έως τις 16:00 στο στούντιο του συλλόγου και περιλαμβάνει υλικά, μελάνι και χαρτί. Δεν απαιτείται προηγούμενη εμπειρία για τη μονοτυπία και τη λινοτυπία.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

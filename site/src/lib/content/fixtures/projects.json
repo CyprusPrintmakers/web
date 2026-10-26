@@ -1,0 +1,279 @@
+[
+  {
+    "_id": "project-printmaking-days-2019",
+    "slug": "printmaking-days-2019",
+    "year": 2019,
+    "dates": { "start": "2019-06-14", "end": "2019-06-23" },
+    "participants": [
+      "Maria Georgiou",
+      "Eleni Athanasiou",
+      "Andreas Petrou",
+      "Nikos Hadjigeorgiou",
+      "Sofia Christodoulou"
+    ],
+    "links": [
+      { "label": "Printmaking Days archive", "href": "https://www.cyprintmakers.com" }
+    ],
+    "coverImage": {
+      "_type": "image",
+      "asset": { "_ref": "image-printmaking-days-2019-cover-1600x1000-jpg" },
+      "alt": "Visitors looking at prints in the Printmaking Days 2019 exhibition",
+      "dimensions": { "width": 1600, "height": 1000 }
+    },
+    "gallery": [
+      {
+        "_type": "image",
+        "asset": { "_ref": "image-printmaking-days-2019-01-1600x1200-jpg" },
+        "alt": "An etching of the Paphos coast on the gallery wall",
+        "dimensions": { "width": 1600, "height": 1200 }
+      },
+      {
+        "_type": "image",
+        "asset": { "_ref": "image-printmaking-days-2019-02-1200x1600-jpg" },
+        "alt": "A lithography stone and proofs on a workbench",
+        "dimensions": { "width": 1200, "height": 1600 }
+      }
+    ],
+    "title": [
+      { "_key": "en", "language": "en", "value": "Printmaking Days 2019" },
+      { "_key": "el", "language": "el", "value": "Ημέρες Χαρακτικής 2019" }
+    ],
+    "summary": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "Ten days of exhibitions, demonstrations and open studios across Nicosia, with twenty-two artists showing new work."
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Δέκα ημέρες εκθέσεων, επιδείξεων και ανοιχτών στούντιο στη Λευκωσία, με είκοσι δύο καλλιτέχνες να παρουσιάζουν νέα έργα."
+      }
+    ],
+    "body": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "Printmaking Days returned to the Old Power Station with a programme that moved between the exhibition hall, the press room and the street. Twenty-two artists showed etchings, lithographs, screen prints and relief work made during the previous year.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "en-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s2", "text": "The opening weekend included a stone lithography demonstration and a workshop for families, both of which filled every available place.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Οι Ημέρες Χαρακτικής επέστρεψαν στην Παλαιά Ηλεκτρική με ένα πρόγραμμα που κινήθηκε ανάμεσα στην αίθουσα εκθέσεων, το τυπογραφείο και τον δρόμο. Είκοσι δύο καλλιτέχνες παρουσίασαν χαρακτικά, λιθογραφίες, μεταξοτυπίες και ανάγλυφα έργα της χρονιάς.", "marks": [] }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "el-b2",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s2", "text": "Το πρώτο σαββατοκύριακο περιλάμβανε επίδειξη λιθογραφίας σε πέτρα και εργαστήρι για οικογένειες, που γέμισαν και τα δύο κάθε διαθέσιμη θέση.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ],
+    "venue": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "Old Power Station, Nicosia"
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Παλαιά Ηλεκτρική, Λευκωσία"
+      }
+    ]
+  },
+  {
+    "_id": "project-printmaking-days-2017",
+    "slug": "printmaking-days-2017",
+    "year": 2017,
+    "dates": { "start": "2017-10-06", "end": "2017-10-15" },
+    "participants": [
+      "Maria Georgiou",
+      "Eleni Athanasiou",
+      "Andreas Petrou",
+      "Nikos Hadjigeorgiou"
+    ],
+    "links": [
+      { "label": "Printmaking Days archive", "href": "https://www.cyprintmakers.com" }
+    ],
+    "coverImage": {
+      "_type": "image",
+      "asset": { "_ref": "image-printmaking-days-2017-cover-1600x1000-jpg" },
+      "alt": "A wall of framed prints at Printmaking Days 2017",
+      "dimensions": { "width": 1600, "height": 1000 }
+    },
+    "gallery": [],
+    "title": [
+      { "_key": "en", "language": "en", "value": "Printmaking Days 2017" },
+      { "_key": "el", "language": "el", "value": "Ημέρες Χαρακτικής 2017" }
+    ],
+    "summary": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "The association's tenth anniversary programme paired an archive room with new prints by eighteen members."
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Το επετειακό πρόγραμμα των δέκα χρόνων του συλλόγου συνδύασε αίθουσα αρχείου με νέα έργα δεκαοκτώ μελών."
+      }
+    ],
+    "body": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "For its tenth year the association opened the archive alongside a new exhibition. Early posters, plates and proof books were shown next to work made in 2017, so visitors could follow a technique from one decade to the next.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Για τη δέκατη χρονιά του ο σύλλογος άνοιξε το αρχείο δίπλα σε μια νέα έκθεση. Πρώιμες αφίσες, πλάκες και βιβλία δοκιμίων παρουσιάστηκαν δίπλα σε έργα του 2017, ώστε οι επισκέπτες να ακολουθήσουν μια τεχνική από τη μια δεκαετία στην άλλη.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ],
+    "venue": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "Nicosia Municipal Arts Centre"
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Δημοτικό Κέντρο Τεχνών Λευκωσίας"
+      }
+    ]
+  },
+  {
+    "_id": "project-printmaking-days-2009",
+    "slug": "printmaking-days-2009",
+    "year": 2009,
+    "dates": { "start": "2009-05-08", "end": "2009-05-17" },
+    "participants": [
+      "Maria Georgiou",
+      "Sofia Christodoulou",
+      "Nikos Hadjigeorgiou"
+    ],
+    "links": [
+      { "label": "Printmaking Days archive", "href": "https://www.cyprintmakers.com" }
+    ],
+    "coverImage": {
+      "_type": "image",
+      "asset": { "_ref": "image-printmaking-days-2009-cover-1600x1000-jpg" },
+      "alt": "A printing press in a temporary studio at Printmaking Days 2009",
+      "dimensions": { "width": 1600, "height": 1000 }
+    },
+    "gallery": [],
+    "title": [
+      { "_key": "en", "language": "en", "value": "Printmaking Days 2009" },
+      { "_key": "el", "language": "el", "value": "Ημέρες Χαρακτικής 2009" }
+    ],
+    "summary": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "The first Printmaking Days brought a borrowed press into a Nicosia courtyard and invited the public to print a page of their own."
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Οι πρώτες Ημέρες Χαρακτικής έφεραν ένα δανεικό πιεστήριο σε αυλή της Λευκωσίας και κάλεσαν το κοινό να τυπώσει τη δική του σελίδα."
+      }
+    ],
+    "body": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "en-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "en-s1", "text": "The first edition was small and improvised: a borrowed press, a trestle table and a courtyard lent by a member's family. Over nine days, visitors printed broadsheets and watched plates being inked and wiped.", "marks": [] }
+            ]
+          }
+        ]
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": [
+          {
+            "_type": "block",
+            "_key": "el-b1",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              { "_type": "span", "_key": "el-s1", "text": "Η πρώτη διοργάνωση ήταν μικρή και αυτοσχέδια: ένα δανεικό πιεστήριο, ένας πάγκος και μια αυλή που παραχώρησε η οικογένεια ενός μέλους. Σε εννέα ημέρες, οι επισκέπτες τύπωσαν φυλλάδια και παρακολούθησαν πλάκες να μελανώνονται και να καθαρίζονται.", "marks": [] }
+            ]
+          }
+        ]
+      }
+    ],
+    "venue": [
+      {
+        "_key": "en",
+        "language": "en",
+        "value": "Courtyard studio, Nicosia"
+      },
+      {
+        "_key": "el",
+        "language": "el",
+        "value": "Στούντιο σε αυλή, Λευκωσία"
+      }
+    ]
+  }
+]
