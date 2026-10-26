@@ -1,0 +1,25 @@
+:root {
+  /* Colour */
+  --ink: #000;
+  --paper: #fff;
+  --muted: #b3b3b3; /* decorative only — never text that must be read */
+  --muted-text: #6e6e6e;
+  --graphite: #3e3e3e;
+  --control: #d9d9d9;
+
+  /* Type */
+  --font-sans: "Geologica", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fw-regular: 400;
+
+  /* Rules */
+  --rule: 1px solid var(--ink);
+
+  /* Layout */
+  --step: 8px;
+  --max: 1514px;
+  --pad: 60px;
+  --pad-sm: 24px;
+  --grid-columns: 12;
+  --grid-gap: var(--step);
+  --radius-pill: 34px;
+}

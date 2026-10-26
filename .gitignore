@@ -1,0 +1,18 @@
+# Local reference material — never committed
+0. Mockups/
+Cyprus-Printmakers-Website/
+
+# Process workspace
+.superpowers/
+
+# Dependencies and build output
+node_modules/
+dist/
+.vercel/
+
+# Environment files (keep the checked-in template)
+.env*
+!site/.env.example
+
+# macOS
+.DS_Store
