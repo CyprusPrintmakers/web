@@ -133,6 +133,10 @@ textarea {
   grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
 }
 
+.grid-12 > * {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 767.98px) {
   .shell {
     padding-inline: var(--pad-sm);

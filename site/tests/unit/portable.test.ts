@@ -25,13 +25,11 @@ const anchorLink = {
   children: [{ _type: 'span', _key: 'span-anchor', text: 'Committee', marks: ['link-anchor'] }],
 }
 
-const javascriptLink = {
-  _type: 'block',
-  _key: 'block-javascript',
-  style: 'normal',
-  markDefs: [{ _type: 'link', _key: 'link-javascript', href: 'javascript:alert(1)' }],
-  children: [{ _type: 'span', _key: 'span-javascript', text: 'Not a link', marks: ['link-javascript'] }],
-}
+const unsafeHrefs = [
+  'javascript:alert(1)',
+  'data:text/html,<p>unsafe</p>',
+  'vbscript:msgbox(1)',
+]
 
 const protocolRelativeLink = {
   _type: 'block',
@@ -68,11 +66,31 @@ describe('portableToHtml', () => {
   })
 
   it('drops unsafe link schemes instead of emitting an href', () => {
-    const html = portableToHtml([javascriptLink], { lang: 'en', imageUrl: () => undefined })
+    for (const href of unsafeHrefs) {
+      const html = portableToHtml(
+        [
+          {
+            _type: 'block',
+            _key: 'block-unsafe',
+            style: 'normal',
+            markDefs: [{ _type: 'link', _key: 'link-unsafe', href }],
+            children: [
+              {
+                _type: 'span',
+                _key: 'span-unsafe',
+                text: 'Not a link',
+                marks: ['link-unsafe'],
+              },
+            ],
+          },
+        ],
+        { lang: 'en', imageUrl: () => undefined },
+      )
 
-    expect(html).toContain('Not a link')
-    expect(html).not.toContain('href=')
-    expect(html).not.toContain('javascript:')
+      expect(html).toContain('Not a link')
+      expect(html).not.toContain('href=')
+      expect(html).not.toContain(href)
+    }
   })
 
   it('treats protocol-relative links as external', () => {
