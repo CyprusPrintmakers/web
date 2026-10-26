@@ -20,6 +20,6 @@
   --pad: 60px;
   --pad-sm: 24px;
   --grid-columns: 12;
-  --grid-gap: var(--step);
+  --grid-gap: calc(var(--step) * 3);
   --radius-pill: 34px;
 }

@@ -60,6 +60,16 @@ describe('formatDate', () => {
   it('returns an empty string for an invalid date', () => {
     expect(formatDate('not-a-date', 'en')).toBe('')
   })
+
+  it('rejects impossible calendar dates', () => {
+    expect(formatDate('2019-02-30', 'en')).toBe('')
+    expect(formatDate('2019-04-31', 'en')).toBe('')
+  })
+
+  it('treats date-only and zoneless datetimes as UTC', () => {
+    expect(formatDate('2019-05-03T00:00:00', 'en')).toBe('3 May 2019')
+    expect(formatDate('2019-05-03T00:00:00Z', 'en')).toBe('3 May 2019')
+  })
 })
 
 describe('t', () => {
