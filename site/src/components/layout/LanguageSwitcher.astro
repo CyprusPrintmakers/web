@@ -1,0 +1,70 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+  alternates: Record<Locale, string>
+}
+
+const { lang, alternates } = Astro.props
+const entries: Array<{ lang: Locale; label: string }> = [
+  { lang: 'en', label: t('language.en', lang) },
+  { lang: 'el', label: t('language.el', lang) },
+]
+---
+
+<div class="switcher" role="group" aria-label={t('language.label', lang)}>
+  {
+    entries.map((entry, index) => (
+      <>
+        {index > 0 && <span class="switcher__separator" aria-hidden="true">/</span>}
+        <a
+          class="switcher__link"
+          href={alternates[entry.lang]}
+          hreflang={entry.lang}
+          lang={entry.lang}
+          aria-current={entry.lang === lang ? 'true' : undefined}
+        >
+          {entry.label}
+        </a>
+      </>
+    ))
+  }
+</div>
+
+<style>
+  .switcher {
+    align-items: center;
+    display: inline-flex;
+    flex-shrink: 0;
+    font-size: 20px;
+    gap: 4px;
+    line-height: 1.1;
+  }
+
+  .switcher__link {
+    align-items: center;
+    color: var(--muted-text);
+    display: inline-flex;
+    min-height: 44px;
+    padding: 0 4px;
+    text-decoration: none;
+  }
+
+  .switcher__link:hover,
+  .switcher__link[aria-current="true"] {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  .switcher__separator {
+    color: var(--muted-text);
+  }
+
+  @media (min-width: 900px) {
+    .switcher {
+      font-size: 24px;
+    }
+  }
+</style>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import type { Locale } from '../../lib/i18n/locales'
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'el' } }]
+}
+
+const lang = Astro.params.lang as Locale
+const title = 'Σύλλογος Χαρακτών Κύπρου'
+const description = 'Ιστοσελίδα υπό κατασκευή.'
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  alternates={{ en: '/', el: '/el' }}
+>
+  <h1 class="t-display">{title}</h1>
+  <p class="t-body">Ιστοσελίδα υπό κατασκευή.</p>
+</BaseLayout>

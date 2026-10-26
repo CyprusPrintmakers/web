@@ -1,19 +1,17 @@
 ---
-import '../styles/tokens.css'
-import '../styles/base.css'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const lang = 'en' as const
+const title = 'Cyprus Printmakers Association'
+const description = 'Site under construction.'
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cyprus Printmakers Association</title>
-  </head>
-  <body>
-    <main>
-      <h1 class="t-display">Cyprus Printmakers Association</h1>
-      <p class="t-body">Site under construction.</p>
-    </main>
-  </body>
-</html>
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  alternates={{ en: '/', el: '/el' }}
+>
+  <h1 class="t-display">{title}</h1>
+  <p class="t-body">Site under construction.</p>
+</BaseLayout>

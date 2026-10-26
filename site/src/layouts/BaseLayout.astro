@@ -1,0 +1,89 @@
+---
+import '../styles/tokens.css'
+import '../styles/base.css'
+import type { Locale } from '../lib/i18n/locales'
+import { t } from '../lib/i18n/ui'
+import Footer from '../components/layout/Footer.astro'
+import Header from '../components/layout/Header.astro'
+
+interface Props {
+  lang: Locale
+  title: string
+  description: string
+  alternates: Record<Locale, string>
+  noindex?: boolean
+  image?: string
+}
+
+const {
+  lang,
+  title,
+  description,
+  alternates,
+  noindex = false,
+  image,
+} = Astro.props
+
+const site = Astro.site ?? new URL('https://cyprintmakers.densetheory.cc')
+const absolute = (path: string) => new URL(path, site).href
+const pathname =
+  Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '')
+const canonical = absolute(pathname)
+const english = absolute(alternates.en)
+const greek = absolute(alternates.el)
+const staging = import.meta.env.PUBLIC_STAGING === 'true'
+const blocked = staging || noindex
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={english} />
+    <link rel="alternate" hreflang="el" href={greek} />
+    <link rel="alternate" hreflang="x-default" href={english} />
+    {image && <meta property="og:image" content={absolute(image)} />}
+    {blocked && <meta name="robots" content="noindex,nofollow" />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
+    <div class="page">
+      <Header lang={lang} alternates={alternates} />
+      <main id="main" tabindex="-1">
+        <slot />
+      </main>
+      <Footer lang={lang} />
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  .page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .page main {
+    flex: 1;
+  }
+
+  .skip-link {
+    background: var(--paper);
+    border: var(--rule);
+    left: -9999px;
+    padding: 12px 16px;
+    position: absolute;
+    top: 0;
+    z-index: 10;
+  }
+
+  .skip-link:focus {
+    left: var(--pad-sm);
+    top: var(--pad-sm);
+  }
+</style>

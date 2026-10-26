@@ -1,0 +1,149 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { localePath } from '../../lib/i18n/locales'
+import { t, type UIKey } from '../../lib/i18n/ui'
+import LanguageSwitcher from './LanguageSwitcher.astro'
+
+interface Props {
+  lang: Locale
+  alternates: Record<Locale, string>
+}
+
+const { lang, alternates } = Astro.props
+
+const items: Array<{ key: UIKey; path: string }> = [
+  { key: 'nav.members', path: '/members' },
+  { key: 'nav.projects', path: '/projects' },
+  { key: 'nav.support', path: '/support' },
+  { key: 'nav.news', path: '/news' },
+  { key: 'nav.about', path: '/about' },
+  { key: 'nav.contact', path: '/contact' },
+]
+
+const currentPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '')
+const wordmark =
+  lang === 'en'
+    ? ['CYPRUS', 'PRINTMAKERS ASSOCIATION']
+    : ['ΣΥΛΛΟΓΟΣ', 'ΧΑΡΑΚΤΩΝ ΚΥΠΡΟΥ']
+---
+
+<header class="header">
+  <div class="header__top">
+    <nav class="nav">
+      <ul class="nav__list">
+        {
+          items.map(item => {
+            const href = localePath(item.path, lang)
+            const active = currentPath === href
+            return (
+              <li class="nav__item">
+                <a
+                  class={`nav__link${active ? ' nav__link--active' : ''}`}
+                  href={href}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {t(item.key, lang)}
+                </a>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </nav>
+    <LanguageSwitcher lang={lang} alternates={alternates} />
+  </div>
+
+  <a class="brand" href={localePath('/', lang)}>
+    <img
+      class="brand__mark"
+      src="/mark.png"
+      alt=""
+      width="158"
+      height="192"
+      decoding="async"
+    />
+    <span class="brand__wordmark">
+      <span>{wordmark[0]}</span>
+      <span>{wordmark[1]}</span>
+    </span>
+  </a>
+</header>
+
+<style>
+  .header {
+    padding: var(--pad-sm) var(--pad-sm) 0;
+  }
+
+  .header__top {
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  .nav {
+    min-width: 0;
+  }
+
+  .nav__list {
+    column-gap: clamp(16px, 3.3vw, 50px);
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    row-gap: 8px;
+  }
+
+  .nav__link {
+    font-size: 24px;
+    line-height: 1.1;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav__link:hover,
+  .nav__link--active {
+    text-decoration: underline;
+  }
+
+  .brand {
+    align-items: flex-end;
+    color: inherit;
+    display: inline-flex;
+    gap: clamp(12px, 1.6vw, 24px);
+    margin-top: clamp(48px, 9vw, 139px);
+    text-decoration: none;
+  }
+
+  .brand:hover .brand__wordmark {
+    text-decoration: underline;
+  }
+
+  .brand__mark {
+    aspect-ratio: 158 / 192;
+    flex-shrink: 0;
+    height: auto;
+    object-fit: cover;
+    width: clamp(64px, 12vw, 158px);
+  }
+
+  .brand__wordmark {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(15px, 2.1vw, 32px);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  @media (min-width: 900px) {
+    .header {
+      padding: var(--pad) var(--pad) 0;
+    }
+
+    .nav__link {
+      font-size: 32px;
+    }
+  }
+</style>

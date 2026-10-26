@@ -1,0 +1,74 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import type { IntlValue } from '../../lib/i18n/localized'
+import { pickLocalized } from '../../lib/i18n/localized'
+import LocalizedText from './LocalizedText.astro'
+
+interface Props {
+  src?: string
+  alt?: string
+  width?: number
+  height?: number
+  caption?: IntlValue[]
+  lang: Locale
+}
+
+const {
+  src,
+  alt,
+  width = 1200,
+  height = 800,
+  caption,
+  lang,
+} = Astro.props
+
+const captionText = pickLocalized(caption, lang).text
+const decorative = !alt && captionText === ''
+// Keep in sync with `figurePlaceholderStyle` in src/lib/content/portable.ts.
+const placeholderStyle =
+  `width: 100%; aspect-ratio: ${width} / ${height}; border: var(--rule);`
+---
+
+<figure class="figure" aria-hidden={decorative ? 'true' : undefined}>
+  {
+    src ? (
+      <img
+        class="figure__image"
+        src={src}
+        alt={alt ?? ''}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class="figure__placeholder" style={placeholderStyle}></div>
+    )
+  }
+  {
+    captionText !== '' && (
+      <figcaption class="figure__caption">
+        <LocalizedText value={caption ?? []} lang={lang} />
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .figure {
+    margin: 0;
+  }
+
+  .figure__image {
+    border: var(--rule);
+    height: auto;
+    width: 100%;
+  }
+
+  .figure__caption {
+    color: var(--muted-text);
+    font-size: 20px;
+    line-height: 1.4;
+    margin-top: 8px;
+  }
+</style>

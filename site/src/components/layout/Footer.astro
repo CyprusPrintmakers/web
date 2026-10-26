@@ -1,0 +1,47 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import StagingBadge from './StagingBadge.astro'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const name =
+  lang === 'en' ? 'Cyprus Printmakers Association' : 'Σύλλογος Χαρακτών Κύπρου'
+const year = new Date().getFullYear()
+---
+
+<footer class="footer">
+  <div class="footer__inner">
+    <p class="footer__line">{name} — {year}</p>
+    <StagingBadge lang={lang} />
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: var(--rule);
+    margin-top: clamp(64px, 10vw, 160px);
+    padding: 24px var(--pad-sm);
+  }
+
+  .footer__inner {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  .footer__line {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 900px) {
+    .footer {
+      padding: 24px var(--pad);
+    }
+  }
+</style>

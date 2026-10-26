@@ -1,0 +1,19 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import type { IntlValue } from '../../lib/i18n/localized'
+import { pickLocalized } from '../../lib/i18n/localized'
+
+interface Props {
+  value: IntlValue[]
+  lang: Locale
+  as?: string
+}
+
+const { value, lang, as = 'span' } = Astro.props
+const { text, isFallback } = pickLocalized(value, lang)
+// Astro renders the runtime value; the cast only satisfies the JSX typing for
+// the open-ended `as` prop.
+const Tag = as as any
+---
+
+{text && <Tag lang={isFallback ? 'en' : lang}>{text}</Tag>}

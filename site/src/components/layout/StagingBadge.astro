@@ -1,0 +1,23 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+
+const staging = import.meta.env.PUBLIC_STAGING === 'true'
+---
+
+{staging && <p class="staging-badge">{t('staging.label', lang)}</p>}
+
+<style>
+  .staging-badge {
+    border: var(--rule);
+    font-size: 20px;
+    line-height: 1.4;
+    padding: 8px 16px;
+  }
+</style>

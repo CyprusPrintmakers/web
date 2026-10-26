@@ -1,0 +1,44 @@
+---
+interface Props {
+  href?: string
+  type?: 'button' | 'submit' | 'reset'
+}
+
+const { href, type = 'button' } = Astro.props
+---
+
+{
+  href ? (
+    <a class="pill" href={href}>
+      <slot />
+    </a>
+  ) : (
+    <button class="pill" type={type}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .pill {
+    align-items: center;
+    background: var(--control);
+    border: var(--rule);
+    border-radius: var(--radius-pill);
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 24px;
+    justify-content: center;
+    line-height: 1.1;
+    min-height: 72px;
+    padding: 0 32px;
+    text-decoration: none;
+  }
+
+  .pill:hover,
+  .pill:active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+</style>

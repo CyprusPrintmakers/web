@@ -12,8 +12,11 @@ const en = {
 
   'language.en': 'EN',
   'language.el': 'ΕΛ',
+  'language.label': 'Language',
 
   'a11y.skipToContent': 'Skip to content',
+
+  'staging.label': 'STAGING — not the public site',
 
   'form.name': 'Name',
   'form.email': 'Email',
@@ -61,8 +64,11 @@ const el: Record<UIKey, string> = {
 
   'language.en': 'EN',
   'language.el': 'ΕΛ',
+  'language.label': 'Γλώσσα',
 
   'a11y.skipToContent': 'Μετάβαση στο περιεχόμενο',
+
+  'staging.label': 'ΣΕ ΔΟΚΙΜΗ — όχι η δημόσια ιστοσελίδα',
 
   'form.name': 'Όνομα',
   'form.email': 'Ηλεκτρονικό ταχυδρομείο',
