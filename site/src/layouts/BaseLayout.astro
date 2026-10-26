@@ -53,7 +53,7 @@ const blocked = staging || noindex
     <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
     <div class="page">
       <Header lang={lang} alternates={alternates} />
-      <main id="main" tabindex="-1">
+      <main id="main" class="shell" tabindex="-1">
         <slot />
       </main>
       <Footer lang={lang} />

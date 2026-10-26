@@ -27,7 +27,7 @@ const wordmark =
     : ['ΣΥΛΛΟΓΟΣ', 'ΧΑΡΑΚΤΩΝ ΚΥΠΡΟΥ']
 ---
 
-<header class="header">
+<header class="header shell">
   <div class="header__top">
     <nav class="nav">
       <ul class="nav__list">
@@ -53,7 +53,7 @@ const wordmark =
     <LanguageSwitcher lang={lang} alternates={alternates} />
   </div>
 
-  <a class="brand" href={localePath('/', lang)}>
+  <a class="brand" href={localePath('/', lang)} aria-label={wordmark.join(' ')}>
     <img
       class="brand__mark"
       src="/mark.png"
@@ -71,7 +71,7 @@ const wordmark =
 
 <style>
   .header {
-    padding: var(--pad-sm) var(--pad-sm) 0;
+    padding-block-start: var(--pad-sm);
   }
 
   .header__top {
@@ -132,14 +132,20 @@ const wordmark =
   .brand__wordmark {
     display: flex;
     flex-direction: column;
-    font-size: clamp(15px, 2.1vw, 32px);
+    font-size: 24px;
     letter-spacing: -0.01em;
     line-height: 1.05;
   }
 
+  @media (min-width: 600px) {
+    .brand__wordmark {
+      font-size: 32px;
+    }
+  }
+
   @media (min-width: 900px) {
     .header {
-      padding: var(--pad) var(--pad) 0;
+      padding-block-start: var(--pad);
     }
 
     .nav__link {

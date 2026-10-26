@@ -25,6 +25,22 @@ const anchorLink = {
   children: [{ _type: 'span', _key: 'span-anchor', text: 'Committee', marks: ['link-anchor'] }],
 }
 
+const javascriptLink = {
+  _type: 'block',
+  _key: 'block-javascript',
+  style: 'normal',
+  markDefs: [{ _type: 'link', _key: 'link-javascript', href: 'javascript:alert(1)' }],
+  children: [{ _type: 'span', _key: 'span-javascript', text: 'Not a link', marks: ['link-javascript'] }],
+}
+
+const protocolRelativeLink = {
+  _type: 'block',
+  _key: 'block-protocol-relative',
+  style: 'normal',
+  markDefs: [{ _type: 'link', _key: 'link-protocol-relative', href: '//example.com' }],
+  children: [{ _type: 'span', _key: 'span-protocol-relative', text: 'External', marks: ['link-protocol-relative'] }],
+}
+
 const imageBlock = {
   _type: 'image',
   _key: 'image-1',
@@ -51,6 +67,24 @@ describe('portableToHtml', () => {
     expect(anchor).not.toContain('rel=')
   })
 
+  it('drops unsafe link schemes instead of emitting an href', () => {
+    const html = portableToHtml([javascriptLink], { lang: 'en', imageUrl: () => undefined })
+
+    expect(html).toContain('Not a link')
+    expect(html).not.toContain('href=')
+    expect(html).not.toContain('javascript:')
+  })
+
+  it('treats protocol-relative links as external', () => {
+    const html = portableToHtml([protocolRelativeLink], {
+      lang: 'en',
+      imageUrl: () => undefined,
+    })
+
+    expect(html).toContain('href="//example.com"')
+    expect(html).toContain('rel="noopener"')
+  })
+
   it('reserves dimensions and defaults alt to empty for images', () => {
     const html = portableToHtml([{ ...imageBlock, alt: undefined }], {
       lang: 'en',
@@ -74,5 +108,20 @@ describe('portableToHtml', () => {
     expect(html).toContain('border: var(--rule)')
     expect(html).toContain('aspect-ratio: 1200 / 800')
     expect(html).not.toContain('<img')
+    expect(html).not.toContain('aria-hidden')
+  })
+
+  it('hides a placeholder only when it carries no alt text', () => {
+    const withAlt = portableToHtml([imageBlock], {
+      lang: 'en',
+      imageUrl: () => undefined,
+    })
+    expect(withAlt).not.toContain('aria-hidden')
+
+    const withoutAlt = portableToHtml([{ ...imageBlock, alt: undefined }], {
+      lang: 'en',
+      imageUrl: () => undefined,
+    })
+    expect(withoutAlt).toContain('aria-hidden="true"')
   })
 })
