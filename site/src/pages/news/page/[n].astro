@@ -1,0 +1,21 @@
+---
+import NewsView from '../../../components/pages/NewsView.astro'
+import { getContent } from '../../../lib/content/source'
+import { paginate } from '../../../lib/news/paginate'
+import type { Locale } from '../../../lib/i18n/locales'
+
+export async function getStaticPaths() {
+  const { news } = await getContent()
+  const pages = paginate(news, 1, 10).pages
+
+  // Page 1 lives at /news; only n >= 2 gets its own route.
+  return Array.from({ length: Math.max(0, pages - 1) }, (_, index) => ({
+    params: { n: String(index + 2) },
+  }))
+}
+
+const lang: Locale = 'en'
+const page = Number(Astro.params.n)
+---
+
+<NewsView lang={lang} page={page} />

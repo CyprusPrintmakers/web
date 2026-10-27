@@ -1,0 +1,22 @@
+---
+import NewsView from '../../../../components/pages/NewsView.astro'
+import { getContent } from '../../../../lib/content/source'
+import { paginate } from '../../../../lib/news/paginate'
+import { getLocaleParams, type Locale } from '../../../../lib/i18n/locales'
+
+export async function getStaticPaths() {
+  const { news } = await getContent()
+  const pages = paginate(news, 1, 10).pages
+
+  return getLocaleParams().flatMap(({ params }) =>
+    Array.from({ length: Math.max(0, pages - 1) }, (_, index) => ({
+      params: { lang: params.lang, n: String(index + 2) },
+    })),
+  )
+}
+
+const lang = Astro.params.lang as Locale
+const page = Number(Astro.params.n)
+---
+
+<NewsView lang={lang} page={page} />

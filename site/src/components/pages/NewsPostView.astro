@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Figure from '../ui/Figure.astro'
+import LocalizedText from '../ui/LocalizedText.astro'
+import Prose from '../ui/Prose.astro'
+import Rule from '../ui/Rule.astro'
+import { imageAttrs } from '../../lib/media'
+import type { NewsPost } from '../../lib/content/types'
+import { formatDate } from '../../lib/i18n/format'
+import { localePath, type Locale } from '../../lib/i18n/locales'
+import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+  post: NewsPost
+}
+
+const { lang, post } = Astro.props
+
+// No image URL builder exists yet — the cover resolves to the 1px placeholder.
+const cover = imageAttrs(post.coverImage, { urlFor: () => '' })
+const body = pickRich(post.body, lang)
+const date = formatDate(post.publishedAt, lang)
+const related = post.relatedProject
+  ? {
+      href: localePath(`/projects/${post.relatedProject}`, lang),
+      label: `${t('news.related', lang)} →`,
+    }
+  : undefined
+---
+
+<BaseLayout
+  lang={lang}
+  title={pickLocalized(post.title, lang).text}
+  description={pickLocalized(post.excerpt, lang).text}
+  alternates={{ en: `/news/${post.slug}`, el: `/el/news/${post.slug}` }}
+>
+  <article class="news-post">
+    {date !== '' && (
+      <time class="news-post__date t-small" datetime={post.publishedAt}>
+        {date}
+      </time>
+    )}
+
+    <h1 class="news-post__title t-display">
+      <LocalizedText value={post.title} lang={lang} />
+    </h1>
+
+    {
+      cover.src !== undefined && (
+        <Figure
+          src={cover.src}
+          alt={cover.alt}
+          width={cover.width}
+          height={cover.height}
+          lang={lang}
+        />
+      )
+    }
+
+    <div class="news-post__body">
+      <Prose value={body} lang={lang} />
+    </div>
+
+    <Rule />
+
+    {
+      related && (
+        <a class="news-post__related t-body" href={related.href}>
+          {related.label}
+        </a>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .news-post {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .news-post__date {
+    color: var(--muted-text);
+    margin-bottom: 8px;
+  }
+
+  .news-post__title {
+    margin-bottom: clamp(24px, 4vw, 48px);
+  }
+
+  .news-post__body {
+    margin-bottom: clamp(48px, 6vw, 96px);
+    max-width: 40em;
+  }
+
+  .news-post__related {
+    text-decoration: none;
+  }
+
+  .news-post__related:hover {
+    text-decoration: underline;
+  }
+</style>

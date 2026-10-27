@@ -1,0 +1,12 @@
+---
+import NewsView from '../../components/pages/NewsView.astro'
+import { getLocaleParams, type Locale } from '../../lib/i18n/locales'
+
+export function getStaticPaths() {
+  return getLocaleParams()
+}
+
+const lang = Astro.params.lang as Locale
+---
+
+<NewsView lang={lang} />

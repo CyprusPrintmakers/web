@@ -38,6 +38,9 @@ const en = {
   'projects.dates': 'Dates',
   'projects.links': 'Links',
 
+  'news.heading': 'News',
+  'news.related': 'Related project',
+
   'form.name': 'Name',
   'form.email': 'Email',
   'form.phone': 'Phone',
@@ -109,6 +112,9 @@ const el: Record<UIKey, string> = {
   'projects.venue': 'Χώρος',
   'projects.dates': 'Ημερομηνίες',
   'projects.links': 'Σύνδεσμοι',
+
+  'news.heading': 'Νέα',
+  'news.related': 'Σχετικό έργο',
 
   'form.name': 'Όνομα',
   'form.email': 'Ηλεκτρονικό ταχυδρομείο',
