@@ -1,0 +1,194 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+import FormStatus from './FormStatus.astro'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+---
+
+<form
+  class="form"
+  method="post"
+  action="/api/membership"
+  enctype="multipart/form-data"
+  data-form
+>
+  <input type="hidden" name="locale" value={lang} />
+  <input type="hidden" name="renderedAt" value="" data-rendered-at />
+
+  <div aria-hidden="true" class="form__honeypot">
+    <label for="membership-website">Website</label>
+    <input id="membership-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-name">{t('form.name', lang)}</label>
+    <input
+      class="form__input"
+      id="membership-name"
+      name="name"
+      type="text"
+      required
+      autocomplete="name"
+    />
+    <p class="form__error t-small" data-error="name"></p>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-email">{t('form.email', lang)}</label>
+    <input
+      class="form__input"
+      id="membership-email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+    />
+    <p class="form__error t-small" data-error="email"></p>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-phone">{t('form.phone', lang)}</label>
+    <input
+      class="form__input"
+      id="membership-phone"
+      name="phone"
+      type="tel"
+      autocomplete="tel"
+    />
+    <p class="form__error t-small" data-error="phone"></p>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-tier">{t('form.tier', lang)}</label>
+    <select class="form__input" id="membership-tier" name="tier">
+      <option value="">{t('form.tierUnsure', lang)}</option>
+      <option value="individual">Individual / Ατομική</option>
+      <option value="group">Group / Ομαδική</option>
+      <option value="corporate">Corporate / Εταιρική</option>
+    </select>
+    <p class="form__error t-small" data-error="tier"></p>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-practice">{t('form.practice', lang)}</label>
+    <input class="form__input" id="membership-practice" name="practice" type="text" />
+    <p class="form__error t-small" data-error="practice"></p>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-message">{t('form.message', lang)}</label>
+    <textarea class="form__input" id="membership-message" name="message" rows="5"></textarea>
+    <p class="form__error t-small" data-error="message"></p>
+  </div>
+
+  <div class="form__field">
+    <label class="form__label t-small" for="membership-cv">{t('form.cv', lang)}</label>
+    <input
+      class="form__input"
+      id="membership-cv"
+      name="cv"
+      type="file"
+      accept=".pdf,.doc,.docx"
+    />
+    <p class="form__note t-small">{t('form.cvNote', lang)}</p>
+    <p class="form__error t-small" data-error="cv"></p>
+  </div>
+
+  <div class="form__field form__field--consent">
+    <input class="form__checkbox" id="membership-consent" name="consent" type="checkbox" required />
+    <label class="form__label t-small" for="membership-consent">
+      <a href="#privacy">{t('form.consent', lang)}</a>
+    </label>
+    <p class="form__error t-small" data-error="consent"></p>
+  </div>
+
+  <FormStatus />
+
+  <button class="form__submit" type="submit">{t('form.submit', lang)}</button>
+</form>
+
+<script is:inline src="/scripts/forms.js" defer></script>
+
+<style>
+  .form {
+    display: grid;
+    gap: 24px;
+    max-width: 40em;
+  }
+
+  .form__honeypot {
+    left: -9999px;
+    position: absolute;
+  }
+
+  .form__field {
+    display: grid;
+    gap: 4px;
+  }
+
+  .form__field--consent {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+  }
+
+  .form__label {
+    color: var(--muted-text);
+  }
+
+  .form__input {
+    background: transparent;
+    border: 0;
+    border-bottom: var(--rule);
+    font-size: 20px;
+    padding: 8px 2px;
+  }
+
+  select.form__input,
+  textarea.form__input {
+    border: var(--rule);
+    padding: 8px;
+  }
+
+  .form__checkbox {
+    height: 24px;
+    margin-top: 2px;
+    width: 24px;
+  }
+
+  .form__error {
+    color: var(--muted-text);
+    margin: 0;
+    min-height: 1em;
+  }
+
+  .form__error:not(:empty) {
+    color: var(--graphite);
+    text-decoration: underline;
+  }
+
+  .form__note {
+    color: var(--muted-text);
+    margin: 0;
+  }
+
+  .form__submit {
+    background: transparent;
+    border: var(--rule);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: 20px;
+    justify-self: start;
+    min-height: 44px;
+    padding: 0 32px;
+  }
+
+  .form__submit:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+</style>

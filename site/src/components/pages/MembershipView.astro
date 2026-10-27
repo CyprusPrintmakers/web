@@ -4,6 +4,7 @@ import LocalizedText from '../ui/LocalizedText.astro'
 import Prose from '../ui/Prose.astro'
 import Rule from '../ui/Rule.astro'
 import TierList from './TierList.astro'
+import MembershipForm from '../forms/MembershipForm.astro'
 import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
@@ -64,16 +65,16 @@ const formIntro = pickLocalized(membership.formIntro, lang)
 
     <Rule />
 
-    <section class="membership__form-slot" aria-labelledby="membership-form-heading">
+    <section class="membership__form" aria-labelledby="membership-form-heading">
       <h2 id="membership-form-heading" class="t-title">{t('membership.form', lang)}</h2>
       {
         formIntro.text !== '' && (
-          <p class="t-body" lang={formIntro.isFallback ? 'en' : lang}>
-            {formIntro.text}
+          <p class="membership__form-intro t-body">
+            <LocalizedText value={membership.formIntro} lang={lang} />
           </p>
         )
       }
-      <p class="t-small membership__form-soon">{t('membership.formSoon', lang)}</p>
+      <MembershipForm lang={lang} />
     </section>
 
     <section class="membership__privacy" aria-labelledby="privacy-heading" id="privacy">
@@ -118,20 +119,19 @@ const formIntro = pickLocalized(membership.formIntro, lang)
     margin: 0 0 8px;
   }
 
-  .membership__form-slot {
+  .membership__form {
     border: var(--rule);
     margin-bottom: clamp(24px, 4vw, 64px);
     max-width: 40em;
     padding: 24px;
   }
 
-  .membership__form-slot h2 {
+  .membership__form h2 {
     margin-bottom: 16px;
   }
 
-  .membership__form-soon {
-    color: var(--muted-text);
-    margin-bottom: 0;
+  .membership__form-intro {
+    margin-bottom: 24px;
   }
 
   .membership__privacy {

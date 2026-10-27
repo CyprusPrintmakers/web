@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import LocalizedText from '../ui/LocalizedText.astro'
-import Rule from '../ui/Rule.astro'
+import ContactForm from '../forms/ContactForm.astro'
 import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
 import { t } from '../../lib/i18n/ui'
@@ -21,18 +21,6 @@ const address = details.address.filter(line => line.trim() !== '')
 
 const mapUrl = contact.mapUrl?.trim() || undefined
 const mapLabel = lang === 'en' ? 'Open in Google Maps' : 'Άνοιγμα στους Χάρτες'
-
-// Task 13 ships the contact form; until then this slot marks its place.
-const formSlot = {
-  en: {
-    heading: 'Contact form',
-    body: 'The contact form will be available here soon.',
-  },
-  el: {
-    heading: 'Φόρμα επικοινωνίας',
-    body: 'Η φόρμα επικοινωνίας θα είναι σύντομα διαθέσιμη εδώ.',
-  },
-}[lang]
 ---
 
 <BaseLayout
@@ -69,11 +57,9 @@ const formSlot = {
       </div>
     </div>
 
-    <Rule />
-
-    <section class="contact__form-slot" aria-labelledby="contact-form-heading">
-      <h2 id="contact-form-heading" class="t-title">{formSlot.heading}</h2>
-      <p class="t-body">{formSlot.body}</p>
+    <section class="contact__form" aria-labelledby="contact-form-heading">
+      <h2 id="contact-form-heading" class="t-title">{t('form.sendMessage', lang)}</h2>
+      <ContactForm lang={lang} />
     </section>
   </article>
 </BaseLayout>
@@ -133,14 +119,14 @@ const formSlot = {
     margin-top: 24px;
   }
 
-  .contact__form-slot {
+  .contact__form {
     border: var(--rule);
     margin-bottom: clamp(24px, 4vw, 64px);
     max-width: 40em;
     padding: 24px;
   }
 
-  .contact__form-slot h2 {
+  .contact__form h2 {
     margin-bottom: 16px;
   }
 
