@@ -16,3 +16,6 @@ dist/
 
 # macOS
 .DS_Store
+
+# Archived Wix site — kept out of the repo until the migration is confirmed
+wix-archive/
