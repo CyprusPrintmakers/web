@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import LocalizedText from '../ui/LocalizedText.astro'
+import ProjectFilter from '../filters/ProjectFilter.astro'
+import { getContent } from '../../lib/content/source'
+import { yearsOf } from '../../lib/projects/filter'
+import { localePath, type Locale } from '../../lib/i18n/locales'
+import { pickLocalized } from '../../lib/i18n/localized'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const { projects } = await getContent()
+const years = yearsOf(projects)
+const newestFirst = [...projects].sort((a, b) => b.year - a.year)
+---
+
+<BaseLayout
+  lang={lang}
+  title={t('projects.heading', lang)}
+  description={t('projects.years', lang)}
+  alternates={{ en: '/projects', el: '/el/projects' }}
+>
+  <article class="projects">
+    <h1 class="sr-only">{t('projects.heading', lang)}</h1>
+
+    <ProjectFilter lang={lang} years={years} />
+
+    <ul class="projects__list">
+      {
+        newestFirst.map(project => {
+          const summary = pickLocalized(project.summary, lang)
+
+          return (
+            <li class="projects__item" data-project data-year={String(project.year)}>
+              <span class="projects__year t-small">{project.year}</span>
+              <a
+                class="projects__title t-title"
+                href={localePath(`/projects/${project.slug}`, lang)}
+              >
+                <LocalizedText value={project.title} lang={lang} />
+              </a>
+              {summary.text !== '' && (
+                <p class="projects__summary t-body" lang={summary.isFallback ? 'en' : lang}>
+                  {summary.text}
+                </p>
+              )}
+            </li>
+          )
+        })
+      }
+    </ul>
+  </article>
+</BaseLayout>
+
+<script is:inline src="/scripts/projects-filter.js" defer></script>
+
+<style>
+  .projects {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .projects__list {
+    border-top: var(--rule);
+    display: grid;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .projects__item {
+    border-bottom: var(--rule);
+    display: grid;
+    gap: 8px;
+    padding: 24px 0;
+  }
+
+  .projects__item[hidden] {
+    display: none;
+  }
+
+  .projects__year {
+    color: var(--muted-text);
+  }
+
+  .projects__title {
+    text-decoration: none;
+  }
+
+  .projects__title:hover {
+    text-decoration: underline;
+  }
+
+  .projects__summary {
+    margin: 0;
+    max-width: 40em;
+  }
+</style>

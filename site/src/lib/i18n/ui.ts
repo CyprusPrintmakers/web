@@ -29,6 +29,15 @@ const en = {
   'members.instagram': 'Instagram',
   'members.joined': 'Joined {n}',
 
+  'projects.heading': 'Projects',
+  'projects.allYears': 'All years',
+  'projects.years': 'Filter by year',
+  'projects.gallery': 'Gallery',
+  'projects.participants': 'Participants',
+  'projects.venue': 'Venue',
+  'projects.dates': 'Dates',
+  'projects.links': 'Links',
+
   'form.name': 'Name',
   'form.email': 'Email',
   'form.phone': 'Phone',
@@ -91,6 +100,15 @@ const el: Record<UIKey, string> = {
   'members.website': 'Ιστοσελίδα',
   'members.instagram': 'Instagram',
   'members.joined': 'Μέλος από {n}',
+
+  'projects.heading': 'Έργα',
+  'projects.allYears': 'Όλα τα έτη',
+  'projects.years': 'Φίλτρο έτους',
+  'projects.gallery': 'Συλλογή',
+  'projects.participants': 'Συμμετέχοντες',
+  'projects.venue': 'Χώρος',
+  'projects.dates': 'Ημερομηνίες',
+  'projects.links': 'Σύνδεσμοι',
 
   'form.name': 'Όνομα',
   'form.email': 'Ηλεκτρονικό ταχυδρομείο',

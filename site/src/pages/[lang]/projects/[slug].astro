@@ -1,0 +1,20 @@
+---
+import ProjectView from '../../../components/pages/ProjectView.astro'
+import { getContent } from '../../../lib/content/source'
+import { getLocaleSlugParams, type Locale } from '../../../lib/i18n/locales'
+
+export async function getStaticPaths() {
+  const { projects } = await getContent()
+  return getLocaleSlugParams(projects.map(project => project.slug)).map(entry => ({
+    params: entry.params,
+    props: {
+      project: projects.find(candidate => candidate.slug === entry.params.slug)!,
+    },
+  }))
+}
+
+const { project } = Astro.props
+const lang = Astro.params.lang as Locale
+---
+
+<ProjectView lang={lang} project={project} />
