@@ -5,7 +5,10 @@ import {
   loadFixtures,
   resolveContentSource,
 } from '../../src/lib/content/source'
-import { isFullyTranslated } from '../../src/lib/content/translation'
+import {
+  assertRequiredFields,
+  isFullyTranslated,
+} from '../../src/lib/content/translation'
 import { imageAttrs, type ImageDoc } from '../../src/lib/media'
 import { t } from '../../src/lib/i18n/ui'
 
@@ -121,6 +124,97 @@ describe('content loader', () => {
     expect(andreas?.translations).toEqual({ en: true, el: false })
     expect(isFullyTranslated(andreas!, 'member', 'en')).toBe(true)
     expect(isFullyTranslated(andreas!, 'member', 'el')).toBe(false)
+  })
+
+  it('treats an English-only process step body as untranslated for Greek', async () => {
+    const raw = await loadFixtures()
+    const membership = {
+      ...raw.membership,
+      processSteps: raw.membership.processSteps.map((step, index) =>
+        index === 0
+          ? { ...step, body: step.body.filter(entry => entry.language !== 'el') }
+          : step,
+      ),
+    }
+    const content = await createContentLoader(async () => ({ ...raw, membership }))()
+
+    expect(content.membership.translations).toEqual({ en: true, el: false })
+    expect(isFullyTranslated(content.membership, 'membershipPage', 'el')).toBe(false)
+  })
+
+  it('reports a missing Greek nested process field with an indexed label', async () => {
+    const raw = await loadFixtures()
+    const membership = {
+      ...raw.membership,
+      processSteps: raw.membership.processSteps.map((step, index) =>
+        index === 0
+          ? { ...step, body: step.body.filter(entry => entry.language !== 'el') }
+          : step,
+      ),
+    }
+
+    expect(() => assertRequiredFields(membership, 'membershipPage', 'el')).toThrow(
+      `membershipPage ${membership._id} missing required field process[0].body for el`,
+    )
+  })
+
+  it('treats English-only tier benefits as untranslated for Greek', async () => {
+    const raw = await loadFixtures()
+    const membership = {
+      ...raw.membership,
+      tiers: raw.membership.tiers.map((tier, index) =>
+        index === 0
+          ? {
+              ...tier,
+              benefits: tier.benefits?.filter(entry => entry.language !== 'el'),
+            }
+          : tier,
+      ),
+    }
+    const content = await createContentLoader(async () => ({ ...raw, membership }))()
+
+    expect(content.membership.translations).toEqual({ en: true, el: false })
+    expect(isFullyTranslated(content.membership, 'membershipPage', 'el')).toBe(false)
+  })
+
+  it('leaves a tier without benefits fully translated', async () => {
+    const raw = await loadFixtures()
+    const membership = {
+      ...raw.membership,
+      tiers: raw.membership.tiers.map((tier, index) =>
+        index === 0 ? { name: tier.name, price: tier.price } : tier,
+      ),
+    }
+    const content = await createContentLoader(async () => ({ ...raw, membership }))()
+
+    expect(content.membership.translations).toEqual({ en: true, el: true })
+    expect(isFullyTranslated(content.membership, 'membershipPage', 'el')).toBe(true)
+  })
+
+  it('treats an English-only committee bio as untranslated for Greek', async () => {
+    const raw = await loadFixtures()
+    const committee = raw.committee.map((member, index) =>
+      index === 0
+        ? { ...member, bio: member.bio?.filter(entry => entry.language !== 'el') }
+        : member,
+    )
+    const content = await createContentLoader(async () => ({ ...raw, committee }))()
+    const member = content.committee.find(item => item._id === raw.committee[0]._id)
+
+    expect(member?.translations).toEqual({ en: true, el: false })
+    expect(isFullyTranslated(member!, 'committeeMember', 'el')).toBe(false)
+  })
+
+  it('leaves a committee member without a bio fully translated', async () => {
+    const raw = await loadFixtures()
+    const committee = raw.committee.map((member, index) =>
+      index === 0 ? { ...member, bio: undefined } : member,
+    )
+    const content = await createContentLoader(async () => ({ ...raw, committee }))()
+    const member = content.committee.find(item => item._id === raw.committee[0]._id)
+
+    expect(member?.translations).toEqual({ en: true, el: true })
+    expect(isFullyTranslated(member!, 'committeeMember', 'el')).toBe(true)
   })
 })
 
