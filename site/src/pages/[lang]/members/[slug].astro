@@ -1,0 +1,20 @@
+---
+import MemberView from '../../../components/pages/MemberView.astro'
+import { getContent } from '../../../lib/content/source'
+import { getLocaleSlugParams, type Locale } from '../../../lib/i18n/locales'
+
+export async function getStaticPaths() {
+  const { members } = await getContent()
+  return getLocaleSlugParams(members.map(member => member.slug)).map(entry => ({
+    params: entry.params,
+    props: {
+      member: members.find(candidate => candidate.slug === entry.params.slug)!,
+    },
+  }))
+}
+
+const { member } = Astro.props
+const lang = Astro.params.lang as Locale
+---
+
+<MemberView lang={lang} member={member} />

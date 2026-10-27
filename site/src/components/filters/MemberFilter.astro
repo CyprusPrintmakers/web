@@ -1,0 +1,103 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+  letters: string[]
+  total: number
+}
+
+const { lang, letters, total } = Astro.props
+const initialCount =
+  total === 1 ? t('members.countOne', lang) : t('members.countMany', lang)
+---
+
+<div class="member-filter">
+  <label class="member-filter__label t-small" for="member-search">
+    {t('members.search', lang)}
+  </label>
+  <input
+    id="member-search"
+    class="member-filter__input"
+    type="search"
+    autocomplete="off"
+    data-member-search
+  />
+
+  <p
+    class="member-filter__count t-small"
+    data-member-count
+    aria-live="polite"
+    data-count-one={t('members.countOne', lang)}
+    data-count-many={t('members.countMany', lang)}
+  >
+    {initialCount.replace('{n}', String(total))}
+  </p>
+
+  <div class="member-filter__letters" role="group" aria-label={t('members.directory', lang)}>
+    {
+      letters.map(letter => (
+        <button
+          type="button"
+          class="member-filter__letter"
+          data-letter-button
+          data-letter={letter}
+          aria-pressed="false"
+        >
+          {letter}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .member-filter {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin-bottom: clamp(24px, 4vw, 48px);
+  }
+
+  .member-filter__label {
+    color: var(--muted-text);
+  }
+
+  .member-filter__input {
+    background: transparent;
+    border: 0;
+    border-bottom: var(--rule);
+    font-size: 20px;
+    min-width: 220px;
+    padding: 4px 2px;
+  }
+
+  .member-filter__count {
+    color: var(--muted-text);
+    margin: 0;
+  }
+
+  .member-filter__letters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .member-filter__letter {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 20px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+  }
+
+  .member-filter__letter[aria-pressed='true'] {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>

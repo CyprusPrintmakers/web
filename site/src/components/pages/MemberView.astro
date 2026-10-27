@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Figure from '../ui/Figure.astro'
+import LocalizedText from '../ui/LocalizedText.astro'
+import Prose from '../ui/Prose.astro'
+import { imageAttrs } from '../../lib/media'
+import type { Member } from '../../lib/content/types'
+import type { Locale } from '../../lib/i18n/locales'
+import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+  member: Member
+}
+
+const { lang, member } = Astro.props
+
+// No image URL builder exists yet, so a portrait resolves to the 1 px rule
+// placeholder instead of a broken image (same as the home cover).
+const portrait = imageAttrs(member.portrait, { urlFor: () => '' })
+const bio = pickRich(member.bio, lang)
+const website = member.website?.trim() || undefined
+const instagram = member.instagram?.trim()
+  ? `https://www.instagram.com/${member.instagram.trim().replace(/^@/, '')}`
+  : undefined
+const joined =
+  member.joinedYear !== undefined
+    ? t('members.joined', lang).replace('{n}', String(member.joinedYear))
+    : undefined
+---
+
+<BaseLayout
+  lang={lang}
+  title={pickLocalized(member.name, lang).text}
+  description={pickLocalized(member.discipline, lang).text}
+  alternates={{ en: `/members/${member.slug}`, el: `/el/members/${member.slug}` }}
+>
+  <article class="member">
+    <h1 class="member__name t-display">
+      <LocalizedText value={member.name} lang={lang} />
+    </h1>
+
+    <p class="member__discipline t-title">
+      <LocalizedText value={member.discipline} lang={lang} />
+    </p>
+
+    {
+      portrait.src !== undefined && (
+        <Figure
+          src={portrait.src}
+          alt={portrait.alt}
+          width={portrait.width}
+          height={portrait.height}
+          lang={lang}
+        />
+      )
+    }
+
+    <div class="member__bio">
+      <Prose value={bio} lang={lang} />
+    </div>
+
+    {
+      (website || instagram) && (
+        <ul class="member__links">
+          {website && (
+            <li>
+              <a href={website} rel="noopener">
+                {t('members.website', lang)}
+              </a>
+            </li>
+          )}
+          {instagram && (
+            <li>
+              <a href={instagram} rel="noopener">
+                {t('members.instagram', lang)}
+              </a>
+            </li>
+          )}
+        </ul>
+      )
+    }
+
+    {joined && <p class="member__joined t-small">{joined}</p>}
+  </article>
+</BaseLayout>
+
+<style>
+  .member {
+    display: flex;
+    flex-direction: column;
+    max-width: 40em;
+  }
+
+  .member__name {
+    margin-bottom: clamp(16px, 2vw, 32px);
+  }
+
+  .member__discipline {
+    color: var(--muted-text);
+    margin-bottom: clamp(32px, 5vw, 64px);
+  }
+
+  .member__bio {
+    margin-bottom: clamp(32px, 5vw, 64px);
+  }
+
+  .member__links {
+    display: grid;
+    gap: 8px;
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+
+  .member__joined {
+    color: var(--muted-text);
+    margin: 0;
+  }
+</style>

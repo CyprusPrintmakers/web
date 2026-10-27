@@ -1,0 +1,13 @@
+---
+import MemberView from '../../components/pages/MemberView.astro'
+import { getContent } from '../../lib/content/source'
+
+export async function getStaticPaths() {
+  const { members } = await getContent()
+  return members.map(member => ({ params: { slug: member.slug }, props: { member } }))
+}
+
+const { member } = Astro.props
+---
+
+<MemberView lang="en" member={member} />

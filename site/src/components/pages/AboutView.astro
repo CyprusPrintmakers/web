@@ -4,10 +4,9 @@ import LocalizedText from '../ui/LocalizedText.astro'
 import Prose from '../ui/Prose.astro'
 import Rule from '../ui/Rule.astro'
 import { getContent } from '../../lib/content/source'
-import type { IntlRich, RichText } from '../../lib/content/types'
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
-import { pickLocalized } from '../../lib/i18n/localized'
+import { pickLocalized, pickRich } from '../../lib/i18n/localized'
 
 interface Props {
   lang: Locale
@@ -15,17 +14,6 @@ interface Props {
 
 const { lang } = Astro.props
 const { about, committee } = await getContent()
-
-// Mirrors pickLocalized for rich text: the requested language wins, English is
-// the fallback, and an empty result stays empty instead of breaking Prose.
-function pickRich(values: IntlRich[] | undefined, locale: Locale): RichText {
-  const usable = (entry: IntlRich) => entry.value.length > 0
-  return (
-    values?.find(entry => entry.language === locale && usable(entry))?.value ??
-    values?.find(entry => entry.language === 'en' && usable(entry))?.value ??
-    []
-  )
-}
 
 const body = pickRich(about.body, lang)
 const history = pickRich(about.history, lang)

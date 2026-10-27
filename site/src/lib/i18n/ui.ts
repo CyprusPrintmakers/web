@@ -18,6 +18,17 @@ const en = {
 
   'staging.label': 'STAGING — not the public site',
 
+  'members.heading': 'Members',
+  'members.committee': 'Committee',
+  'members.search': 'Search members',
+  'members.countOne': '{n} member',
+  'members.countMany': '{n} members',
+  'members.directory': 'All members',
+  'members.email': 'Email',
+  'members.website': 'Website',
+  'members.instagram': 'Instagram',
+  'members.joined': 'Joined {n}',
+
   'form.name': 'Name',
   'form.email': 'Email',
   'form.phone': 'Phone',
@@ -69,6 +80,17 @@ const el: Record<UIKey, string> = {
   'a11y.skipToContent': 'Μετάβαση στο περιεχόμενο',
 
   'staging.label': 'ΣΕ ΔΟΚΙΜΗ — όχι η δημόσια ιστοσελίδα',
+
+  'members.heading': 'Μέλη',
+  'members.committee': 'Επιτροπή',
+  'members.search': 'Αναζήτηση μελών',
+  'members.countOne': '{n} μέλος',
+  'members.countMany': '{n} μέλη',
+  'members.directory': 'Όλα τα μέλη',
+  'members.email': 'Ηλεκτρονικό ταχυδρομείο',
+  'members.website': 'Ιστοσελίδα',
+  'members.instagram': 'Instagram',
+  'members.joined': 'Μέλος από {n}',
 
   'form.name': 'Όνομα',
   'form.email': 'Ηλεκτρονικό ταχυδρομείο',

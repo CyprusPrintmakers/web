@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import LocalizedText from '../ui/LocalizedText.astro'
+import Rule from '../ui/Rule.astro'
+import MemberFilter from '../filters/MemberFilter.astro'
+import { getContent } from '../../lib/content/source'
+import { groupByLetter, surname } from '../../lib/members/filter'
+import { localePath, type Locale } from '../../lib/i18n/locales'
+import { pickLocalized } from '../../lib/i18n/localized'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const { members, committee } = await getContent()
+const letters = [...groupByLetter(members, lang).keys()]
+---
+
+<BaseLayout
+  lang={lang}
+  title={t('members.heading', lang)}
+  description={t('members.directory', lang)}
+  alternates={{ en: '/members', el: '/el/members' }}
+>
+  <article class="members">
+    <h1 class="sr-only">{t('members.heading', lang)}</h1>
+
+    <section class="members__committee" aria-labelledby="committee-heading" data-committee>
+      <h2 id="committee-heading" class="t-title">{t('members.committee', lang)}</h2>
+      <ul class="members__committee-list">
+        {
+          committee.map(person => {
+            const href = person.memberRef
+              ? localePath(`/members/${person.memberRef}`, lang)
+              : undefined
+
+            return (
+              <li class="members__committee-member">
+                {href ? (
+                  <a class="t-body" href={href}>
+                    <LocalizedText value={person.name} lang={lang} />
+                  </a>
+                ) : (
+                  <span class="t-body">
+                    <LocalizedText value={person.name} lang={lang} />
+                  </span>
+                )}
+                <span class="members__role t-small">
+                  <LocalizedText value={person.role} lang={lang} />
+                </span>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </section>
+
+    <Rule />
+
+    <section class="members__directory" aria-labelledby="directory-heading">
+      <h2 id="directory-heading" class="t-title">{t('members.directory', lang)}</h2>
+
+      <MemberFilter lang={lang} letters={letters} total={members.length} />
+
+      <ul class="members__list">
+        {
+          members.map(member => {
+            const name = pickLocalized(member.name, lang).text
+            const letter = surname(name).charAt(0).toLocaleUpperCase(lang)
+
+            return (
+              <li class="members__item" data-member data-letter={letter}>
+                <a
+                  class="members__name t-body"
+                  href={localePath(`/members/${member.slug}`, lang)}
+                >
+                  <LocalizedText value={member.name} lang={lang} />
+                </a>
+                <span class="members__discipline t-small">
+                  <LocalizedText value={member.discipline} lang={lang} />
+                </span>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<script is:inline src="/scripts/members-filter.js" defer></script>
+
+<style>
+  .members {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .members__committee {
+    margin-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  .members__committee h2,
+  .members__directory h2 {
+    margin-bottom: clamp(16px, 2vw, 32px);
+  }
+
+  .members__committee-list {
+    display: grid;
+    gap: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .members__committee-member {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    justify-content: space-between;
+  }
+
+  .members__committee-member a {
+    text-decoration: none;
+  }
+
+  .members__committee-member a:hover {
+    text-decoration: underline;
+  }
+
+  .members__role {
+    color: var(--muted-text);
+  }
+
+  .members__directory {
+    margin-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  .members__list {
+    border-top: var(--rule);
+    display: grid;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .members__item {
+    align-items: baseline;
+    border-bottom: var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    justify-content: space-between;
+    padding: 16px 0;
+  }
+
+  .members__item[hidden] {
+    display: none;
+  }
+
+  .members__name {
+    text-decoration: none;
+  }
+
+  .members__name:hover {
+    text-decoration: underline;
+  }
+
+  .members__discipline {
+    color: var(--muted-text);
+  }
+</style>
