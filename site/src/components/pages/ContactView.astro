@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import LocalizedText from '../ui/LocalizedText.astro'
+import Rule from '../ui/Rule.astro'
+import { getContent } from '../../lib/content/source'
+import type { Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const { settings, contact } = await getContent()
+
+// Contact details live only in settings — never duplicated into page copy.
+const details = settings.contact
+const telHref = details.phoneHref.replace(/\s+/g, '')
+const emailHref = `mailto:${details.email}`
+const address = details.address.filter(line => line.trim() !== '')
+
+const mapUrl = contact.mapUrl?.trim() || undefined
+const mapLabel = lang === 'en' ? 'Open in Google Maps' : 'Άνοιγμα στους Χάρτες'
+
+// Task 13 ships the contact form; until then this slot marks its place.
+const formSlot = {
+  en: {
+    heading: 'Contact form',
+    body: 'The contact form will be available here soon.',
+  },
+  el: {
+    heading: 'Φόρμα επικοινωνίας',
+    body: 'Η φόρμα επικοινωνίας θα είναι σύντομα διαθέσιμη εδώ.',
+  },
+}[lang]
+---
+
+<BaseLayout
+  lang={lang}
+  title={contact.seo.title ?? t('nav.contact', lang)}
+  description={contact.seo.description ?? ''}
+  alternates={{ en: '/contact', el: '/el/contact' }}
+>
+  <article class="contact">
+    <h1 class="sr-only">{t('nav.contact', lang)}</h1>
+
+    <div class="contact__grid">
+      <div class="contact__note t-title">
+        <LocalizedText value={contact.openingNote} lang={lang} as="p" />
+        <p class="contact__hours t-small">
+          <LocalizedText value={contact.officeHours} lang={lang} />
+        </p>
+      </div>
+
+      <address class="contact__address t-title">
+        {address.map(line => <span class="contact__line">{line}</span>)}
+        {
+          mapUrl && (
+            <a class="contact__map t-small" href={mapUrl} rel="noopener">
+              {mapLabel}
+            </a>
+          )
+        }
+      </address>
+
+      <div class="contact__channels t-title">
+        <a class="contact__line" href={telHref}>{details.phone}</a>
+        <a class="contact__line" href={emailHref}>{details.email}</a>
+      </div>
+    </div>
+
+    <Rule />
+
+    <section class="contact__form-slot" aria-labelledby="contact-form-heading">
+      <h2 id="contact-form-heading" class="t-title">{formSlot.heading}</h2>
+      <p class="t-body">{formSlot.body}</p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .contact {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact__grid {
+    align-items: start;
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  .contact__note {
+    grid-column: 1;
+  }
+
+  .contact__hours {
+    color: var(--muted-text);
+    margin-top: 24px;
+  }
+
+  .contact__address {
+    font-style: normal;
+    grid-column: 2;
+  }
+
+  .contact__channels {
+    color: var(--muted-text);
+    display: flex;
+    flex-direction: column;
+    grid-column: 3;
+  }
+
+  .contact__channels a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .contact__channels a:hover {
+    text-decoration: underline;
+  }
+
+  .contact__line {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+
+  .contact__map {
+    color: inherit;
+    display: inline-block;
+    margin-top: 24px;
+  }
+
+  .contact__form-slot {
+    border: var(--rule);
+    margin-bottom: clamp(24px, 4vw, 64px);
+    max-width: 40em;
+    padding: 24px;
+  }
+
+  .contact__form-slot h2 {
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 767.98px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contact__note,
+    .contact__address,
+    .contact__channels {
+      grid-column: 1;
+    }
+  }
+
+  .sr-only {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+</style>
