@@ -41,6 +41,12 @@ const en = {
   'news.heading': 'News',
   'news.related': 'Related project',
 
+  'membership.heading': 'Membership',
+  'membership.support': 'Support us',
+  'membership.gatedNotice': 'Membership terms to be confirmed',
+  'membership.form': 'Apply for membership',
+  'membership.formSoon': 'The application form will be available here soon.',
+
   'form.name': 'Name',
   'form.email': 'Email',
   'form.phone': 'Phone',
@@ -115,6 +121,12 @@ const el: Record<UIKey, string> = {
 
   'news.heading': 'Νέα',
   'news.related': 'Σχετικό έργο',
+
+  'membership.heading': 'Συνδρομή',
+  'membership.support': 'Υποστηρίξτε μας',
+  'membership.gatedNotice': 'Οι όροι μέλους προς επιβεβαίωση',
+  'membership.form': 'Αίτηση για μέλος',
+  'membership.formSoon': 'Η φόρμα αίτησης θα είναι σύντομα διαθέσιμη εδώ.',
 
   'form.name': 'Όνομα',
   'form.email': 'Ηλεκτρονικό ταχυδρομείο',
