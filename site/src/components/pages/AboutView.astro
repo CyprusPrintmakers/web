@@ -7,6 +7,7 @@ import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { isFullyTranslated } from '../../lib/content/translation'
 
 interface Props {
   lang: Locale
@@ -14,6 +15,7 @@ interface Props {
 
 const { lang } = Astro.props
 const { about, committee } = await getContent()
+const noindex = lang === 'el' && !isFullyTranslated(about, 'aboutPage', 'el')
 
 const body = pickRich(about.body, lang)
 const history = pickRich(about.history, lang)
@@ -26,6 +28,7 @@ const headings = {
 
 <BaseLayout
   lang={lang}
+  noindex={noindex}
   title={about.seo.title ?? pickLocalized(about.headline, lang).text}
   description={about.seo.description ?? ''}
   alternates={{ en: '/about', el: '/el/about' }}

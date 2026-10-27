@@ -3,6 +3,9 @@ import '../styles/tokens.css'
 import '../styles/base.css'
 import type { Locale } from '../lib/i18n/locales'
 import { t } from '../lib/i18n/ui'
+import { getContent } from '../lib/content/source'
+import { pickLocalized } from '../lib/i18n/localized'
+import { organizationJsonLd, pageTitle } from '../lib/seo'
 import Footer from '../components/layout/Footer.astro'
 import Header from '../components/layout/Header.astro'
 
@@ -13,6 +16,7 @@ interface Props {
   alternates: Record<Locale, string>
   noindex?: boolean
   image?: string
+  jsonLd?: object[]
 }
 
 const {
@@ -22,7 +26,12 @@ const {
   alternates,
   noindex = false,
   image,
+  jsonLd = [],
 } = Astro.props
+
+const { settings } = await getContent()
+const siteName = pickLocalized(settings.siteName, lang).text || 'Cyprus Printmakers Association'
+const fullTitle = pageTitle(title, siteName)
 
 const site = Astro.site ?? new URL('https://cyprintmakers.densetheory.cc')
 const absolute = (path: string) => new URL(path, site).href
@@ -33,6 +42,7 @@ const english = absolute(alternates.en)
 const greek = absolute(alternates.el)
 const staging = import.meta.env.PUBLIC_STAGING === 'true'
 const blocked = staging || noindex
+const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
 ---
 
 <!doctype html>
@@ -40,14 +50,25 @@ const blocked = staging || noindex
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang="en" href={english} />
     <link rel="alternate" hreflang="el" href={greek} />
     <link rel="alternate" hreflang="x-default" href={english} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
     {image && <meta property="og:image" content={absolute(image)} />}
     {blocked && <meta name="robots" content="noindex,nofollow" />}
+    {jsonLdBlocks.map(block => (
+      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    ))}
   </head>
   <body>
     <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>

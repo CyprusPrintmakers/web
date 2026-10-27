@@ -9,6 +9,8 @@ import type { NewsPost } from '../../lib/content/types'
 import { formatDate } from '../../lib/i18n/format'
 import { localePath, type Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { isFullyTranslated } from '../../lib/content/translation'
+import { articleJsonLd } from '../../lib/seo'
 import { t } from '../../lib/i18n/ui'
 
 interface Props {
@@ -17,6 +19,9 @@ interface Props {
 }
 
 const { lang, post } = Astro.props
+
+const noindex = lang === 'el' && !isFullyTranslated(post, 'newsPost', 'el')
+const jsonLd = [articleJsonLd(post, lang)]
 
 // No image URL builder exists yet — the cover resolves to the 1px placeholder.
 const cover = imageAttrs(post.coverImage, { urlFor: () => '' })
@@ -32,6 +37,8 @@ const related = post.relatedProject
 
 <BaseLayout
   lang={lang}
+  noindex={noindex}
+  jsonLd={jsonLd}
   title={pickLocalized(post.title, lang).text}
   description={pickLocalized(post.excerpt, lang).text}
   alternates={{ en: `/news/${post.slug}`, el: `/el/news/${post.slug}` }}

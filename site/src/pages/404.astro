@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { t } from '../lib/i18n/ui'
+---
+
+<BaseLayout
+  lang="en"
+  title="404"
+  description={t('notFound.body', 'en')}
+  alternates={{ en: '/', el: '/el' }}
+  noindex
+>
+  <article class="not-found">
+    <h1 class="not-found__heading t-display">{t('notFound.heading', 'en')}</h1>
+    <p class="not-found__body t-body">{t('notFound.body', 'en')}</p>
+    <p class="not-found__links t-body">
+      <a href="/">{t('notFound.home', 'en')}</a>
+      {' · '}
+      <a href="/el" lang="el">Αρχική σελίδα (ελληνικά)</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .not-found__heading {
+    margin: 0;
+  }
+
+  .not-found__body,
+  .not-found__links {
+    margin: 0;
+    max-width: 40em;
+  }
+</style>

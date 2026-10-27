@@ -7,6 +7,7 @@ import { imageAttrs } from '../../lib/media'
 import type { Member } from '../../lib/content/types'
 import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { isFullyTranslated } from '../../lib/content/translation'
 import { t } from '../../lib/i18n/ui'
 
 interface Props {
@@ -15,6 +16,8 @@ interface Props {
 }
 
 const { lang, member } = Astro.props
+
+const noindex = lang === 'el' && !isFullyTranslated(member, 'member', 'el')
 
 // No image URL builder exists yet, so a portrait resolves to the 1 px rule
 // placeholder instead of a broken image (same as the home cover).
@@ -32,6 +35,7 @@ const joined =
 
 <BaseLayout
   lang={lang}
+  noindex={noindex}
   title={pickLocalized(member.name, lang).text}
   description={pickLocalized(member.discipline, lang).text}
   alternates={{ en: `/members/${member.slug}`, el: `/el/members/${member.slug}` }}

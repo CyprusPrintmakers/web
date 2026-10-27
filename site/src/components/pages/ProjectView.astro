@@ -9,6 +9,8 @@ import type { Project } from '../../lib/content/types'
 import { formatDate } from '../../lib/i18n/format'
 import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { isFullyTranslated } from '../../lib/content/translation'
+import { visualArtworkJsonLd } from '../../lib/seo'
 import { t } from '../../lib/i18n/ui'
 
 interface Props {
@@ -17,6 +19,9 @@ interface Props {
 }
 
 const { lang, project } = Astro.props
+
+const noindex = lang === 'el' && !isFullyTranslated(project, 'project', 'el')
+const jsonLd = [visualArtworkJsonLd(project, lang)]
 
 // No image URL builder exists yet, so gallery images resolve to the 1 px rule
 // placeholder with reserved dimensions (same as the home cover).
@@ -37,6 +42,8 @@ const dates =
 
 <BaseLayout
   lang={lang}
+  noindex={noindex}
+  jsonLd={jsonLd}
   title={title.text}
   description={summary.text}
   alternates={{ en: `/projects/${project.slug}`, el: `/el/projects/${project.slug}` }}

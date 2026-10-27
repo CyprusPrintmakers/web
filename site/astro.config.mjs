@@ -27,5 +27,11 @@ export default defineConfig({
     locales: ['en', 'el'],
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [sitemap(), ...sanityIntegrations],
+  integrations: [
+    sitemap({
+      i18n: { defaultLocale: 'en', locales: { en: 'en-GB', el: 'el-CY' } },
+      filter: page => !page.includes('404') && !page.includes('/preview'),
+    }),
+    ...sanityIntegrations,
+  ],
 })

@@ -8,6 +8,7 @@ import MembershipForm from '../forms/MembershipForm.astro'
 import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { isFullyTranslated } from '../../lib/content/translation'
 import { t } from '../../lib/i18n/ui'
 
 interface Props {
@@ -16,12 +17,14 @@ interface Props {
 
 const { lang } = Astro.props
 const { membership } = await getContent()
+const noindex = lang === 'el' && !isFullyTranslated(membership, 'membershipPage', 'el')
 const intro = pickLocalized(membership.intro, lang)
 const formIntro = pickLocalized(membership.formIntro, lang)
 ---
 
 <BaseLayout
   lang={lang}
+  noindex={noindex}
   title={t('membership.heading', lang)}
   description={intro.text}
   alternates={{ en: '/membership', el: '/el/membership' }}
