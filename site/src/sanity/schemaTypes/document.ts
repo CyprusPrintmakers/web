@@ -83,13 +83,13 @@ function preview(kind: ContentKind) {
   return (selection: PrepareSelection) => {
     const titleField = PREVIEW_TITLE_FIELD[kind]
 
+    const translations = computeTranslations(selection, kind)
+
     return {
       title: titleField
         ? localizedTitle(selection[titleField], PREVIEW_FALLBACK[kind])
         : PREVIEW_FALLBACK[kind],
-      subtitle: `EN ${computeTranslations(selection, kind).en ? '✓' : '✗'} EL ${
-        computeTranslations(selection, kind).el ? '✓' : '✗'
-      }`,
+      subtitle: `EN ${translations.en ? '✓' : '✗'} EL ${translations.el ? '✓' : '✗'}`,
     }
   }
 }

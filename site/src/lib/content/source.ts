@@ -38,8 +38,10 @@ const SANITY_API_VERSION = '2025-10-15'
 const IMAGE_PROJECTION =
   '{ ..., "dimensions": asset->metadata.dimensions { width, height } }'
 
+// Body-level images are siblings of blocks (`of: [{block}, {image}]`), so the
+// dimensions projection must sit at the array-item level, not inside children.
 const PORTABLE_TEXT_PROJECTION =
-  '[]{ ..., "children": children[]{ ..., _type == "image" => { "dimensions": asset->metadata.dimensions { width, height } } } }'
+  '[]{ ..., _type == "image" => { "dimensions": asset->metadata.dimensions { width, height } } }'
 
 const SEO_PROJECTION = '{ ..., "image": image' + IMAGE_PROJECTION + ' }'
 
@@ -166,7 +168,7 @@ setSanityReader(createSanityReader())
 export async function loadSanity(): Promise<RawContent> {
   if (!sanityReader) {
     throw new Error(
-      'Sanity content source selected but no reader has been registered; call setSanityReader() from the Sanity integration',
+      'Sanity content source selected but the reader failed to register; check that @sanity/client is installed and SANITY_PROJECT_ID is valid',
     )
   }
 
