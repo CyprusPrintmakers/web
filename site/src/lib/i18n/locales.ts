@@ -32,3 +32,29 @@ export function localePath(path: string, lang: Locale): string {
   if (lang === 'en') return stripped
   return stripped === '/' ? GREEK_PREFIX : `${GREEK_PREFIX}${stripped}`
 }
+
+/**
+ * Static paths for a `[lang]` page without a slug.
+ *
+ * English is prerendered by the root route, so only the non-default locales
+ * come back here — never `en`.
+ */
+export function getLocaleParams(): { params: { lang: Locale } }[] {
+  return LOCALES.filter(locale => locale !== 'en').map(lang => ({ params: { lang } }))
+}
+
+/**
+ * Static paths for a `[lang]/[slug]` page, one Greek route per slug.
+ *
+ * Collection routes pass exactly the slugs that exist in English, so a Greek
+ * detail page exists for exactly those documents.
+ */
+export function getLocaleSlugParams(
+  slugs: string[],
+): { params: { lang: Locale; slug: string } }[] {
+  return getLocaleParams().flatMap(({ params }) =>
+    slugs
+      .filter(slug => slug.trim() !== '')
+      .map(slug => ({ params: { lang: params.lang, slug } })),
+  )
+}

@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import LocalizedText from '../ui/LocalizedText.astro'
+import Prose from '../ui/Prose.astro'
+import Rule from '../ui/Rule.astro'
+import { getContent } from '../../lib/content/source'
+import type { IntlRich, RichText } from '../../lib/content/types'
+import type { Locale } from '../../lib/i18n/locales'
+import { localePath } from '../../lib/i18n/locales'
+import { pickLocalized } from '../../lib/i18n/localized'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const { about, committee } = await getContent()
+
+// Mirrors pickLocalized for rich text: the requested language wins, English is
+// the fallback, and an empty result stays empty instead of breaking Prose.
+function pickRich(values: IntlRich[] | undefined, locale: Locale): RichText {
+  const usable = (entry: IntlRich) => entry.value.length > 0
+  return (
+    values?.find(entry => entry.language === locale && usable(entry))?.value ??
+    values?.find(entry => entry.language === 'en' && usable(entry))?.value ??
+    []
+  )
+}
+
+const body = pickRich(about.body, lang)
+const history = pickRich(about.history, lang)
+
+const headings = {
+  committee: lang === 'en' ? 'Committee' : 'Επιτροπή',
+  partners: lang === 'en' ? 'Partners' : 'Συνεργάτες',
+}
+---
+
+<BaseLayout
+  lang={lang}
+  title={about.seo.title ?? pickLocalized(about.headline, lang).text}
+  description={about.seo.description ?? ''}
+  alternates={{ en: '/about', el: '/el/about' }}
+>
+  <article class="about">
+    <h1 class="about__headline t-display">
+      <LocalizedText value={about.headline} lang={lang} />
+    </h1>
+
+    <div class="about__intro">
+      <Prose value={body} lang={lang} />
+    </div>
+
+    <div class="about__history">
+      <Prose value={history} lang={lang} />
+    </div>
+
+    <Rule />
+
+    <section class="about__section" aria-labelledby="committee-heading">
+      <h2 id="committee-heading" class="t-title">{headings.committee}</h2>
+      <ul class="about__committee">
+        {
+          committee.map(person => {
+            const href = person.memberRef
+              ? localePath(`/members/${person.memberRef}`, lang)
+              : undefined
+
+            return (
+              <li class="about__committee-member">
+                {href ? (
+                  <a href={href}>
+                    <LocalizedText value={person.name} lang={lang} />
+                  </a>
+                ) : (
+                  <LocalizedText value={person.name} lang={lang} />
+                )}
+                <span class="about__committee-role">
+                  <LocalizedText value={person.role} lang={lang} />
+                </span>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </section>
+
+    <Rule />
+
+    <section class="about__section" aria-labelledby="partners-heading">
+      <h2 id="partners-heading" class="t-title">{headings.partners}</h2>
+      <ul class="about__partners">
+        {
+          about.partners.map(partner => (
+            <li>
+              {partner.url ? (
+                <a href={partner.url} rel="noopener">
+                  {partner.name}
+                </a>
+              ) : (
+                partner.name
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about__headline {
+    margin-bottom: clamp(32px, 5vw, 80px);
+  }
+
+  .about__intro {
+    margin-bottom: clamp(32px, 5vw, 80px);
+    max-width: 40em;
+  }
+
+  .about__history {
+    margin-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  /* The export sets the long history text at 36 px; the intro keeps the 24 px
+     body ramp. */
+  .about__history :global(.prose) {
+    font-size: 36px;
+    line-height: 1.3;
+  }
+
+  .about__history :global(.prose p) {
+    margin-bottom: 32px;
+  }
+
+  .about__section {
+    margin-bottom: clamp(48px, 6vw, 96px);
+  }
+
+  .about__section h2 {
+    margin-bottom: clamp(16px, 2vw, 32px);
+  }
+
+  .about__committee,
+  .about__partners {
+    display: grid;
+    gap: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .about__committee-member {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 24px;
+    gap: 8px 24px;
+    justify-content: space-between;
+    line-height: 1.4;
+  }
+
+  .about__committee-role {
+    color: var(--muted-text);
+    font-size: 20px;
+  }
+</style>

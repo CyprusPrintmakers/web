@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Figure from '../ui/Figure.astro'
+import Rule from '../ui/Rule.astro'
+import { getContent } from '../../lib/content/source'
+import { imageAttrs } from '../../lib/media'
+import type { Locale } from '../../lib/i18n/locales'
+import { localePath } from '../../lib/i18n/locales'
+import { pickLocalized } from '../../lib/i18n/localized'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const { home } = await getContent()
+
+// The mockup splits the wordmark into "CYPRUS" and "PRINTMAKERS ASSOCIATION";
+// the h1 composes the same two spans, joined for screen readers by the space
+// between them.
+const title = pickLocalized(home.title, lang)
+const [titleLead, ...titleRest] = title.text.split(/\s+/)
+const titleTail = titleRest.join(' ')
+
+// No image URL builder exists yet, so a fixture coverImage resolves to no src
+// and the block collapses to the 1 px rule instead of a broken image.
+const cover = imageAttrs(home.coverImage, { urlFor: () => '' })
+
+const currentLabel = `${t('current', lang)}:`
+const currentTitle = pickLocalized(home.currentTitle, lang).text
+const currentText = `${currentLabel} ${currentTitle} →`
+const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang) : undefined
+
+const NAME_CELLS = 28
+---
+
+<BaseLayout
+  lang={lang}
+  title={home.seo.title ?? title.text}
+  description={home.seo.description ?? ''}
+  alternates={{ en: '/', el: '/el' }}
+>
+  <section class="home-cover">
+    <h1 class="sr-only" lang={title.isFallback ? 'en' : lang}>
+      <span>{titleLead}</span>{titleTail && <span>{` ${titleTail}`}</span>}
+    </h1>
+
+    {
+      cover.src ? (
+        <Figure
+          src={cover.src}
+          alt={cover.alt}
+          width={cover.width}
+          height={cover.height}
+          lang={lang}
+        />
+      ) : (
+        <Rule />
+      )
+    }
+
+    <div class="home-cover__names" aria-hidden="true">
+      {Array.from({ length: NAME_CELLS }, () => (
+        <span class="home-cover__cell" />
+      ))}
+    </div>
+
+    <p class="home-cover__current">
+      {
+        currentHref ? (
+          <a href={currentHref}>{currentText}</a>
+        ) : (
+          <span>{currentText}</span>
+        )
+      }
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  /*
+   * The mockup canvas is one viewport with the CURRENT line on the bottom
+   * edge. The frame's main area already flexes to the viewport, so the home
+   * grid row stretches to fill it and the line is pushed to its bottom.
+   */
+  .home-cover {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .home-cover__names {
+    display: grid;
+    gap: var(--step);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    height: 120px;
+    margin-top: clamp(24px, 4vw, 64px);
+    max-width: 630px;
+    width: 100%;
+  }
+
+  .home-cover__cell {
+    display: block;
+  }
+
+  .home-cover__current {
+    color: var(--graphite);
+    font-size: 24px;
+    line-height: 1.4;
+    margin-top: auto;
+    padding-top: clamp(24px, 4vw, 64px);
+  }
+
+  .home-cover__current a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .home-cover__current a:hover {
+    text-decoration: underline;
+  }
+
+  .sr-only {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+</style>
+
+<style is:global>
+  /* Only the home cover stretches the page grid to the viewport. */
+  main:has(.home-cover) .grid-12 {
+    min-height: 100%;
+  }
+</style>

@@ -1,17 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
-
-const lang = 'en' as const
-const title = 'Cyprus Printmakers Association'
-const description = 'Site under construction.'
+import HomeView from '../components/pages/HomeView.astro'
 ---
 
-<BaseLayout
-  lang={lang}
-  title={title}
-  description={description}
-  alternates={{ en: '/', el: '/el' }}
->
-  <h1 class="t-display">{title}</h1>
-  <p class="t-body">Site under construction.</p>
-</BaseLayout>
+<HomeView lang="en" />
