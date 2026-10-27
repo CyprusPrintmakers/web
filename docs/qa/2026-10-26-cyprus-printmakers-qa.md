@@ -21,3 +21,14 @@
 ## Accessibility
 
 ## Performance
+
+- Lighthouse (built static output served from dist/client, Chrome for Testing headless), 2026-10-27:
+
+| URL  | Performance | Accessibility |
+| ---- | ----------- | ------------- |
+| `/`  | 100         | 100           |
+| `/el` | 100        | 100           |
+
+- Overflow gate: `scrollWidth - innerWidth <= 1` at 320px passes on `/el`, `/el/members`, `/el/membership`, `/el/projects` (form inputs needed `min-width: 0; width: 100%`).
+- Axe (wcag2a + wcag2aa): zero violations on `/`, `/about`, `/members`, `/projects`, `/news`, `/membership` and their `/el` twins; every page has `lang`, every image an `alt`, every visible control a label.
+- Note: Lighthouse numbers were measured against the prerendered static output; the deployed page adds no client JS beyond the 4.4 KB of scripts measured here.

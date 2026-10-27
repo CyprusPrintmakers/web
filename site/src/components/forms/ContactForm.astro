@@ -85,6 +85,7 @@ const { lang } = Astro.props
   .form__field {
     display: grid;
     gap: 4px;
+    min-width: 0;
   }
 
   .form__label {
@@ -96,7 +97,9 @@ const { lang } = Astro.props
     border: 0;
     border-bottom: var(--rule);
     font-size: 20px;
+    min-width: 0;
     padding: 8px 2px;
+    width: 100%;
   }
 
   textarea.form__input {
