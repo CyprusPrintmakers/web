@@ -23,6 +23,28 @@ describe('member filter', () => {
     expect(filterMembers(all, '', 'A', 'el')).toHaveLength(0)
   })
 
+  it('matches a final sigma against a typed regular sigma', () => {
+    const papas = {
+      ...all[0],
+      slug: 'papas',
+      _id: 'member-papas',
+      name: [
+        { _key: 'n-en', language: 'en', value: 'Papas' },
+        { _key: 'n-el', language: 'el', value: 'Γιώργος Παππάς' },
+      ],
+    } as Member
+
+    expect(filterMembers([papas], 'παππας', null, 'el').map(m => m.slug)).toEqual(['papas'])
+    expect(filterMembers([papas], 'ΠΑΠΠΑΣ', null, 'el').map(m => m.slug)).toEqual(['papas'])
+    expect(filterMembers([papas], 'georgos', null, 'el')).toHaveLength(0)
+  })
+
+  it('matches accented queries against plain names', () => {
+    expect(filterMembers(all, 'Άθανασίου', null, 'el').map(m => m.slug)).toEqual([
+      'athanasiou',
+    ])
+  })
+
   it('groups by the surname letter and sorts keys with locale collation', () => {
     const keys = [...groupByLetter(all, 'el').keys()]
     expect(keys).toEqual([...keys].sort((a, b) => a.localeCompare(b, 'el')))

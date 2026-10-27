@@ -2,20 +2,21 @@ import { pickLocalized } from '../i18n/localized'
 import type { Locale } from '../i18n/locales'
 import type { Member } from '../content/types'
 
-/** Case- and accent-insensitive match in the viewer's locale. */
+/**
+ * Case-, accent- and final-sigma-insensitive fold: `ς` and `σ` must match,
+ * since Greek surnames end in ς but searches are typed with σ.
+ */
+function foldCase(value: string, lang: Locale): string {
+  return value
+    .toLocaleLowerCase(lang)
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replace(/ς/g, 'σ')
+}
+
 function matches(haystack: string, needle: string, lang: Locale): boolean {
   if (needle === '') return true
-  return haystack.localeCompare(needle, lang, { sensitivity: 'base' }) === 0 ||
-    haystack
-      .toLocaleLowerCase(lang)
-      .normalize('NFD')
-      .replace(/\p{M}/gu, '')
-      .includes(
-        needle
-          .toLocaleLowerCase(lang)
-          .normalize('NFD')
-          .replace(/\p{M}/gu, ''),
-      )
+  return foldCase(haystack, lang).includes(foldCase(needle, lang))
 }
 
 /** The last whitespace-separated word of the localised name. */

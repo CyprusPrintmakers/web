@@ -11,6 +11,7 @@
       .toLocaleLowerCase()
       .normalize('NFD')
       .replace(/\p{M}/gu, '')
+      .replace(/ς/g, 'σ')
 
   const apply = () => {
     const query = normalise(search.value.trim())
