@@ -68,7 +68,7 @@ function requiredValues(
 ): { field: string; values: unknown }[] {
   const fields = REQUIRED_FIELDS[kind].map(field => ({
     field,
-    values: doc[field] as Localized,
+    values: doc[field] as unknown,
   }))
 
   return fields.concat(nestedLocalized(doc, kind))
