@@ -14,6 +14,14 @@
     { "_key": "el", "language": "el", "value": "Ημέρες Χαρακτικής 2019 — Λευκωσία" }
   ],
   "currentHref": "/projects/printmaking-days-2019",
+  "heroBody": [
+    {
+      "_key": "en",
+      "_type": "internationalizedArrayTextValue",
+      "language": "en",
+      "value": "A non-profit organization and artistic collective established by local visual artists. It operates a dedicated workshop in Pallouriotissa, Nicosia, initially founded alongside the Cyprus Chamber of Fine Arts."
+    }
+  ],
   "seo": {
     "title": "Cyprus Printmakers Association",
     "description": "Printmaking in Cyprus: members, exhibitions and the association's archive."

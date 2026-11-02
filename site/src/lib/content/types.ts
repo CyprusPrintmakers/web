@@ -86,6 +86,7 @@ export type HomePage = Entity & {
   currentLabel: IntlValue[]
   currentTitle: IntlValue[]
   currentHref: string
+  heroBody?: IntlValue[]
   coverImage?: ImageDoc
   seo: Seo
 }

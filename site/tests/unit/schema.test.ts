@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { schemaTypes } from '../../src/sanity/schemaTypes'
 import { priceGate } from '../../src/sanity/schemaTypes/objects'
 import { SINGLETON_IDS } from '../../src/sanity/structure'
+import { computeTranslations } from '../../src/lib/content/translation'
 
 type SchemaField = { name: string; type: string }
 
@@ -106,5 +107,20 @@ describe('sanity schema', () => {
       'string',
     )
     expect(priceGate('  ', { document: { tiersConfirmed: true } })).toBeTruthy()
+  })
+
+  it('adds the optional hero paragraph without making it translation-required', () => {
+    const home = byName('homePage')!
+    expect(fieldType(home, 'heroBody')).toBe('internationalizedArrayText')
+
+    const translations = computeTranslations(
+      {
+        title: [{ language: 'en', value: 'CYPRUS PRINTMAKERS ASSOCIATION' }],
+        currentLabel: [{ language: 'en', value: 'CURRENT' }],
+        currentTitle: [{ language: 'en', value: 'Exhibition' }],
+      },
+      'homePage',
+    )
+    expect(translations.en).toBe(true)
   })
 })

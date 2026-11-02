@@ -186,6 +186,11 @@ export default [
         validation: Rule => Rule.required(),
       }),
       defineField({
+        name: 'heroBody',
+        title: 'Hero paragraph (intro only)',
+        type: 'internationalizedArrayText',
+      }),
+      defineField({
         name: 'coverImage',
         title: 'Cover image',
         type: 'altImage',
