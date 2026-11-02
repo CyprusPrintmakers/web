@@ -63,6 +63,43 @@ const page = (lang: Locale, title: string, body: string, backHref: string): stri
 </body>
 </html>`
 
+/**
+ * Delivery failures (Resend down, domain unverified, missing key) are not the
+ * visitor's fault, so they get a 502 instead of a field error. On staging the
+ * provider message is included to make misconfiguration diagnosable.
+ */
+export function failure(
+  request: Request,
+  lang: Locale,
+  error: unknown,
+  backHref: string,
+): Response {
+  const json = wantsJson(request.headers.get('accept') ?? '')
+  const message =
+    lang === 'el'
+      ? 'Η αποστολή απέτυχε. Δοκιμάστε ξανά αργότερα.'
+      : 'The message could not be sent. Please try again later.'
+  const detail =
+    process.env.PUBLIC_STAGING === 'true' && error instanceof Error
+      ? error.message
+      : null
+
+  if (json) {
+    return Response.json(
+      { ok: false, error: message, ...(detail ? { detail } : {}) },
+      { status: 502 },
+    )
+  }
+
+  const body = `<p>${escapeHtml(message)}</p>${
+    detail ? `<p><code>${escapeHtml(detail)}</code></p>` : ''
+  }`
+  return new Response(
+    page(lang, lang === 'el' ? 'Σφάλμα αποστολής' : 'Could not send', body, backHref),
+    { status: 502, headers: { 'content-type': 'text/html; charset=utf-8' } },
+  )
+}
+
 export function respond(
   request: Request,
   result: Result,
