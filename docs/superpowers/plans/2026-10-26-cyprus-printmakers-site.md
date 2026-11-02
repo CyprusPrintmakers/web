@@ -62,7 +62,7 @@ Until 1 and 2 exist, work proceeds on fixtures and the form handlers use a fake 
 - Create: `site/package.json`, `site/astro.config.mjs`, `site/tsconfig.json`, `site/.env.example`, `site/.gitignore`
 - Create: `site/src/styles/tokens.css`, `site/src/styles/base.css`
 - Create: `site/public/fonts/Geologica-Regular-latin.woff2`, `site/public/fonts/Geologica-Regular-greek.woff2`, `site/public/fonts/OFL.txt`
-- Create: `site/public/mark.png` (copied from `0. Mockups/HTML/ASSETS/68823.png`)
+- Create: `site/public/mark.png` (optimised from `0. Mockups/HTML/ASSETS/68823.png` to 800 px on the long edge; the source is 1514 × 2085 and 12.6 MB, far above its 158 × 192 display size)
 - Create: `site/src/pages/index.astro` (temporary hello page, replaced in Task 6)
 - Create: `docs/qa/2026-10-26-cyprus-printmakers-qa.md`
 - Modify: `.gitignore` at repo root
@@ -102,7 +102,7 @@ Install: `astro@^7.4 @astrojs/vercel@^11 @astrojs/sitemap@^3 @astrojs/rss@^4 @as
 
 - [ ] **Step 3: Fetch the two font subsets**
 
-Request `https://fonts.googleapis.com/css2?family=Geologica:wght@400&display=swap` with a Chrome user agent, take the `greek` and `latin` WOFF2 URLs, download them into `site/public/fonts/`. Verify each file is > 8 KB and starts with `wOF2`.
+Request `https://fonts.googleapis.com/css2?family=Geologica:wght@400&display=swap` with a Chrome user agent, take the `greek` and `latin` WOFF2 URLs, download them into `site/public/fonts/`. Verify each file starts with `wOF2` and parses as a valid WOFF2 (`file` reports Web Open Font Format Version 2). Do not gate on a byte size: Geologica's genuine Greek subset is 6.3 KB, so a size threshold would reject the correct file.
 
 Geologica ships under the SIL Open Font License 1.1. Download `OFL.txt` from the same font package and commit it as `site/public/fonts/OFL.txt`; Task 18's README records the licence and the upstream source.
 
@@ -206,9 +206,11 @@ git commit -m "feat(i18n): add locale paths, field fallback and UI strings"
 - Create: `site/src/components/ui/LocalizedText.astro`, `Figure.astro`, `Rule.astro`, `Pill.astro`, `Prose.astro`
 - Create: `site/src/lib/content/portable.ts` (Portable Text → HTML with image and link handlers)
 - Create: `site/playwright.config.ts`
+- Create: `site/src/pages/[lang]/index.astro` (temporary Greek adapter to the same placeholder page; replaced in Task 6)
 - Create: `docs/design-deviations.md`
 - Modify: `site/src/pages/index.astro`
-- Test: `site/tests/unit/design-guard.test.ts`, `site/tests/e2e/layout.spec.ts`
+- Modify: `site/src/lib/i18n/ui.ts` (add `language.label` and `staging.label`)
+- Test: `site/tests/unit/design-guard.test.ts`, `site/tests/unit/portable.test.ts`, `site/tests/e2e/layout.spec.ts`
 
 **Interfaces:**
 - Consumes: `Locale`, `localePath`, `pickLocalized`, `t`.
@@ -240,7 +242,7 @@ await expect(page.getByRole('navigation').getByRole('link').first()).toHaveText(
 await expect(page.locator('link[rel="alternate"][hreflang="el"]')).toHaveAttribute('href', /\/el/)
 ```
 
-Staging assertions (second spec run with `PUBLIC_STAGING=true`): `meta[name=robots]` contains `noindex`, and the footer badge is visible.
+Staging assertions (second spec run with `PUBLIC_STAGING=true`): `meta[name=robots]` contains `noindex`, and the footer badge is visible. Those assertions use `test.skip(process.env.PUBLIC_STAGING !== 'true')` so the normal run does not fail on them.
 
 `playwright.config.ts` sets `testDir: './tests/e2e'`, `baseURL: 'http://localhost:4321'`, and a `webServer` running `npm run build:fixtures && npm run preview -- --port 4321` with `env: { CONTENT_SOURCE: 'fixtures', PUBLIC_STAGING: process.env.PUBLIC_STAGING ?? 'false' }` and `reuseExistingServer: !process.env.CI && !process.env.PUBLIC_STAGING`. Every e2e run is therefore hermetic, and `PUBLIC_STAGING=true npm run test:e2e` rebuilds with the staging guard on instead of reusing a server without it.
 
@@ -252,7 +254,7 @@ Follow `0. Mockups/HTML/DESKTOP/figma-to-html/index.html` for the nav row above 
 
 `Figure` always emits `width`, `height`, `loading="lazy"`, `decoding="async"`; a missing `alt` becomes `alt=""` plus the figure being `aria-hidden` only when no caption exists; a missing `src` renders the 1 px rule placeholder box, not a broken image. `Figure` deliberately takes plain attributes, so it has no CMS dependency; `imageAttrs()` (Task 4) is what maps a Sanity image document onto them.
 
-`Prose` uses `@portabletext/to-html` with custom serializers: images → `Figure`, external links → `rel="noopener"`, and it returns the empty string for an empty array.
+`Prose` uses `@portabletext/to-html` with custom serializers and renders the resulting HTML through `set:html`. A Portable Text serializer returns a string, not an Astro component, so `portableToHtml(blocks, { lang, imageUrl })` emits `<figure>` markup equivalent to `Figure` (reserved dimensions, `alt=""`, placeholder when `imageUrl` returns nothing) and adds `rel="noopener"` to external links. It returns the empty string for an empty array. `portable.test.ts` covers empty input, the external-link attribute, and the image placeholder.
 
 - [ ] **Step 4: Write `docs/design-deviations.md`**
 
