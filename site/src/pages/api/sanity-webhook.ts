@@ -14,7 +14,11 @@ export const POST: APIRoute = async ({ request }) => {
   const secret = process.env.SANITY_WEBHOOK_SECRET
   const deployHook = process.env.VERCEL_DEPLOY_HOOK_URL
   if (!secret || !deployHook) {
-    return json({ ok: false, error: 'webhook not configured' }, 503)
+    const missing = [
+      !secret && 'SANITY_WEBHOOK_SECRET',
+      !deployHook && 'VERCEL_DEPLOY_HOOK_URL',
+    ].filter(Boolean)
+    return json({ ok: false, error: 'webhook not configured', missing }, 503)
   }
 
   const payload = await request.text()
