@@ -55,8 +55,17 @@
   }
 
   try {
+    // Constrain the clone to the header's available width before measuring so
+    // its wordmark wraps exactly like the real one at every viewport.
+    const available =
+      real.parentElement instanceof HTMLElement
+        ? real.parentElement.clientWidth
+        : document.documentElement.clientWidth
+    if (available > 0) stage.style.width = `${available}px`
+
     // Natural size at the stage origin, then centre it at 1x so the scaled
     // start state stays centred rather than growing from the top-left.
+    stage.style.position = 'fixed'
     stage.style.left = '0px'
     stage.style.top = '0px'
     stage.style.transform = 'none'
@@ -100,6 +109,7 @@
     stage.style.top = `${startTop}px`
     stage.style.transform = `scale(${startScale})`
     stage.style.opacity = '1'
+    html.dataset.intro = 'moving'
 
     const easing =
       getComputedStyle(html).getPropertyValue('--ease-out-expo').trim() ||
@@ -141,7 +151,15 @@
       .then(() => {
         if (cleaned) return
         html.dataset.intro = 'handoff'
+
+        // Hold hand-off for a few frames so the aligned clone and real brand
+        // are observable before the overlay fades.
+        return new Promise(resolve => setTimeout(resolve, 120))
+      })
+      .then(() => {
+        if (cleaned) return
         html.dataset.intro = 'revealing'
+        root.style.pointerEvents = 'none'
 
         const fade = root.animate(
           [{ opacity: 1 }, { opacity: 0 }],
@@ -150,10 +168,12 @@
         animations.push(fade)
         return fade.finished
       })
-      .catch(() => {})
-      .finally(() => {
-        setTimeout(cleanup, 400)
+      .then(() => {
+        if (cleaned) return
+        root.remove()
+        setTimeout(cleanup, 80)
       })
+      .catch(() => {})
   } catch {
     cleanup()
   }

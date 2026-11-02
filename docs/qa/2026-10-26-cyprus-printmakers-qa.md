@@ -39,18 +39,21 @@
 
 ## Motion pass (2026-11-02)
 
-- Unit: 91 passed (14 files). E2E: 80 passed, 1 skipped (the staging-only layout spec).
+- Unit: 91 passed (14 files). E2E: 87 passed, 1 skipped (the staging-only layout spec).
 - Axe (wcag2a/aa): zero violations on `/`, `/el`, `/about`, `/members`, `/projects`, `/news`, `/membership` and their Greek twins, after the entry settles. The audit waits for the intro to finish; the mid-animation clone is `aria-hidden` and translucent.
 - Overflow at 320 px: ≤ 1 px on `/el`, `/el/members`, `/el/membership`, `/el/projects`, and `/el` after the intro.
-- Client JS on `/`: 4 scripts, 22,057 bytes uncompressed (ClientRouter 14,098; `intro.js` 5,039; prefetch 2,686; page 234). Source scripts total 9,726 bytes. Under the 30 KB cap.
-- Lighthouse (built static output from `dist/client`, Chrome for Testing headless, 2026-11-02):
+- 320 px hand-off: the clone is constrained to the header's available width before measuring, so EN and EL wrap identically. Tests compare clone and real brand rects at `data-intro="handoff"`; both are within 1 px in width, height, and position.
+- Failure fallback: if `intro.js` is blocked, the server-rendered lockup is already visible and the 4 s guard removes the overlay; no blank cover. Verified by aborting the script in the e2e suite.
+- Overlay lifetime: the overlay gets `pointer-events: none` when the reveal starts and is removed when the 300 ms fade finishes (~1300 ms); cleanup and the session flag complete at ~1400 ms. A click at 1300 ms reaches the nav, not the overlay.
+- Client JS on `/`: 4 scripts, 22,835 bytes uncompressed (ClientRouter 14,098; `intro.js` 5,628; prefetch 2,686; page 234). Source scripts total 10,504 bytes. Under the 30 KB cap.
+- Lighthouse (built static output from `dist/client`, Chrome for Testing headless, re-run after review fixes on 2026-11-02):
 
 | URL | Performance | Accessibility |
 | --- | --- | --- |
 | `/` | 100 | 100 |
 | `/el` | 100 | 100 |
 
-- Visual check against `docs/superpowers/specs/motion-reference/`: clone visible by ~100 ms, wordmark assembled by ~300 ms, hand-off to the header by ~900 ms, overlay gone and page final by ~1200 ms; no jump at 900→1200 ms.
+- Visual check against `docs/superpowers/specs/motion-reference/`: clone visible by ~100 ms, wordmark assembled by ~300 ms, hand-off to the header by ~900 ms, overlay gone by ~1320 ms and the page final by ~1400 ms; no jump at the hand-off.
 - Entry behaviour: once per session on a full home load; skipped with reduced motion, with JS off, and on client-side arrivals at home. Escape/click/any key skips it.
 
 ## Bilingual pass
