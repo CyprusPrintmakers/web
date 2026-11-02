@@ -67,6 +67,20 @@ export function portableToHtml(
   const { lang, imageUrl } = options
   void lang
 
+  const renderImage = ({ value }: { value: unknown }) => {
+    const image = value as PortableTextImage
+    const { width, height } = imageSize(image)
+    const src = imageUrl?.(image)
+    const alt = typeof image.alt === 'string' ? image.alt : ''
+
+    if (!src) {
+      const hidden = alt === '' ? ' aria-hidden="true"' : ''
+      return `<figure class="pt-image"${hidden}><div class="figure__placeholder" style="${figurePlaceholderStyle(width, height)}"></div></figure>`
+    }
+
+    return `<figure class="pt-image"><img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async" style="border: var(--rule);" /></figure>`
+  }
+
   const components: PortableTextComponents = {
     marks: {
       link: ({ value, children }) => {
@@ -81,19 +95,9 @@ export function portableToHtml(
       },
     },
     types: {
-      image: ({ value }) => {
-        const image = value as PortableTextImage
-        const { width, height } = imageSize(image)
-        const src = imageUrl?.(image)
-        const alt = typeof image.alt === 'string' ? image.alt : ''
-
-        if (!src) {
-          const hidden = alt === '' ? ' aria-hidden="true"' : ''
-          return `<figure class="pt-image"${hidden}><div class="figure__placeholder" style="${figurePlaceholderStyle(width, height)}"></div></figure>`
-        }
-
-        return `<figure class="pt-image"><img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async" style="border: var(--rule);" /></figure>`
-      },
+      // `altImage` is the schema type; `image` keeps fixture/legacy bodies valid.
+      image: renderImage,
+      altImage: renderImage,
     },
   }
 

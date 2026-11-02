@@ -1,3 +1,4 @@
+import { createSchema } from 'sanity'
 import { describe, expect, it } from 'vitest'
 import { schemaTypes } from '../../src/sanity/schemaTypes'
 import { priceGate } from '../../src/sanity/schemaTypes/objects'
@@ -26,6 +27,13 @@ function fieldType(schemaType: SchemaType, field: string): string | undefined {
 }
 
 describe('sanity schema', () => {
+  it('compiles with the built-in types and reserved names intact', () => {
+    expect(() => createSchema({ name: 'default', types: schemaTypes })).not.toThrow()
+    expect(schemaTypes.map(schemaType => asSchemaType(schemaType).name)).not.toContain(
+      'image',
+    )
+  })
+
   it('registers every document type the loader consumes', () => {
     const names = schemaTypes.map(schemaType => asSchemaType(schemaType).name)
 
@@ -61,6 +69,7 @@ describe('sanity schema', () => {
     )
     expect(fieldType(member, 'name')).toBe('internationalizedArrayString')
     expect(fieldType(member, 'bio')).toBe('internationalizedArrayPortableText')
+    expect(fieldType(member, 'portrait')).toBe('altImage')
     expect(fieldType(member, 'email')).toBe('string')
   })
 
@@ -68,11 +77,11 @@ describe('sanity schema', () => {
     const portableText = byName('portableText')!
 
     expect(portableText.type).toBe('array')
-    expect(portableText.of?.map(entry => entry.type)).toEqual(['block', 'image'])
+    expect(portableText.of?.map(entry => entry.type)).toEqual(['block', 'altImage'])
   })
 
-  it('requires alt on the image object type', () => {
-    const image = byName('image')!
+  it('requires alt on the non-reserved altImage object type', () => {
+    const image = byName('altImage')!
     const alt = (image.fields ?? []).find(field => field.name === 'alt')
 
     expect(alt?.type).toBe('string')

@@ -1,5 +1,5 @@
 export type ImageDoc = {
-  _type?: 'image'
+  _type?: 'image' | 'altImage'
   asset?: {
     _ref?: string
     _type?: string

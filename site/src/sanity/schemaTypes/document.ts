@@ -188,7 +188,7 @@ export default [
       defineField({
         name: 'coverImage',
         title: 'Cover image',
-        type: 'image',
+        type: 'altImage',
       }),
       seoField(),
     ],
@@ -377,7 +377,7 @@ export default [
       defineField({
         name: 'portrait',
         title: 'Portrait',
-        type: 'image',
+        type: 'altImage',
       }),
       defineField({
         name: 'email',
@@ -463,7 +463,7 @@ export default [
       defineField({
         name: 'image',
         title: 'Image',
-        type: 'image',
+        type: 'altImage',
       }),
       defineField({
         name: 'order',
@@ -522,13 +522,13 @@ export default [
       defineField({
         name: 'coverImage',
         title: 'Cover image',
-        type: 'image',
+        type: 'altImage',
       }),
       defineField({
         name: 'gallery',
         title: 'Gallery',
         type: 'array',
-        of: [{ type: 'image' }],
+        of: [{ type: 'altImage' }],
       }),
       defineField({
         name: 'participants',
@@ -586,7 +586,7 @@ export default [
       defineField({
         name: 'coverImage',
         title: 'Cover image',
-        type: 'image',
+        type: 'altImage',
       }),
       defineField({
         name: 'relatedProject',

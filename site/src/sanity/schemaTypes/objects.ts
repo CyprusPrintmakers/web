@@ -21,7 +21,7 @@ export function priceGate(
 
 export default [
   defineType({
-    name: 'image',
+    name: 'altImage',
     title: 'Image',
     type: 'image',
     options: { hotspot: true },
@@ -39,7 +39,7 @@ export default [
     name: 'portableText',
     title: 'Portable text',
     type: 'array',
-    of: [{ type: 'block' }, { type: 'image' }],
+    of: [{ type: 'block' }, { type: 'altImage' }],
   }),
   defineType({
     name: 'seo',
@@ -48,7 +48,7 @@ export default [
     fields: [
       defineField({ name: 'title', title: 'Meta title', type: 'string' }),
       defineField({ name: 'description', title: 'Meta description', type: 'text', rows: 2 }),
-      defineField({ name: 'image', title: 'Social card image', type: 'image' }),
+      defineField({ name: 'image', title: 'Social card image', type: 'altImage' }),
     ],
   }),
   defineType({
@@ -119,7 +119,7 @@ export default [
         title: 'URL',
         type: 'url',
       }),
-      defineField({ name: 'logo', title: 'Logo', type: 'image' }),
+      defineField({ name: 'logo', title: 'Logo', type: 'altImage' }),
     ],
   }),
   defineType({

@@ -80,6 +80,8 @@ function convertItem(itemType: string | undefined, item: unknown): unknown {
 
   const converted = convertRecord(record)
 
+  if (record._type === 'image') return { ...converted, _type: 'altImage' }
+
   return itemType !== undefined && record._type === undefined
     ? { _type: itemType, ...converted }
     : converted
@@ -99,6 +101,8 @@ function convertField(field: string, value: unknown): unknown {
     const record = value as Record<string, unknown>
     const objectType = OBJECT_FIELD_TYPES[field]
     const converted = convertRecord(record)
+
+    if (record._type === 'image') return { ...converted, _type: 'altImage' }
 
     return objectType !== undefined && record._type === undefined
       ? { _type: objectType, ...converted }
@@ -122,7 +126,7 @@ function dropImages(value: unknown): unknown | typeof DROP {
 
   if (value !== null && typeof value === 'object') {
     const record = value as Record<string, unknown>
-    if (record._type === 'image') return DROP
+    if (record._type === 'image' || record._type === 'altImage') return DROP
 
     return Object.fromEntries(
       Object.entries(record)
