@@ -1,4 +1,8 @@
 (() => {
+  if (window.__cpMembersFilter) return
+  window.__cpMembersFilter = true
+
+  function init() {
   const search = document.querySelector('[data-member-search]')
   const count = document.querySelector('[data-member-count]')
   const items = Array.from(document.querySelectorAll('[data-member]'))
@@ -46,4 +50,7 @@
       apply()
     })
   }
+  }
+
+  document.addEventListener('astro:page-load', init)
 })()

@@ -1,4 +1,8 @@
 (() => {
+  if (window.__cpForms) return
+  window.__cpForms = true
+
+  function init() {
   const forms = Array.from(document.querySelectorAll('form[data-form]'))
   if (forms.length === 0) return
 
@@ -58,4 +62,7 @@
       }
     })
   }
+  }
+
+  document.addEventListener('astro:page-load', init)
 })()

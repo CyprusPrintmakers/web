@@ -1,4 +1,8 @@
 (() => {
+  if (window.__cpProjectsFilter) return
+  window.__cpProjectsFilter = true
+
+  function init() {
   const buttons = Array.from(document.querySelectorAll('[data-year-button]'))
   const items = Array.from(document.querySelectorAll('[data-project]'))
   if (buttons.length === 0 || items.length === 0) return
@@ -17,4 +21,7 @@
       apply(button.getAttribute('data-year') || '')
     })
   }
+  }
+
+  document.addEventListener('astro:page-load', init)
 })()
