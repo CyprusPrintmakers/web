@@ -22,4 +22,11 @@
   --grid-columns: 12;
   --grid-gap: calc(var(--step) * 3);
   --radius-pill: 34px;
+
+  /* Motion */
+  --motion-fast: 120ms;
+  --motion-page: 300ms;
+  --motion-settle: 600ms;
+  --motion-intro: 1400ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }

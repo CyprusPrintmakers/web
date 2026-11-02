@@ -152,6 +152,13 @@ textarea {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* Pseudo-elements are not matched by the universal selector. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 /* Visually hidden, still read by assistive technology. */

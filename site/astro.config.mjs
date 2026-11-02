@@ -22,6 +22,7 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   site: process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.densetheory.cc',
+  prefetch: { defaultStrategy: 'hover' },
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'el'],

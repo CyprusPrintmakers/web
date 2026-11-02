@@ -1,4 +1,5 @@
 ---
+import { ClientRouter, fade } from 'astro:transitions'
 import '../styles/tokens.css'
 import '../styles/base.css'
 import type { Locale } from '../lib/i18n/locales'
@@ -46,7 +47,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} transition:animate={fade({ duration: 300 })}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -69,6 +70,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     {jsonLdBlocks.map(block => (
       <script type="application/ld+json" set:html={JSON.stringify(block)} />
     ))}
+    <ClientRouter fallback="animate" />
   </head>
   <body>
     <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
@@ -81,6 +83,12 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
       </main>
       <Footer lang={lang} />
     </div>
+    <script is:inline>
+      document.addEventListener('astro:after-swap', () => {
+        const main = document.querySelector('main#main')
+        if (main instanceof HTMLElement) main.focus({ preventScroll: true })
+      })
+    </script>
   </body>
 </html>
 

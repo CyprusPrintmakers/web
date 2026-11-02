@@ -29,11 +29,13 @@ test.describe('contact', () => {
     await expect(page.getByText('Agiou 7')).toBeVisible()
   })
 
-  test('both locales mark the contact form as arriving later', async ({ page }) => {
+  test('both locales host the contact form', async ({ page }) => {
     await page.goto('/contact')
-    await expect(page.getByText(/contact form will be available/i)).toBeVisible()
+    await expect(page.locator('form[action="/api/contact"]')).toHaveCount(1)
+    await expect(page.locator('input[name="locale"]')).toHaveValue('en')
 
     await page.goto('/el/contact')
-    await expect(page.getByText(/φόρμα επικοινωνίας θα είναι σύντομα/i)).toBeVisible()
+    await expect(page.locator('form[action="/api/contact"]')).toHaveCount(1)
+    await expect(page.locator('input[name="locale"]')).toHaveValue('el')
   })
 })

@@ -27,11 +27,11 @@ test.describe('membership', () => {
     await expect(page.locator('[data-tier]').first()).toContainText('Ατομική')
   })
 
-  test('hosts the privacy note section and the form slot', async ({ page }) => {
+  test('hosts the privacy note section and the application form', async ({ page }) => {
     await page.goto('/membership')
 
     await expect(page.locator('#privacy')).toBeVisible()
-    await expect(page.getByText(/application form will be available/i)).toBeVisible()
+    await expect(page.locator('form[action="/api/membership"]')).toHaveCount(1)
   })
 })
 
