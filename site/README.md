@@ -30,7 +30,8 @@ Copy `.env.example` to `.env`. Every variable:
 | `RESEND_API_KEY` | Sends the membership/contact form emails | Form endpoints |
 | `RESEND_FROM_EMAIL` | Verified sender address; defaults to Resend's test sender (account owner only) | Form endpoints |
 | `CONTACT_TO_EMAIL` / `MEMBERSHIP_TO_EMAIL` | Committee inboxes | Form endpoints |
-| `SANITY_WEBHOOK_SECRET` | Authenticates the publish webhook | Production |
+| `SANITY_WEBHOOK_SECRET` | Verifies Sanity webhook signatures at `/api/sanity-webhook` | Production |
+| `VERCEL_DEPLOY_HOOK_URL` | Deploy Hook triggered after a verified publish | Production |
 
 Content source is deterministic: `CONTENT_SOURCE` wins when set; otherwise `sanity` when `SANITY_PROJECT_ID` is present, `fixtures` when not. A checkout with no `.env` builds fixtures — it never touches the network.
 
