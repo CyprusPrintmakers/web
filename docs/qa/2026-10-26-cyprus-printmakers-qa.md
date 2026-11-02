@@ -16,6 +16,14 @@
 
 - Archived 2026-10-27: 37 pages (26 static + 11 dynamic project-year pages) and 189 images (2.4 MB) from www.cyprintmakers.com into `wix-archive/` (outside the repo). Sitemaps: pages-sitemap.xml + dynamic-projects sitemap. URL shape: year pages at `/2019` (and `/projects/2019`), members at `/members`, projects index at `/projects-1` and `/project`.
 
+## Staging deploy
+
+- Deployed 2026-11-02 to Vercel project `cyprus-printmakers-web` (team `cyprus-printmakers`), connected to `github.com/CyprusPrintmakers/web`, branch `site-build`, Root Directory `site`.
+- The repository was made public to satisfy Vercel Hobby's rule that private-repo commits must be authored by the Hobby team owner. No secrets were ever committed (only `site/.env.example`).
+- Seeded `hyel0os7/production` with 6 singletons and 10 collection documents. The seed skips fixture image references (placeholder asset ids that do not exist in Sanity), so portraits and covers render the reserved placeholder box until real assets are imported.
+- Smoke test on `https://cyprus-printmakers-web.vercel.app` (2026-11-02): `/` returns 200; `robots.txt` is `Disallow: /`; homepage has `noindex,nofollow` and the staging badge; `/el` has `lang="el"`; `/members` renders the seeded Maria Georgiou; `/admin/` returns 200; `POST /api/contact` returns localised 400 JSON field errors, so the SSR functions are deployed.
+- Known: `PUBLIC_SITE_URL` still resolves to `https://cyprintmakers.densetheory.cc`, so canonical links, sitemap and RSS use that host until the env var is updated to the live origin.
+
 ## Bilingual pass
 
 ## Accessibility
