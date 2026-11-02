@@ -5,6 +5,7 @@ import LocalizedText from '../ui/LocalizedText.astro'
 import Prose from '../ui/Prose.astro'
 import Rule from '../ui/Rule.astro'
 import { imageAttrs } from '../../lib/media'
+import { sanityImageUrl } from '../../lib/sanity/image'
 import type { Project } from '../../lib/content/types'
 import { formatDate } from '../../lib/i18n/format'
 import type { Locale } from '../../lib/i18n/locales'
@@ -23,11 +24,8 @@ const { lang, project } = Astro.props
 const noindex = lang === 'el' && !isFullyTranslated(project, 'project', 'el')
 const jsonLd = [visualArtworkJsonLd(project, lang)]
 
-// No image URL builder exists yet, so gallery images resolve to the 1 px rule
-// placeholder with reserved dimensions (same as the home cover).
-const urlFor = () => ''
-const cover = imageAttrs(project.coverImage, { urlFor })
-const gallery = project.gallery.map(image => imageAttrs(image, { urlFor }))
+const cover = imageAttrs(project.coverImage, { urlFor: sanityImageUrl })
+const gallery = project.gallery.map(image => imageAttrs(image, { urlFor: sanityImageUrl }))
 const body = pickRich(project.body, lang)
 
 const title = pickLocalized(project.title, lang)

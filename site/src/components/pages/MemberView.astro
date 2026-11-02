@@ -4,6 +4,7 @@ import Figure from '../ui/Figure.astro'
 import LocalizedText from '../ui/LocalizedText.astro'
 import Prose from '../ui/Prose.astro'
 import { imageAttrs } from '../../lib/media'
+import { sanityImageUrl } from '../../lib/sanity/image'
 import type { Member } from '../../lib/content/types'
 import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
@@ -21,7 +22,7 @@ const noindex = lang === 'el' && !isFullyTranslated(member, 'member', 'el')
 
 // No image URL builder exists yet, so a portrait resolves to the 1 px rule
 // placeholder instead of a broken image (same as the home cover).
-const portrait = imageAttrs(member.portrait, { urlFor: () => '' })
+const portrait = imageAttrs(member.portrait, { urlFor: sanityImageUrl })
 const bio = pickRich(member.bio, lang)
 const website = member.website?.trim() || undefined
 const instagram = member.instagram?.trim()

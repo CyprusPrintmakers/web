@@ -1,10 +1,12 @@
 ---
 import type { Locale } from '../../lib/i18n/locales'
+import type { ImageDoc } from '../../lib/media'
 import {
   portableToHtml,
   type PortableTextImage,
   type PortableTextValue,
 } from '../../lib/content/portable'
+import { sanityImageUrl } from '../../lib/sanity/image'
 
 interface Props {
   value: PortableTextValue[]
@@ -12,7 +14,11 @@ interface Props {
   imageUrl?: (image: PortableTextImage) => string | undefined
 }
 
-const { value, lang, imageUrl } = Astro.props
+const {
+  value,
+  lang,
+  imageUrl = (image: PortableTextImage) => sanityImageUrl(image as ImageDoc),
+} = Astro.props
 const html = portableToHtml(value, { lang, imageUrl })
 ---
 

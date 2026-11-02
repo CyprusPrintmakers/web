@@ -5,6 +5,7 @@ import Figure from '../ui/Figure.astro'
 import Rule from '../ui/Rule.astro'
 import { getContent } from '../../lib/content/source'
 import { imageAttrs } from '../../lib/media'
+import { sanityImageUrl } from '../../lib/sanity/image'
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
 import { pickLocalized } from '../../lib/i18n/localized'
@@ -26,7 +27,7 @@ const titleTail = titleRest.join(' ')
 
 // No image URL builder exists yet, so a fixture coverImage resolves to no src
 // and the block collapses to the 1 px rule instead of a broken image.
-const cover = imageAttrs(home.coverImage, { urlFor: () => '' })
+const cover = imageAttrs(home.coverImage, { urlFor: sanityImageUrl })
 
 const currentLabel = `${t('current', lang)}:`
 const currentTitle = pickLocalized(home.currentTitle, lang).text
