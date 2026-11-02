@@ -28,6 +28,7 @@ Copy `.env.example` to `.env`. Every variable:
 | `PUBLIC_STAGING` | `true` → `noindex` everywhere, `Disallow: /` robots, footer badge | Staging deploys |
 | `PUBLIC_SITE_URL` | Canonical origin for sitemap/absolute URLs | Deploys |
 | `RESEND_API_KEY` | Sends the membership/contact form emails | Form endpoints |
+| `RESEND_FROM_EMAIL` | Verified sender address; defaults to Resend's test sender (account owner only) | Form endpoints |
 | `CONTACT_TO_EMAIL` / `MEMBERSHIP_TO_EMAIL` | Committee inboxes | Form endpoints |
 | `SANITY_WEBHOOK_SECRET` | Authenticates the publish webhook | Production |
 
