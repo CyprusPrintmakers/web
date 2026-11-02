@@ -39,6 +39,18 @@ test('Escape skips the sequence', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 2000 })
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
+})
+
+test('Escape while the cover waits reveals the hero and lands focus on main', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await expect(page.locator('[data-home-intro]')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 2000 })
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
 })
 
 test('the cover is keyboard operable', async ({ page }) => {
@@ -46,6 +58,47 @@ test('the cover is keyboard operable', async ({ page }) => {
   await page.getByRole('button', { name: /Enter the Cyprus/ }).focus()
   await page.keyboard.press('Enter')
   await expect(page.locator('[data-hero-intro-body]')).toBeVisible({ timeout: 5000 })
+})
+
+test('the skip link is hidden and tab cannot leave the cover button', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('[data-home-intro]')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Skip to content' })).toBeHidden()
+
+  // The Astro dev toolbar appends its own buttons in dev; remove it so the
+  // cover button is the only focusable element, as it is on a built site.
+  await page.evaluate(() => document.querySelector('astro-dev-toolbar')?.remove())
+
+  // The cover button is the only visible element in the tab order.
+  const tabbable = await page.evaluate(() =>
+    Array.from(
+      document.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]',
+      ),
+    )
+      .filter(
+        el =>
+          el instanceof HTMLElement &&
+          el.tabIndex >= 0 &&
+          getComputedStyle(el).visibility === 'visible',
+      )
+      .map(el => el.className),
+  )
+  expect(tabbable).toEqual(['intro__enter'])
+
+  // Tab and Shift+Tab can reach nothing else: focus stays on the cover
+  // button or resets to the document root (Chromium's idle state between
+  // wraps), never the skip link, navigation or footer.
+  await page.getByRole('button', { name: /Enter the Cyprus/ }).focus()
+  for (const key of ['Tab', 'Tab', 'Shift+Tab']) {
+    await page.keyboard.press(key)
+    expect(
+      await page.evaluate(() => {
+        const el = document.activeElement
+        return el === document.querySelector('.intro__enter') || el === document.body
+      }),
+    ).toBe(true)
+  }
 })
 
 test('the header brand is only hidden on home', async ({ page }) => {

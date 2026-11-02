@@ -94,8 +94,8 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     <ClientRouter fallback="animate" />
   </head>
   <body>
-    <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
     <div class="page">
+      <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
       <Header lang={lang} alternates={alternates} showBrand={!homeHero} />
       <main id="main" class="shell" tabindex="-1">
         <div class="grid-12">

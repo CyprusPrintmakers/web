@@ -37,8 +37,10 @@
   function skip() {
     if (cleaned) return
     if (!started) {
-      // Nothing animated yet: reveal the page immediately.
+      // Nothing animated yet: reveal the page immediately and move focus off
+      // the removed cover button.
       cleanup()
+      focusMain()
       return
     }
     if (skipping) return
