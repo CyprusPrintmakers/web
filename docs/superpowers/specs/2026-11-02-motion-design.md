@@ -108,7 +108,7 @@ Fastest to author complex sequences, with ScrollTrigger if scroll motion is adde
   - a duplicate mark used for the split.
 - No duplicated `CURRENT:` line and no cover rule inside the overlay. Those are the real page elements, revealed by a state class after the hand-off.
 - Rendered on the server; hidden unless `html[data-intro]` is `pending`/`moving`.
-- The real header, cover rule/figure and current line stay in the DOM and remain accessible. The real `.brand` is only visually hidden (`opacity: 0`) while the overlay owns the lockup.
+- The real header, cover rule/figure and current line stay in the DOM and remain accessible. The real `header .brand` is only visually hidden (`opacity: 0`) while the overlay owns the lockup.
 
 **Wordmark source.** `src/lib/brand.ts` exports `brandWordmark(lang): [string, string]`; `Brand.astro` uses it, so English and Greek cannot drift between header and intro.
 
@@ -126,7 +126,7 @@ Because it runs before paint, the cover never flashes. Arriving at home through 
 
 | Time | State | Action |
 |---|---|---|
-| 0 ms | `pending` | Overlay visible; brand clone centred at 1×; duplicate mark on top; real `.brand` opacity 0; wordmark lines hidden |
+| 0 ms | `pending` | Overlay visible; brand clone centred at a capped initial scale (≤1.6×); duplicate mark on top; real `header .brand` opacity 0; wordmark lines hidden |
 | 0–320 ms | `moving` | Duplicate mark translates ~120 px and fades to 0 |
 | 0–600 ms | `moving` | Wordmark lines slide in from ±40 px and fade up into the clone |
 | 400–900 ms | `moving` | Clone measures the real `.brand` and animates translate + scale onto it |
@@ -139,7 +139,7 @@ Details:
 - The overlay stays **fully opaque until the clone has landed** (900 ms), so the wordmark is never double-exposed at two sizes. The real brand is visually hidden until hand-off but still exposed to assistive technology.
 - Use `element.animate()` with transform/opacity/clip-path only. Easing: `cubic-bezier(0.16, 1, 0.3, 1)` for movement, `ease-out` for fades.
 - Measure `.brand` and the clone with `getBoundingClientRect()`; compute `translate` + `scale` with `transform-origin: top left`. If measurement fails, fall back to a 300 ms crossfade.
-- **Narrow widths:** no scale-up below 600 px. The clone is already the same size and wraps to the same three lines as the real brand, so the measured hand-off has nothing to distort and cannot overflow.
+- **Narrow widths:** the clone is an exact match, so uniform scaling never distorts wrapping. Its initial scale is capped so the whole clone fits inside the viewport with page padding — at 320 px this resolves to 1×. The final scale is `realBrand.width / clone.width`, so the hand-off lands exactly and cannot overflow.
 - **Skip:** `Escape`, click, or any key finishes all animations (`animation.finish()`), then cleans up. The overlay has `pointer-events: auto` while pending.
 - **Idempotence:** set `data-intro-ran` on the root so a re-executed script cannot play twice.
 - **Greek:** both the clone and the real brand use the same component and line wrapping; the measured transform keeps the hand-off exact.
@@ -196,8 +196,8 @@ Use them in the intro, transitions and hover rules.
 
 **Unit**
 
-- `shouldPlayIntro({ seen, reducedMotion, fullLoad, path })` pure helper: true only for a fresh, full-document-load home; false for seen, reduced motion, client-side arrival, or a non-home path.
 - Brand wordmark helper returns the existing EN/EL pairs.
+- No unit test for the head gate: it must run inline before paint, so it is covered end-to-end (first load, repeat, reduced motion, no JS, client arrival).
 
 **E2E (Playwright, fixtures build)**
 
