@@ -1,0 +1,81 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { splitHeroTitle } from '../../lib/brand'
+
+interface Props {
+  title: string
+  lang: Locale
+  fallback?: boolean
+  as?: 'h1' | 'div'
+  class?: string
+}
+
+const { title, lang, fallback = false, as = 'h1', class: className } = Astro.props
+const [lead, tail] = splitHeroTitle(title)
+const Tag = as
+---
+
+<Tag
+  class:list={['hero-brand', className]}
+  lang={fallback ? 'en' : lang}
+  aria-label={as === 'h1' ? title : undefined}
+  aria-hidden={as === 'h1' ? undefined : 'true'}
+  data-hero-lockup={as === 'h1' ? '' : undefined}
+>
+  <span class="hero-brand__lead">{lead}</span> <img
+    class="hero-brand__mark"
+    src="/mark.png"
+    alt=""
+    width="158"
+    height="192"
+    decoding="async"
+  /> <span class="hero-brand__tail">{tail}</span>
+</Tag>
+
+<style>
+  .hero-brand {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    font-weight: var(--fw-regular);
+    gap: 8px;
+    text-align: center;
+  }
+
+  .hero-brand__lead,
+  .hero-brand__tail {
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  .hero-brand__mark {
+    aspect-ratio: 158 / 192;
+    flex-shrink: 0;
+    height: auto;
+    order: -1;
+    width: clamp(64px, 12vw, 158px);
+  }
+
+  @media (min-width: 900px) {
+    .hero-brand {
+      flex-direction: row;
+      gap: clamp(12px, 1.6vw, 24px);
+      text-align: left;
+    }
+
+    .hero-brand__lead,
+    .hero-brand__tail {
+      font-size: 32px;
+    }
+
+    .hero-brand__lead {
+      text-align: right;
+    }
+
+    .hero-brand__mark {
+      order: initial;
+    }
+  }
+</style>

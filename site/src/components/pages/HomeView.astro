@@ -1,11 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import HomeIntro from './HomeIntro.astro'
-import Figure from '../ui/Figure.astro'
-import Rule from '../ui/Rule.astro'
+import HeroBrand from '../layout/HeroBrand.astro'
 import { getContent } from '../../lib/content/source'
-import { imageAttrs } from '../../lib/media'
-import { sanityImageUrl } from '../../lib/sanity/image'
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
 import { pickLocalized } from '../../lib/i18n/localized'
@@ -18,23 +15,13 @@ interface Props {
 const { lang } = Astro.props
 const { home } = await getContent()
 
-// The mockup splits the wordmark into "CYPRUS" and "PRINTMAKERS ASSOCIATION";
-// the h1 composes the same two spans, joined for screen readers by the space
-// between them.
 const title = pickLocalized(home.title, lang)
-const [titleLead, ...titleRest] = title.text.split(/\s+/)
-const titleTail = titleRest.join(' ')
-
-// No image URL builder exists yet, so a fixture coverImage resolves to no src
-// and the block collapses to the 1 px rule instead of a broken image.
-const cover = imageAttrs(home.coverImage, { urlFor: sanityImageUrl })
+const heroBody = pickLocalized(home.heroBody, lang).text
 
 const currentLabel = `${t('current', lang)}:`
 const currentTitle = pickLocalized(home.currentTitle, lang).text
 const currentText = `${currentLabel} ${currentTitle} →`
 const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang) : undefined
-
-const NAME_CELLS = 28
 ---
 
 <BaseLayout
@@ -42,38 +29,14 @@ const NAME_CELLS = 28
   title={home.seo.title ?? title.text}
   description={home.seo.description ?? ''}
   alternates={{ en: '/', el: '/el' }}
-  homeIntro={true}
+  homeHero={true}
 >
-  <section class="home-cover">
-    <h1 class="sr-only" lang={title.isFallback ? 'en' : lang}>
-      <span>{titleLead}</span>{titleTail && <span>{` ${titleTail}`}</span>}
-    </h1>
-
-    <HomeIntro lang={lang} />
-
-    <div class="home-cover__media" data-intro-reveal>
-      {
-        cover.src ? (
-          <Figure
-            src={cover.src}
-            alt={cover.alt}
-            width={cover.width}
-            height={cover.height}
-            lang={lang}
-          />
-        ) : (
-          <Rule />
-        )
-      }
+  <section class="home-hero">
+    <div class="home-hero__center">
+      <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
     </div>
 
-    <div class="home-cover__names" aria-hidden="true">
-      {Array.from({ length: NAME_CELLS }, () => (
-        <span class="home-cover__cell" />
-      ))}
-    </div>
-
-    <p class="home-cover__current" data-intro-reveal>
+    <p class="home-cover__current">
       {
         currentHref ? (
           <a href={currentHref}>{currentText}</a>
@@ -83,6 +46,8 @@ const NAME_CELLS = 28
       }
     </p>
   </section>
+
+  <HomeIntro slot="overlay" lang={lang} title={title.text} body={heroBody} />
 </BaseLayout>
 
 <style>
@@ -91,24 +56,16 @@ const NAME_CELLS = 28
    * edge. The frame's main area already flexes to the viewport, so the home
    * grid row stretches to fill it and the line is pushed to its bottom.
    */
-  .home-cover {
+  .home-hero {
     display: flex;
     flex-direction: column;
     min-height: 100%;
   }
 
-  .home-cover__names {
+  .home-hero__center {
     display: grid;
-    gap: var(--step);
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    height: 120px;
-    margin-top: clamp(24px, 4vw, 64px);
-    max-width: 630px;
-    width: 100%;
-  }
-
-  .home-cover__cell {
-    display: block;
+    flex: 1;
+    place-items: center;
   }
 
   .home-cover__current {
@@ -127,27 +84,27 @@ const NAME_CELLS = 28
   .home-cover__current a:hover {
     text-decoration: underline;
   }
-
-  html[data-intro='revealing'] [data-intro-reveal] {
-    animation: intro-reveal 300ms var(--ease-out-expo) both;
-  }
-
-  @keyframes intro-reveal {
-    from {
-      clip-path: inset(0 0 100% 0);
-      opacity: 0;
-    }
-
-    to {
-      clip-path: inset(0);
-      opacity: 1;
-    }
-  }
 </style>
 
 <style is:global>
-  /* Only the home cover stretches the page grid to the viewport. */
-  main:has(.home-cover) .grid-12 {
+  /* Only the home hero stretches the page grid to the viewport: the page is
+     exactly one viewport tall, the hero fills the space under the header and
+     the footer sits below the fold. */
+  html:has(.home-hero) .page {
+    height: 100vh;
+    height: 100dvh;
+    position: relative;
+  }
+
+  main:has(.home-hero) .grid-12 {
     min-height: 100%;
+  }
+
+  html:has(.home-hero) .page footer {
+    left: 0;
+    margin-top: 0;
+    position: absolute;
+    right: 0;
+    top: 100%;
   }
 </style>

@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { enterHome } from './helpers'
 
 const PAGES = ['/', '/about', '/members', '/projects', '/news', '/membership']
 
@@ -7,8 +8,7 @@ test.describe('accessibility', () => {
   for (const path of PAGES) {
     test(`axe finds no wcag2a/aa violations on ${path}`, async ({ page }) => {
       await page.goto(path)
-      const intro = page.locator('[data-home-intro]')
-      if (await intro.count()) await expect(intro).toBeHidden({ timeout: 3000 })
+      await enterHome(page)
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa'])
@@ -21,8 +21,7 @@ test.describe('accessibility', () => {
       page,
     }) => {
       await page.goto(`/el${path === '/' ? '' : path}`)
-      const intro = page.locator('[data-home-intro]')
-      if (await intro.count()) await expect(intro).toBeHidden({ timeout: 3000 })
+      await enterHome(page)
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa'])
@@ -35,6 +34,7 @@ test.describe('accessibility', () => {
   test('every page has a lang, every image an alt, every control a label', async ({ page }) => {
     for (const path of PAGES) {
       await page.goto(path)
+      await enterHome(page)
 
       expect(await page.locator('html').getAttribute('lang')).toBeTruthy()
 

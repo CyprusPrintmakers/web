@@ -1,27 +1,39 @@
 ---
 import type { Locale } from '../../lib/i18n/locales'
-import Brand from '../layout/Brand.astro'
+import { t } from '../../lib/i18n/ui'
+import HeroBrand from '../layout/HeroBrand.astro'
 
 interface Props {
   lang: Locale
+  title: string
+  body: string
 }
 
-const { lang } = Astro.props
+const { lang, title, body } = Astro.props
 ---
 
-<div class="intro" data-home-intro aria-hidden="true">
-  <div class="intro__stage">
-    <Brand lang={lang} />
-    <img
-      class="intro__ghost"
-      data-intro-ghost
-      src="/mark.png"
-      alt=""
-      width="158"
-      height="192"
-      decoding="async"
-    />
-  </div>
+<div class="intro" data-home-intro>
+  <button class="intro__enter" type="button" aria-label={t('home.enter', lang)}>
+    <span class="intro__stage" data-hero-overlay>
+      <HeroBrand as="div" title={title} lang={lang} />
+      <img
+        class="intro__ghost"
+        data-intro-ghost
+        src="/mark.png"
+        alt=""
+        width="158"
+        height="192"
+        decoding="async"
+      />
+      {
+        body && (
+          <p class="intro__body" data-hero-intro-body aria-hidden="true">
+            {body}
+          </p>
+        )
+      }
+    </span>
+  </button>
 </div>
 
 <script is:inline src="/scripts/intro.js" defer></script>
@@ -32,7 +44,6 @@ const { lang } = Astro.props
     display: none;
     inset: 0;
     overflow: hidden;
-    padding-inline: var(--pad-sm);
     position: fixed;
     z-index: 20;
   }
@@ -41,35 +52,49 @@ const { lang } = Astro.props
   html[data-intro='moving'] .intro,
   html[data-intro='handoff'] .intro,
   html[data-intro='revealing'] .intro {
-    display: grid;
-    place-items: center;
+    display: block;
   }
 
   html[data-intro='revealing'] .intro {
     pointer-events: none;
   }
 
-  @media (min-width: 900px) {
-    .intro {
-      padding-inline: var(--pad);
-    }
-  }
-
-  html[data-intro='pending'] header .brand,
-  html[data-intro='moving'] header .brand {
-    opacity: 0;
-  }
-
-  html[data-intro='handoff'] header .brand,
-  html[data-intro='revealing'] header .brand {
-    opacity: 1;
+  .intro__enter {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    padding: 0;
+    width: 100%;
   }
 
   .intro__stage {
+    left: 0;
     opacity: 1;
-    position: relative;
+    position: fixed;
+    top: 0;
     transform-origin: top left;
     will-change: transform, opacity;
+  }
+
+  /* The floating cover shows only the logo mark until the visitor enters. */
+  html[data-intro='pending'] .intro__stage {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  html[data-intro='pending'] .intro .hero-brand__lead,
+  html[data-intro='pending'] .intro .hero-brand__tail,
+  html[data-intro='pending'] .intro__ghost,
+  html[data-intro='pending'] .intro__body {
+    visibility: hidden;
+  }
+
+  html[data-intro='pending'] .intro .hero-brand__mark {
+    animation: intro-float 3s ease-in-out infinite;
   }
 
   .intro__ghost {
@@ -80,9 +105,36 @@ const { lang } = Astro.props
     will-change: transform, opacity;
   }
 
+  .intro__body {
+    color: var(--graphite);
+    font-size: 20px;
+    left: 0;
+    line-height: 1.4;
+    margin: 0;
+    max-width: min(480px, 100vw - var(--pad-sm) * 2);
+    position: absolute;
+    top: 100%;
+    width: max-content;
+  }
+
+  @keyframes intro-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .intro {
       display: none !important;
+    }
+
+    html[data-intro='pending'] .intro .hero-brand__mark {
+      animation: none;
     }
   }
 </style>

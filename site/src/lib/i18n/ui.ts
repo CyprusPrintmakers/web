@@ -10,6 +10,8 @@ const en = {
 
   current: 'CURRENT',
 
+  'home.enter': 'Enter the Cyprus Printmakers Association website',
+
   'language.en': 'EN',
   'language.el': 'ΕΛ',
   'language.label': 'Language',
@@ -90,6 +92,8 @@ const el: Record<UIKey, string> = {
   'nav.contact': 'ΕΠΙΚΟΙΝΩΝΙΑ',
 
   current: 'ΤΩΡΑ',
+
+  'home.enter': 'Είσοδος στον ιστότοπο του Συλλόγου Χαρακτών Κύπρου',
 
   'language.en': 'EN',
   'language.el': 'ΕΛ',

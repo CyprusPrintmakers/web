@@ -9,9 +9,10 @@ import LanguageSwitcher from './LanguageSwitcher.astro'
 interface Props {
   lang: Locale
   alternates: Record<Locale, string>
+  showBrand?: boolean
 }
 
-const { lang, alternates } = Astro.props
+const { lang, alternates, showBrand = true } = Astro.props
 
 const items: Array<{ key: UIKey; path: string }> = [
   { key: 'nav.members', path: '/members' },
@@ -52,9 +53,13 @@ const wordmark = brandWordmark(lang)
     <LanguageSwitcher lang={lang} alternates={alternates} />
   </div>
 
-  <div class="header__brand">
-    <Brand lang={lang} href={localePath('/', lang)} label={wordmark.join(' ')} />
-  </div>
+  {
+    showBrand && (
+      <div class="header__brand">
+        <Brand lang={lang} href={localePath('/', lang)} label={wordmark.join(' ')} />
+      </div>
+    )
+  }
 </header>
 
 <style>

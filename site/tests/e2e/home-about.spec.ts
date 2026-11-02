@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test'
+import { enterHome } from './helpers'
 
 test.describe('home', () => {
   test('english home renders the wordmark h1 and the current line', async ({ page }) => {
     await page.goto('/')
+    await enterHome(page)
 
     await expect(
       page.getByRole('heading', { level: 1 }),
@@ -12,6 +14,7 @@ test.describe('home', () => {
 
   test('the current line pins to the bottom of the viewport-height cover', async ({ page }) => {
     await page.goto('/')
+    await enterHome(page)
 
     const current = page.getByText('CURRENT:')
     const box = await current.boundingBox()
@@ -24,6 +27,7 @@ test.describe('home', () => {
 
   test('greek home shows ΤΩΡΑ:', async ({ page }) => {
     await page.goto('/el')
+    await enterHome(page)
 
     await expect(page.getByText('ΤΩΡΑ:')).toBeVisible()
   })

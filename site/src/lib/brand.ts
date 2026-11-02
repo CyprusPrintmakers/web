@@ -8,3 +8,8 @@ const WORDMARKS: Record<Locale, [string, string]> = {
 export function brandWordmark(lang: Locale): [string, string] {
   return WORDMARKS[lang]
 }
+
+export function splitHeroTitle(title: string): [string, string] {
+  const [lead, ...rest] = title.trim().split(/\s+/)
+  return [lead ?? '', rest.join(' ')]
+}

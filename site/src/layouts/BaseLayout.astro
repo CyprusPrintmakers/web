@@ -18,7 +18,7 @@ interface Props {
   noindex?: boolean
   image?: string
   jsonLd?: object[]
-  homeIntro?: boolean
+  homeHero?: boolean
 }
 
 const {
@@ -29,7 +29,7 @@ const {
   noindex = false,
   image,
   jsonLd = [],
-  homeIntro = false,
+  homeHero = false,
 } = Astro.props
 
 const { settings } = await getContent()
@@ -72,15 +72,14 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     {jsonLdBlocks.map(block => (
       <script type="application/ld+json" set:html={JSON.stringify(block)} />
     ))}
-    <script is:inline>window.__cpDocs = (window.__cpDocs ?? 0) + 1;</script>
+    <script is:inline data-astro-rerun>window.__cpDocs = (window.__cpDocs ?? 0) + 1;</script>
     {
-      homeIntro && (
+      homeHero && (
         <script is:inline>
           (() => {
             try {
               if (window.__cpDocs !== 1) return
               if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-              if (sessionStorage.getItem('cp:intro')) return
               document.documentElement.dataset.intro = 'pending'
               window.__cpIntroTimeout = setTimeout(() => {
                 if (document.documentElement.dataset.intro === 'pending') {
@@ -97,7 +96,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
   <body>
     <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
     <div class="page">
-      <Header lang={lang} alternates={alternates} />
+      <Header lang={lang} alternates={alternates} showBrand={!homeHero} />
       <main id="main" class="shell" tabindex="-1">
         <div class="grid-12">
           <slot />
@@ -105,6 +104,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
       </main>
       <Footer lang={lang} />
     </div>
+    <slot name="overlay" />
     <script is:inline>
       document.addEventListener('astro:after-swap', () => {
         const main = document.querySelector('main#main')
@@ -123,6 +123,11 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
 
   .page main {
     flex: 1;
+  }
+
+  html[data-intro='pending'] .page,
+  html[data-intro='moving'] .page {
+    visibility: hidden;
   }
 
   .skip-link {
