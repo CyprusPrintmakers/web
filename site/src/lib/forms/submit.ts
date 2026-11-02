@@ -14,6 +14,24 @@ export type SubmitDeps = {
   to?: string
 }
 
+/**
+ * The committee mail is the receipt that matters; the applicant confirmation is
+ * a courtesy. Resend's test sender rejects arbitrary recipients, so a failed
+ * confirmation must not turn a delivered submission into an error.
+ */
+async function deliver(send: Mailer, mails: Mail[]): Promise<void> {
+  const [primary, ...confirmations] = mails
+  await send(primary)
+
+  for (const mail of confirmations) {
+    try {
+      await send(mail)
+    } catch (error) {
+      console.error('[forms] confirmation email failed', error)
+    }
+  }
+}
+
 function committeeInbox(deps: SubmitDeps, kind: 'membership' | 'contact'): string {
   if (deps.to !== undefined) return deps.to
   const env =
@@ -33,7 +51,7 @@ export async function submitMembership(deps: SubmitDeps): Promise<Result> {
     committeeInbox(deps, 'membership'),
     deps.cvBase64,
   )
-  for (const mail of mails) await deps.send(mail)
+  await deliver(deps.send, mails)
 
   return { ok: true }
 }
@@ -43,7 +61,7 @@ export async function submitContact(deps: SubmitDeps): Promise<Result> {
   if (!result.ok) return result
 
   const mails = buildContactMail(deps.input, deps.lang, committeeInbox(deps, 'contact'))
-  for (const mail of mails) await deps.send(mail)
+  await deliver(deps.send, mails)
 
   return { ok: true }
 }

@@ -150,6 +150,35 @@ describe('submitMembership', () => {
     expect(sent[1].attachments).toBeUndefined()
   })
 
+  it('still succeeds when the applicant confirmation fails', async () => {
+    let calls = 0
+    const result = await submitMembership({
+      send: async () => {
+        calls += 1
+        if (calls > 1) throw new Error('Resend: testing sender restrictions')
+      },
+      now: Date.now(),
+      input: greekForm,
+      lang: 'el',
+    })
+
+    expect(result.ok).toBe(true)
+    expect(calls).toBe(2)
+  })
+
+  it('propagates a committee delivery failure', async () => {
+    await expect(
+      submitMembership({
+        send: async () => {
+          throw new Error('Resend: down')
+        },
+        now: Date.now(),
+        input: greekForm,
+        lang: 'el',
+      }),
+    ).rejects.toThrow('Resend: down')
+  })
+
   it('never sends when validation fails', async () => {
     const sent: Mail[] = []
     const result = await submitMembership({
