@@ -22,7 +22,13 @@
 - The repository was made public to satisfy Vercel Hobby's rule that private-repo commits must be authored by the Hobby team owner. No secrets were ever committed (only `site/.env.example`).
 - Seeded `hyel0os7/production` with 6 singletons and 10 collection documents. The seed skips fixture image references (placeholder asset ids that do not exist in Sanity), so portraits and covers render the reserved placeholder box until real assets are imported.
 - Smoke test on `https://cyprus-printmakers-web.vercel.app` (2026-11-02): `/` returns 200; `robots.txt` is `Disallow: /`; homepage has `noindex,nofollow` and the staging badge; `/el` has `lang="el"`; `/members` renders the seeded Maria Georgiou; `/admin/` returns 200; `POST /api/contact` returns localised 400 JSON field errors, so the SSR functions are deployed.
-- Known: `PUBLIC_SITE_URL` still resolves to `https://cyprintmakers.densetheory.cc`, so canonical links, sitemap and RSS use that host until the env var is updated to the live origin.
+- Canonical links, sitemap and RSS now use `https://cyprus-printmakers-web.vercel.app` (`PUBLIC_SITE_URL`). The custom domain is still attached to the personal Vercel account.
+
+## Publish webhook
+
+- Sanity webhook `Vercel rebuild` (`YKcWJXxMjogWcURk`) posts to `https://cyprus-printmakers-web.vercel.app/api/sanity-webhook`, dataset `production`, trigger on create/update/delete, filtered to the ten content types and excluding `drafts.**`.
+- `/api/sanity-webhook` verifies Sanity's `sanity-webhook-signature` header (HMAC-SHA256 over `<timestamp>.<raw body>`, base64url) using `SANITY_WEBHOOK_SECRET`, ignores draft payloads, then calls `VERCEL_DEPLOY_HOOK_URL`. Unsigned requests return 401; a missing env var returns 503 listing the missing name.
+- End-to-end 2026-11-02: a published title change appeared live in ~50 s; the revert appeared in ~30 s. Sanity's attempt log shows two 200 deliveries, ~6–7 s each.
 
 ## Bilingual pass
 
