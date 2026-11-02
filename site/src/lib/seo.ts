@@ -1,5 +1,5 @@
 import type { Locale } from './i18n/locales'
-import type { Settings, NewsPost, Project } from './content/types'
+import type { SiteSettings, NewsPost, Project } from './content/types'
 import { pickLocalized } from './i18n/localized'
 
 const SITE_NAME_EN = 'Cyprus Printmakers Association'
@@ -10,7 +10,7 @@ export function pageTitle(page: string, siteName: string): string {
     : `${page} — ${siteName}`
 }
 
-export function organizationJsonLd(settings: Settings, lang: Locale): object {
+export function organizationJsonLd(settings: SiteSettings, lang: Locale): object {
   const name = pickLocalized(settings.siteName, lang).text || SITE_NAME_EN
   const contact = settings.contact
 

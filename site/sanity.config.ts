@@ -9,9 +9,12 @@ import { structure } from './src/sanity/structure'
 // only built when @sanity/astro is active with a real SANITY_PROJECT_ID.
 const projectId = process.env.SANITY_PROJECT_ID ?? 'project-not-configured'
 
-const resolvePreviewHref = ({ document }: { document?: { _type?: string; slug?: { current?: string } } }): string => {
-  const slug = document?.slug?.current
-  switch (document?._type) {
+type PreviewDocument = { _type?: string; slug?: { current?: string } }
+
+const resolvePreviewHref = ({ document }: { document?: unknown }): string => {
+  const doc = document as PreviewDocument | undefined
+  const slug = doc?.slug?.current
+  switch (doc?._type) {
     case 'homePage':
       return '/'
     case 'aboutPage':
@@ -58,10 +61,9 @@ export default defineConfig({
   dataset: process.env.SANITY_DATASET ?? 'production',
   plugins,
   document: {
-    productionUrl: async (context: { document?: { _type?: string; slug?: { current?: string } } }) => {
-      const { document } = context
+    productionUrl: async (_prev: string | undefined, context) => {
       const origin = process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.densetheory.cc'
-      return `${origin}/preview${resolvePreviewHref({ document })}`
+      return `${origin}/preview${resolvePreviewHref({ document: context.document })}`
     },
   },
   schema: { types: schemaTypes },
