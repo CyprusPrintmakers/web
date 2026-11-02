@@ -37,6 +37,11 @@ export default defineConfig({
       'process.env.SANITY_PROJECT_ID': JSON.stringify(projectId ?? ''),
       'process.env.SANITY_DATASET': JSON.stringify(dataset),
       'process.env.PUBLIC_SITE_URL': JSON.stringify(siteUrl),
+      'process.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED': JSON.stringify(
+        process.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED ??
+          env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED ??
+          'false',
+      ),
     },
   },
   prefetch: { defaultStrategy: 'hover' },

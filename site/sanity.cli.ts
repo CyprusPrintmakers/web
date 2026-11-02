@@ -1,0 +1,9 @@
+import { defineCliConfig } from 'sanity/cli'
+
+export default defineCliConfig({
+  api: {
+    projectId: process.env.SANITY_PROJECT_ID ?? 'hyel0os7',
+    dataset: process.env.SANITY_DATASET ?? 'production',
+  },
+  project: { basePath: '/admin' },
+})

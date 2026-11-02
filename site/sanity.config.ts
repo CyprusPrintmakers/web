@@ -42,8 +42,12 @@ const plugins = [
   }),
 ]
 
-// The Presentation tool only makes sense with a live project backing it.
-if (process.env.SANITY_PROJECT_ID) {
+// Presentation is only registered once the draft preview surface is enabled;
+// until then it would open a 503 iframe and fail to connect to visual editing.
+if (
+  process.env.SANITY_PROJECT_ID &&
+  process.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true'
+) {
   plugins.push(
     presentationTool({
       previewUrl: {
