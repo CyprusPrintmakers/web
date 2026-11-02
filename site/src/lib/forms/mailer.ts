@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import type { Mail } from './email'
 
-const DEFAULT_FROM = 'Cyprus Printmakers <forms@resend.dev>'
+const DEFAULT_FROM = 'Cyprus Printmakers <onboarding@resend.dev>'
 
 export function resendMailer(): (mail: Mail) => Promise<void> {
   const key = process.env.RESEND_API_KEY
