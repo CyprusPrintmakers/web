@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import HomeIntro from './HomeIntro.astro'
 import Figure from '../ui/Figure.astro'
 import Rule from '../ui/Rule.astro'
 import { getContent } from '../../lib/content/source'
@@ -40,25 +41,30 @@ const NAME_CELLS = 28
   title={home.seo.title ?? title.text}
   description={home.seo.description ?? ''}
   alternates={{ en: '/', el: '/el' }}
+  homeIntro={true}
 >
   <section class="home-cover">
     <h1 class="sr-only" lang={title.isFallback ? 'en' : lang}>
       <span>{titleLead}</span>{titleTail && <span>{` ${titleTail}`}</span>}
     </h1>
 
-    {
-      cover.src ? (
-        <Figure
-          src={cover.src}
-          alt={cover.alt}
-          width={cover.width}
-          height={cover.height}
-          lang={lang}
-        />
-      ) : (
-        <Rule />
-      )
-    }
+    <HomeIntro lang={lang} />
+
+    <div class="home-cover__media" data-intro-reveal>
+      {
+        cover.src ? (
+          <Figure
+            src={cover.src}
+            alt={cover.alt}
+            width={cover.width}
+            height={cover.height}
+            lang={lang}
+          />
+        ) : (
+          <Rule />
+        )
+      }
+    </div>
 
     <div class="home-cover__names" aria-hidden="true">
       {Array.from({ length: NAME_CELLS }, () => (
@@ -66,7 +72,7 @@ const NAME_CELLS = 28
       ))}
     </div>
 
-    <p class="home-cover__current">
+    <p class="home-cover__current" data-intro-reveal>
       {
         currentHref ? (
           <a href={currentHref}>{currentText}</a>
@@ -119,6 +125,22 @@ const NAME_CELLS = 28
 
   .home-cover__current a:hover {
     text-decoration: underline;
+  }
+
+  html[data-intro='revealing'] [data-intro-reveal] {
+    animation: intro-reveal 400ms var(--ease-out-expo) both;
+  }
+
+  @keyframes intro-reveal {
+    from {
+      clip-path: inset(0 0 100% 0);
+      opacity: 0;
+    }
+
+    to {
+      clip-path: inset(0);
+      opacity: 1;
+    }
   }
 </style>
 

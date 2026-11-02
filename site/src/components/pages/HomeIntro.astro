@@ -1,0 +1,78 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import Brand from '../layout/Brand.astro'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+---
+
+<div class="intro" data-home-intro aria-hidden="true">
+  <div class="intro__stage">
+    <Brand lang={lang} />
+    <img
+      class="intro__ghost"
+      data-intro-ghost
+      src="/mark.png"
+      alt=""
+      width="158"
+      height="192"
+      decoding="async"
+    />
+  </div>
+</div>
+
+<script is:inline src="/scripts/intro.js" defer></script>
+
+<style is:global>
+  .intro {
+    background: var(--paper);
+    display: none;
+    inset: 0;
+    overflow: hidden;
+    position: fixed;
+    z-index: 20;
+  }
+
+  html[data-intro='pending'] .intro,
+  html[data-intro='moving'] .intro,
+  html[data-intro='handoff'] .intro,
+  html[data-intro='revealing'] .intro {
+    display: block;
+  }
+
+  html[data-intro='pending'] header .brand,
+  html[data-intro='moving'] header .brand {
+    opacity: 0;
+  }
+
+  html[data-intro='handoff'] header .brand,
+  html[data-intro='revealing'] header .brand {
+    opacity: 1;
+  }
+
+  .intro__stage {
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    transform-origin: top left;
+    will-change: transform, opacity;
+  }
+
+  .intro__ghost {
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    will-change: transform, opacity;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .intro {
+      display: none !important;
+    }
+  }
+</style>

@@ -68,3 +68,61 @@ test.describe('reduced motion', () => {
     await expect(page.locator('main h1')).toBeVisible()
   })
 })
+
+test('intro plays once on a full home load', async ({ page }) => {
+  // Delay the timeline module so the assertion cannot race the 1.4 s animation.
+  await page.route('**/scripts/intro.js', async route => {
+    await new Promise(resolve => setTimeout(resolve, 800))
+    await route.continue()
+  })
+  await page.goto('/')
+  await expect(page.locator('[data-home-intro]')).toBeVisible()
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 4000 })
+  expect(await page.evaluate(() => sessionStorage.getItem('cp:intro'))).toBe('1')
+
+  await page.reload()
+  await expect(page.locator('[data-home-intro]')).toBeHidden()
+})
+
+test('Escape skips the intro', async ({ page }) => {
+  await page.goto('/')
+  // data-intro-ran is set after the skip listeners are installed, so this
+  // guarantees the key handler is in place.
+  await expect(page.locator('[data-home-intro][data-intro-ran]')).toHaveCount(1)
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 1000 })
+})
+
+test.describe('intro with reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' })
+  test('never appears', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.locator('[data-home-intro]')).toBeHidden()
+  })
+})
+
+test.describe('intro without JS', () => {
+  test.use({ javaScriptEnabled: false })
+  test('content is visible and no overlay is shown', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.locator('[data-home-intro]')).toBeHidden()
+    await expect(page.getByText(/CURRENT:/)).toBeVisible()
+  })
+})
+
+test('client arrival at home does not replay the intro', async ({ page }) => {
+  await page.goto('/about')
+  await page.locator('header .brand').click()
+  await expect(page).toHaveURL(/\/$/)
+  await expect(page.locator('[data-home-intro]')).toBeHidden()
+})
+
+test('Greek intro has no overflow at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 })
+  await page.goto('/el')
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 3000 })
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - window.innerWidth,
+  )
+  expect(overflow).toBeLessThanOrEqual(1)
+})

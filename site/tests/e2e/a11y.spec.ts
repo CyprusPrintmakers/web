@@ -7,6 +7,8 @@ test.describe('accessibility', () => {
   for (const path of PAGES) {
     test(`axe finds no wcag2a/aa violations on ${path}`, async ({ page }) => {
       await page.goto(path)
+      const intro = page.locator('[data-home-intro]')
+      if (await intro.count()) await expect(intro).toBeHidden({ timeout: 3000 })
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa'])
@@ -19,6 +21,8 @@ test.describe('accessibility', () => {
       page,
     }) => {
       await page.goto(`/el${path === '/' ? '' : path}`)
+      const intro = page.locator('[data-home-intro]')
+      if (await intro.count()) await expect(intro).toBeHidden({ timeout: 3000 })
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa'])

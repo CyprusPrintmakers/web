@@ -18,6 +18,7 @@ interface Props {
   noindex?: boolean
   image?: string
   jsonLd?: object[]
+  homeIntro?: boolean
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   noindex = false,
   image,
   jsonLd = [],
+  homeIntro = false,
 } = Astro.props
 
 const { settings } = await getContent()
@@ -70,6 +72,26 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     {jsonLdBlocks.map(block => (
       <script type="application/ld+json" set:html={JSON.stringify(block)} />
     ))}
+    <script is:inline>window.__cpDocs = (window.__cpDocs ?? 0) + 1;</script>
+    {
+      homeIntro && (
+        <script is:inline>
+          (() => {
+            try {
+              if (window.__cpDocs !== 1) return
+              if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+              if (sessionStorage.getItem('cp:intro')) return
+              document.documentElement.dataset.intro = 'pending'
+              window.__cpIntroTimeout = setTimeout(() => {
+                if (document.documentElement.dataset.intro === 'pending') {
+                  delete document.documentElement.dataset.intro
+                }
+              }, 8000)
+            } catch {}
+          })()
+        </script>
+      )
+    }
     <ClientRouter fallback="animate" />
   </head>
   <body>
