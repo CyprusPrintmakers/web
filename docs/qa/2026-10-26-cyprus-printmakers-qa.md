@@ -24,6 +24,13 @@
 - Smoke test on `https://cyprus-printmakers-web.vercel.app` (2026-11-02): `/` returns 200; `robots.txt` is `Disallow: /`; homepage has `noindex,nofollow` and the staging badge; `/el` has `lang="el"`; `/members` renders the seeded Maria Georgiou; `/admin/` returns 200; `POST /api/contact` returns localised 400 JSON field errors, so the SSR functions are deployed.
 - Canonical links, sitemap and RSS now use `https://cyprus-printmakers-web.vercel.app` (`PUBLIC_SITE_URL`). The custom domain is still attached to the personal Vercel account.
 
+## Email delivery (Resend)
+
+- The sender defaults to `onboarding@resend.dev`, Resend's test sender. It only delivers to the Resend account owner (`cyprintmakersweb@ik.me`) until a domain is verified, so `CONTACT_TO_EMAIL` and `MEMBERSHIP_TO_EMAIL` must point at that address while staging.
+- Applicant confirmations are best-effort: the committee mail is sent first, and a failed confirmation is logged instead of surfaced, so a delivered submission is never reported as an error. Verified 2026-11-02 with `test@example.com` (always rejected by Resend): HTTP 200, committee mail sent.
+- Delivery failures return 502. On staging (`PUBLIC_STAGING=true`) the JSON response includes the provider message for diagnosis; the visitor-facing text stays generic.
+- Before launch: verify a sending domain in Resend (SPF/DKIM), set `RESEND_FROM_EMAIL` to an address on it, and point both committee inboxes at the real address. Arbitrary-visitor confirmations only start working once that domain is verified.
+
 ## Publish webhook
 
 - Sanity webhook `Vercel rebuild` (`YKcWJXxMjogWcURk`) posts to `https://cyprus-printmakers-web.vercel.app/api/sanity-webhook`, dataset `production`, trigger on create/update/delete, filtered to the ten content types and excluding `drafts.**`.
