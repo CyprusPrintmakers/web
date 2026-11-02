@@ -2,6 +2,8 @@
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
 import { t, type UIKey } from '../../lib/i18n/ui'
+import { brandWordmark } from '../../lib/brand'
+import Brand from './Brand.astro'
 import LanguageSwitcher from './LanguageSwitcher.astro'
 
 interface Props {
@@ -21,10 +23,7 @@ const items: Array<{ key: UIKey; path: string }> = [
 ]
 
 const currentPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '')
-const wordmark =
-  lang === 'en'
-    ? ['CYPRUS', 'PRINTMAKERS ASSOCIATION']
-    : ['ΣΥΛΛΟΓΟΣ', 'ΧΑΡΑΚΤΩΝ ΚΥΠΡΟΥ']
+const wordmark = brandWordmark(lang)
 ---
 
 <header class="header shell">
@@ -53,20 +52,9 @@ const wordmark =
     <LanguageSwitcher lang={lang} alternates={alternates} />
   </div>
 
-  <a class="brand" href={localePath('/', lang)} aria-label={wordmark.join(' ')}>
-    <img
-      class="brand__mark"
-      src="/mark.png"
-      alt=""
-      width="158"
-      height="192"
-      decoding="async"
-    />
-    <span class="brand__wordmark">
-      <span>{wordmark[0]}</span>
-      <span>{wordmark[1]}</span>
-    </span>
-  </a>
+  <div class="header__brand">
+    <Brand lang={lang} href={localePath('/', lang)} label={wordmark.join(' ')} />
+  </div>
 </header>
 
 <style>
@@ -108,39 +96,8 @@ const wordmark =
     text-decoration: underline;
   }
 
-  .brand {
-    align-items: flex-end;
-    color: inherit;
-    display: inline-flex;
-    gap: clamp(12px, 1.6vw, 24px);
+  .header__brand {
     margin-top: clamp(48px, 9vw, 139px);
-    text-decoration: none;
-  }
-
-  .brand:hover .brand__wordmark {
-    text-decoration: underline;
-  }
-
-  .brand__mark {
-    aspect-ratio: 158 / 192;
-    flex-shrink: 0;
-    height: auto;
-    object-fit: cover;
-    width: clamp(64px, 12vw, 158px);
-  }
-
-  .brand__wordmark {
-    display: flex;
-    flex-direction: column;
-    font-size: 24px;
-    letter-spacing: -0.01em;
-    line-height: 1.05;
-  }
-
-  @media (min-width: 600px) {
-    .brand__wordmark {
-      font-size: 32px;
-    }
   }
 
   @media (min-width: 900px) {
