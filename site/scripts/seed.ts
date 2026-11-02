@@ -108,14 +108,44 @@ function convertField(field: string, value: unknown): unknown {
   return value
 }
 
+const DROP = Symbol('drop')
+
+/**
+ * Fixture images reference placeholder asset ids that do not exist in Sanity,
+ * so writing them makes Sanity reject the whole document. Strip image objects
+ * unless the caller has uploaded real assets first (SEED_INCLUDE_IMAGES=true).
+ */
+function dropImages(value: unknown): unknown | typeof DROP {
+  if (Array.isArray(value)) {
+    return value.map(item => dropImages(item)).filter(item => item !== DROP)
+  }
+
+  if (value !== null && typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    if (record._type === 'image') return DROP
+
+    return Object.fromEntries(
+      Object.entries(record)
+        .map(([key, item]) => [key, dropImages(item)] as const)
+        .filter(([, item]) => item !== DROP),
+    )
+  }
+
+  return value
+}
+
 function toSanityDocument(kind: string, doc: RawDoc): SeedDocument {
   const { _id, slug, ...fields } = doc
+  const converted = convertRecord(fields)
+  const body = (
+    process.env.SEED_INCLUDE_IMAGES === 'true' ? converted : dropImages(converted)
+  ) as Record<string, unknown>
 
   return {
     _id,
     _type: kind,
     slug: { _type: 'slug', current: slug },
-    ...convertRecord(fields),
+    ...body,
   }
 }
 
@@ -177,6 +207,12 @@ async function runSeed(): Promise<void> {
   })
 
   const { singletons, collections } = buildSeedDocuments()
+
+  if (process.env.SEED_INCLUDE_IMAGES !== 'true') {
+    console.log(
+      'Skipping fixture image references (placeholders, not uploaded assets). Set SEED_INCLUDE_IMAGES=true once real assets exist.',
+    )
+  }
 
   for (const doc of singletons) {
     await client.createOrReplace(doc)
