@@ -27,6 +27,7 @@ const sanityIntegrations = projectId
   : []
 
 export default defineConfig({
+  devToolbar: { enabled: false },
   output: 'static',
   adapter: vercel(),
   site: siteUrl,
