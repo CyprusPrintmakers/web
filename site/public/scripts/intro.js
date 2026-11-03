@@ -1,225 +1,173 @@
 (() => {
   const root = document.querySelector('[data-home-intro]')
   const html = document.documentElement
-
-  // The head gate's fail-safe timer must never outlive a working module.
   if (window.__cpIntroTimeout) clearTimeout(window.__cpIntroTimeout)
-
   if (!root || html.dataset.intro !== 'pending' || root.dataset.introRan) return
 
-  const button = root.querySelector('.intro__enter')
-  const stage = root.querySelector('.intro__stage')
-  const ghost = root.querySelector('[data-intro-ghost]')
-  const lead = root.querySelector('.hero-brand__lead')
-  const tail = root.querySelector('.hero-brand__tail')
-  const body = root.querySelector('[data-hero-intro-body]')
+  const [button, stage, ghost, lead, tail, body] = [
+    '.intro__enter', '.intro__stage', '[data-intro-ghost]',
+    '.hero-brand__lead', '.hero-brand__tail', '[data-hero-intro-body]',
+  ].map(selector => root.querySelector(selector))
   const hero = document.querySelector('[data-hero-lockup]')
   const main = document.querySelector('main#main')
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)')
+  const isEl = element => element instanceof HTMLElement
 
-  let animations = []
-  let started = false
-  let skipping = false
-  let cleaned = false
+  let effects = [], started = false, skipping = false, cleaned = false
+  let hold, focusTimer
 
-  function focusMain() {
+  const focus = () => {
     try {
-      if (main instanceof HTMLElement) main.focus({ preventScroll: true })
+      if (!isEl(main)) return
+      main.focus({ preventScroll: true })
     } catch {}
   }
 
-  function cleanup() {
+  const done = () => {
     if (cleaned) return
     cleaned = true
-    delete html.dataset.intro
-    root.remove()
-  }
-
-  function skip() {
-    if (cleaned) return
-    if (!started) {
-      // Nothing animated yet: reveal the page immediately and move focus off
-      // the removed cover button.
-      cleanup()
-      focusMain()
-      return
-    }
-    if (skipping) return
-    skipping = true
-    for (const animation of animations) {
+    clearTimeout(watchdog)
+    clearTimeout(hold)
+    clearTimeout(focusTimer)
+    reduce.removeEventListener('change', onReduce)
+    document.removeEventListener('keydown', onKey)
+    window.removeEventListener('resize', onResize)
+    for (const animation of effects) {
       try {
-        animation.finish()
+        animation.cancel()
       } catch {}
     }
-    html.dataset.intro = 'revealing'
-    root.style.pointerEvents = 'none'
-    const fade = root.animate(
-      [{ opacity: 1 }, { opacity: 0 }],
-      { duration: 300, easing: 'ease-out', fill: 'both' },
-    )
-    animations.push(fade)
-    fade.finished
-      .then(() => {
-        if (cleaned) return
-        cleanup()
-        focusMain()
-      })
-      .catch(() => {})
+    delete html.dataset.intro
+    root.remove()
+    focus()
   }
 
-  function start() {
+  const play = (element, frames, options) => {
+    const animation = element.animate(frames, { ...options, fill: 'both' })
+    effects.push(animation)
+    return animation
+  }
+
+  const onReduce = event => {
+    if (!event.matches) return
+    done()
+    // Let reduced-motion CSS apply before focusing.
+    focusTimer = setTimeout(focus, 100)
+  }
+  const onKey = event => { if (event.key === 'Escape') skip() }
+  const onResize = () => { if (!started && !cleaned) centre() }
+  const watchdog = setTimeout(done, 15000)
+  reduce.addEventListener('change', onReduce)
+
+  const reveal = () => {
+    if (cleaned) return
+    try {
+      html.dataset.intro = 'revealing'
+      root.style.pointerEvents = 'none'
+      const fade = play(root, [{ opacity: 1 }, { opacity: 0 }], {
+        duration: 300, easing: 'ease-out',
+      })
+      fade.finished.then(done, done)
+    } catch { done() }
+  }
+
+  const centre = () => {
+    if (!isEl(stage)) return
+    const mark = stage.querySelector('.hero-brand__mark')
+    if (!isEl(mark)) return
+    stage.style.transform = 'none'
+    stage.style.left = `${innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2}px`
+    stage.style.top = `${innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2}px`
+  }
+
+  const skip = () => {
+    if (cleaned) return
+    if (!started) return done()
+    if (skipping) return
+    skipping = true
+    try {
+      for (const animation of effects) animation.finish()
+      reveal()
+    } catch { done() }
+  }
+
+  const start = async () => {
     if (started || cleaned) return
     started = true
-
-    if (
-      !(stage instanceof HTMLElement) ||
-      !(ghost instanceof HTMLImageElement) ||
-      !(lead instanceof HTMLElement) ||
-      !(tail instanceof HTMLElement) ||
-      !(hero instanceof HTMLElement)
-    ) {
-      cleanup()
-      return
-    }
-
     try {
+      if (![stage, ghost, lead, tail, hero].every(isEl)) return done()
       html.dataset.intro = 'moving'
-
-      // Constrain the overlay stage to the real hero's rendered width (not
-      // its parent) so the wordmark wraps exactly like the h1 at every
-      // viewport, then centre the logo mark at 1x.
-      stage.style.position = 'fixed'
-      stage.style.left = '0px'
-      stage.style.top = '0px'
-      stage.style.transform = 'none'
-
+      stage.style.cssText += ';position:fixed;left:0;top:0;transform:none'
       const heroRect = hero.getBoundingClientRect()
-      if (!heroRect.width || !heroRect.height) {
-        cleanup()
-        return
-      }
+      if (!heroRect.width || !heroRect.height) return done()
       stage.style.width = `${heroRect.width}px`
 
       const stageRect = stage.getBoundingClientRect()
       const mark = stage.querySelector('.hero-brand__mark')
-      if (!stageRect.width || !stageRect.height || !(mark instanceof HTMLElement)) {
-        cleanup()
-        return
-      }
-
-      const markRect = mark.getBoundingClientRect()
-      const startLeft =
-        window.innerWidth / 2 - markRect.width / 2 - (markRect.left - stageRect.left)
-      const startTop =
-        window.innerHeight / 2 - markRect.height / 2 - (markRect.top - stageRect.top)
+      if (!stageRect.width || !isEl(mark)) return done()
+      const startLeft = innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2
+      const startTop = innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2
       stage.style.left = `${startLeft}px`
       stage.style.top = `${startTop}px`
+      stage.style.setProperty('--intro-body-x', `${mark.offsetLeft + mark.offsetWidth + 32}px`)
 
-      // The ghost is a child of the stage, so these are pre-transform offsets.
-      ghost.style.left = `${markRect.left - stageRect.left}px`
-      ghost.style.top = `${markRect.top - stageRect.top}px`
-      ghost.style.width = `${markRect.width}px`
-      ghost.style.height = `${markRect.height}px`
+      ghost.style.left = `${mark.offsetLeft}px`
+      ghost.style.top = `${mark.offsetTop}px`
+      ghost.style.width = `${mark.offsetWidth}px`
+      ghost.style.height = `${mark.offsetHeight}px`
 
       const dx = heroRect.left - startLeft
       const dy = heroRect.top - startTop
-      const endScale = heroRect.width / stageRect.width
-
-      const easing =
-        getComputedStyle(html).getPropertyValue('--ease-out-expo').trim() ||
-        'cubic-bezier(0.16, 1, 0.3, 1)'
-
-      const ghostAnimation = ghost.animate(
-        [
-          { transform: 'translateX(0)', opacity: 1 },
-          { transform: 'translateX(120px)', opacity: 0 },
-        ],
-        { duration: 300, easing: 'ease-out', fill: 'both' },
+      const easing = getComputedStyle(html).getPropertyValue('--ease-out-expo').trim() || 'ease-out'
+      play(ghost,
+        [{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(120px)', opacity: 0 }],
+        { duration: 300, easing: 'ease-out' },
+      )
+      for (const [index, line] of [lead, tail].entries()) play(line,
+        [{ opacity: 0, transform: `translateX(${index ? 24 : -24}px)` }, { opacity: 1, transform: 'none' }],
+        { duration: 500, easing },
       )
 
-      const lineAnimations = [lead, tail].map((line, index) =>
-        line.animate(
-          [
-            { opacity: 0, transform: `translateX(${index === 0 ? -24 : 24}px)` },
-            { opacity: 1, transform: 'translateX(0)' },
-          ],
-          { duration: 500, easing, fill: 'both' },
-        ),
-      )
-
-      animations = [ghostAnimation, ...lineAnimations]
-
-      const hasBody = body instanceof HTMLElement && body.textContent.trim().length > 0
+      const hasBody = isEl(body) && body.textContent.trim().length > 0
       if (hasBody) {
-        const reveal = body.animate(
-          [{ opacity: 0 }, { opacity: 1 }],
-          { duration: 2000, delay: 600, easing, fill: 'both' },
+        const paragraph = play(body,
+          [
+            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 0 },
+            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 6100 },
+            { opacity: 1, clipPath: 'inset(0)', offset: 2600 / 6100 },
+            { opacity: 1, clipPath: 'inset(0)', offset: 4100 / 6100 },
+            { opacity: 0, clipPath: 'inset(100% 0 0 0)', offset: 1 },
+          ],
+          { duration: 6100, easing: 'ease-out' },
         )
-        const fade = body.animate(
-          [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 2000, delay: 4100, easing, fill: 'both' },
-        )
-        animations.push(reveal, fade)
-        fade.finished
-          .then(() => {
-            if (!cleaned) body.style.visibility = 'hidden'
-          })
-          .catch(() => {})
+        paragraph.finished.then(() => {
+          if (!cleaned) body.style.visibility = 'hidden'
+        }, done)
       }
 
-      const move = stage.animate(
-        [
-          { transform: 'scale(1)' },
-          { transform: `translate(${dx}px, ${dy}px) scale(${endScale})` },
-        ],
-        { duration: 300, delay: hasBody ? 6100 : 600, easing, fill: 'both' },
+      const move = play(stage,
+        [{ transform: 'scale(1)' }, { transform: `translate(${dx}px, ${dy}px) scale(${heroRect.width / stageRect.width})` }],
+        { duration: 300, delay: hasBody ? 6100 : 600, easing },
       )
-      animations.push(move)
-
-      move.finished
-        .then(() => {
-          if (cleaned || skipping) return
-          html.dataset.intro = 'handoff'
-
-          // Hold the aligned lockup for a few frames so it is observable
-          // before the overlay fades.
-          return new Promise(resolve => setTimeout(resolve, 120))
-        })
-        .then(() => {
-          if (cleaned || skipping) return
-          html.dataset.intro = 'revealing'
-          root.style.pointerEvents = 'none'
-
-          const fade = root.animate(
-            [{ opacity: 1 }, { opacity: 0 }],
-            { duration: 300, easing: 'ease-out', fill: 'both' },
-          )
-          animations.push(fade)
-          return fade.finished
-        })
-        .then(() => {
-          if (cleaned || skipping) return
-          cleanup()
-          focusMain()
-        })
-        .catch(() => {})
-    } catch {
-      cleanup()
-    }
+      await move.finished
+      if (cleaned || skipping) return
+      html.dataset.intro = 'handoff'
+      await new Promise(resolve => {
+        hold = setTimeout(resolve, 120)
+      })
+      if (!cleaned && !skipping) reveal()
+    } catch { done() }
   }
 
-  // Install the listeners before marking the run, so the attribute is a
-  // reliable signal that Enter and Escape work. The first click starts; a
-  // later click or Escape skips.
-  if (!(button instanceof HTMLElement)) {
-    cleanup()
-    return
-  }
+  if (!isEl(button)) return done()
   button.addEventListener('click', () => {
-    if (!started) start()
-    else skip()
+    if (started) skip()
+    else start()
   })
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') skip()
-  })
+  document.addEventListener('keydown', onKey)
+  window.addEventListener('resize', onResize)
   root.dataset.introRan = '1'
+
+  try { centre() } catch { done() }
+  document.fonts?.ready.then(onResize).catch(done)
 })()

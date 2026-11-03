@@ -58,8 +58,8 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
    */
   .home-hero {
     display: flex;
+    flex: 1;
     flex-direction: column;
-    min-height: 100%;
   }
 
   .home-hero__center {
@@ -87,24 +87,20 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
 </style>
 
 <style is:global>
-  /* Only the home hero stretches the page grid to the viewport: the page is
-     exactly one viewport tall, the hero fills the space under the header and
-     the footer sits below the fold. */
-  html:has(.home-hero) .page {
-    height: 100vh;
-    height: 100dvh;
-    position: relative;
+  /* Home: flex growth, not percentage heights, stretches the hero to the
+     viewport so short or zoomed viewports can grow past it without overlap. */
+  main:has(.home-hero) {
+    display: flex;
+    flex-direction: column;
   }
 
   main:has(.home-hero) .grid-12 {
-    min-height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
   }
 
   html:has(.home-hero) .page footer {
-    left: 0;
     margin-top: 0;
-    position: absolute;
-    right: 0;
-    top: 100%;
   }
 </style>

@@ -65,7 +65,7 @@
 - Axe (wcag2a/aa): zero violations on the cover and after entry, in EN and EL. `hero.spec.ts` audits the pending cover; `a11y.spec.ts` audits `/`, `/el`, `/about`, `/el/about`, `/members`, `/el/members`, `/projects`, `/el/projects`, `/news`, `/el/news`, `/membership` and `/el/membership` after entry. A separate 320 px pass audited both the pending cover and the settled page on `/` and `/el`: `[]` violations in all four states.
 - Hero behaviour covered by `hero.spec.ts`: the cover button is the only tabbable element, so Tab/Shift+Tab never reach the skip link, nav or footer (focus stays on the button or resets to the body); Escape skips; Enter starts; the header brand exists only off home; with `intro.js` blocked the mark is still shown and the 4 s guard reveals the page; reduced motion and no JS go straight to the hero; the 320 px Greek hand-off matches the hero lockup within 1 px on every edge.
 - Overflow at 320 px (`scrollWidth - innerWidth`, gate ≤ 1): 0 px on `/` and `/el`, both while the cover waits and after it settles. The Greek overflow spec also passes on `/el`, `/el/members`, `/el/membership` and `/el/projects`.
-- Client JS on `/` and `/el`: 4 scripts, 24,037 bytes transferred, 23,282 bytes uncompressed (ClientRouter 14,098 transferred / 13,908 raw; `intro.js` 7,019 / 6,830; prefetch 2,686 / 2,497; page 234 / 47). Under the 30 KB cap. Source scripts: `wc -c site/public/scripts/*.js` = 11,706 bytes total (forms 2,402; intro 6,830; members-filter 1,711; projects-filter 763).
+- Client JS on `/` and `/el`: 4 scripts, 24,037 bytes by `transferSize` (including response overhead on the uncompressed dev server) and 23,282 bytes of uncompressed JS payload by `decodedBodySize` (ClientRouter 14,098 / 13,908; `intro.js` 7,019 / 6,830; prefetch 2,686 / 2,497; page 234 / 47, each pair `transferSize` / `decodedBodySize`). Both totals are under the 30 KB cap. Source scripts: `wc -c site/public/scripts/*.js` = 11,706 bytes total (forms 2,402; intro 6,830; members-filter 1,711; projects-filter 763).
 - Lighthouse (built static output from `dist/client` on port 4322, Chrome for Testing headless, 2026-11-02):
 
 | URL   | Performance | Accessibility |
@@ -73,7 +73,7 @@
 | `/`   | 100         | 100           |
 | `/el` | 100         | 100           |
 
-- Entry lifecycle: the cover waits for a click; the wordmark slides in, the optional paragraph reveals from 600 ms and fades out at 4100–6100 ms, then the stage moves to the header (0.6 s without a paragraph, 6.1 s with one), holds the hand-off for 120 ms and fades for 300 ms. The nav, `CURRENT` line and page stay hidden (`.page { visibility: hidden }`) while the cover waits and moves; they appear at the hand-off. Focus lands on `main` after entry or an early Escape.
+- Entry lifecycle: the cover waits for a click; the wordmark slides in, the optional paragraph reveals from 600 ms and fades out at 4100–6100 ms, then the stage moves to the hero lockup (0.6 s without a paragraph, 6.1 s with one), holds the hand-off for 120 ms and fades for 300 ms. The nav, `CURRENT` line and page stay hidden (`.page { visibility: hidden }`) while the cover waits and moves; they appear at the hand-off. Focus lands on `main` after entry or an early Escape.
 - The cover appears on every full home load (not once per session), and is skipped with reduced motion, with JS off, and on client-side arrivals at home.
 
 ## Bilingual pass

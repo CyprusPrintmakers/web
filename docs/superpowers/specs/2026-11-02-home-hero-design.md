@@ -80,7 +80,7 @@ Alternatives rejected: keeping the header brand and only overlaying the paragrap
 
 - Desktop: horizontal lockup, paragraph to the right of the wordmark, `CURRENT` at the bottom.
 - Under 900 px: stacked lockup (mark above the two wordmark lines); paragraph below the wordmark; no horizontal overflow at 320 px.
-- The floating cover mark uses the same responsive width as the header brand.
+- The floating cover mark uses the same responsive width as the hero lockup's mark (`clamp(64px, 12vw, 158px)`); the header brand is hidden on home.
 
 ## Content model
 

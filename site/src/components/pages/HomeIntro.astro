@@ -111,10 +111,19 @@ const { lang, title, body } = Astro.props
     left: 0;
     line-height: 1.4;
     margin: 0;
-    max-width: min(480px, 100vw - var(--pad-sm) * 2);
+    max-width: min(480px, calc(100vw - var(--pad-sm) * 2));
     position: absolute;
     top: 100%;
     width: max-content;
+  }
+
+  @media (min-width: 900px) {
+    .intro__body {
+      left: var(--intro-body-x, calc(50% + clamp(64px, 12vw, 158px) / 2 + 32px));
+      max-width: min(480px, calc(44vw - 48px));
+      top: 50%;
+      transform: translateY(-50%);
+    }
   }
 
   @keyframes intro-float {
