@@ -143,11 +143,13 @@ test('the cover has no axe violations', async ({ page }) => {
   expect(results.violations).toEqual([])
 })
 
-test('the cover holds until clicked', async ({ page }) => {
+test('the cover still holds after 16 seconds until clicked', async ({ page }) => {
+  await page.clock.install()
   await page.goto('/')
   await expect(page.locator('[data-home-intro]')).toBeVisible()
-  await page.waitForTimeout(500)
+  await page.clock.fastForward(16000)
   expect(await page.evaluate(() => document.documentElement.dataset.intro)).toBe('pending')
+  await expect(page.locator('[data-home-intro]')).toBeVisible()
   await expect(page.locator('h1[data-hero-lockup]')).toBeHidden()
 })
 
@@ -248,37 +250,42 @@ test('a 320×256 viewport reflows without footer overlap', async ({ page }) => {
   expect(boxes!.overflow).toBeLessThanOrEqual(1)
 })
 
-test('the desktop paragraph sits right of the wordmark, inside the viewport', async ({
+test('the desktop paragraph clears the tail and stays inside the viewport', async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1280, height: 720 })
-  await page.goto('/')
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
-  await page.waitForFunction(() => {
-    const el = document.querySelector('[data-hero-intro-body]')
-    return el instanceof HTMLElement && getComputedStyle(el).opacity !== '0'
-  })
-  const box = await page.evaluate(() => {
-    const el = document.querySelector('[data-hero-intro-body]')
-    const mark = document.querySelector('.intro__stage .hero-brand__mark')
-    if (!(el instanceof HTMLElement) || !(mark instanceof HTMLElement)) return null
-    const b = el.getBoundingClientRect()
-    const m = mark.getBoundingClientRect()
-    return {
-      left: b.left,
-      right: b.right,
-      top: b.top,
-      bottom: b.bottom,
-      markRight: m.right,
-      viewportWidth: window.innerWidth,
-      viewportHeight: window.innerHeight,
-    }
-  })
-  expect(box).not.toBeNull()
-  expect(box!.left).toBeGreaterThanOrEqual(box!.markRight + 31)
-  expect(box!.right).toBeLessThanOrEqual(box!.viewportWidth)
-  expect(box!.top).toBeGreaterThanOrEqual(0)
-  expect(box!.bottom).toBeLessThanOrEqual(box!.viewportHeight)
+  for (const width of [900, 1280]) {
+    await page.setViewportSize({ width, height: 720 })
+    await page.goto('/')
+    await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+    await page.waitForFunction(() => {
+      const el = document.querySelector('[data-hero-intro-body]')
+      return el instanceof HTMLElement && getComputedStyle(el).opacity !== '0'
+    })
+    const box = await page.evaluate(() => {
+      const el = document.querySelector('[data-hero-intro-body]')
+      const tail = document.querySelector('.intro__stage .hero-brand__tail')
+      if (!(el instanceof HTMLElement) || !(tail instanceof HTMLElement)) return null
+      const b = el.getBoundingClientRect()
+      const t = tail.getBoundingClientRect()
+      return {
+        left: b.left,
+        right: b.right,
+        top: b.top,
+        bottom: b.bottom,
+        tailLeft: t.left,
+        tailBottom: t.bottom,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      }
+    })
+    expect(box).not.toBeNull()
+    expect(box!.top).toBeGreaterThanOrEqual(box!.tailBottom)
+    expect(Math.abs(box!.left - box!.tailLeft)).toBeLessThanOrEqual(1)
+    expect(box!.left).toBeGreaterThanOrEqual(0)
+    expect(box!.right).toBeLessThanOrEqual(box!.viewportWidth)
+    expect(box!.top).toBeGreaterThanOrEqual(0)
+    expect(box!.bottom).toBeLessThanOrEqual(box!.viewportHeight)
+  }
 })
 
 test.describe('reduced motion', () => {

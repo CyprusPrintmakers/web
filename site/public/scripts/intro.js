@@ -51,12 +51,11 @@
   const onReduce = event => {
     if (!event.matches) return
     done()
-    // Let reduced-motion CSS apply before focusing.
     focusTimer = setTimeout(focus, 100)
   }
   const onKey = event => { if (event.key === 'Escape') skip() }
   const onResize = () => { if (!started && !cleaned) centre() }
-  const watchdog = setTimeout(done, 15000)
+  let watchdog
   reduce.addEventListener('change', onReduce)
 
   const reveal = () => {
@@ -94,6 +93,7 @@
   const start = async () => {
     if (started || cleaned) return
     started = true
+    watchdog = setTimeout(done, 15000)
     try {
       if (![stage, ghost, lead, tail, hero].every(isEl)) return done()
       html.dataset.intro = 'moving'
@@ -109,7 +109,7 @@
       const startTop = innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2
       stage.style.left = `${startLeft}px`
       stage.style.top = `${startTop}px`
-      stage.style.setProperty('--intro-body-x', `${mark.offsetLeft + mark.offsetWidth + 32}px`)
+      stage.style.cssText += `--intro-body-x:${tail.offsetLeft}px;--intro-body-y:${tail.offsetTop + tail.offsetHeight + 24}px;--intro-body-width:${innerWidth - startLeft - tail.offsetLeft - 24}px`
 
       ghost.style.left = `${mark.offsetLeft}px`
       ghost.style.top = `${mark.offsetTop}px`
@@ -140,9 +140,7 @@
           ],
           { duration: 6100, easing: 'ease-out' },
         )
-        paragraph.finished.then(() => {
-          if (!cleaned) body.style.visibility = 'hidden'
-        }, done)
+        paragraph.finished.then(() => { if (!cleaned) body.style.visibility = 'hidden' }, done)
       }
 
       const move = play(stage,
@@ -152,18 +150,13 @@
       await move.finished
       if (cleaned || skipping) return
       html.dataset.intro = 'handoff'
-      await new Promise(resolve => {
-        hold = setTimeout(resolve, 120)
-      })
+      await new Promise(resolve => { hold = setTimeout(resolve, 120) })
       if (!cleaned && !skipping) reveal()
     } catch { done() }
   }
 
   if (!isEl(button)) return done()
-  button.addEventListener('click', () => {
-    if (started) skip()
-    else start()
-  })
+  button.addEventListener('click', () => started ? skip() : start())
   document.addEventListener('keydown', onKey)
   window.addEventListener('resize', onResize)
   root.dataset.introRan = '1'
