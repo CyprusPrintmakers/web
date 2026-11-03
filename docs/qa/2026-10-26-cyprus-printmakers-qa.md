@@ -60,12 +60,12 @@
 
 ## Home hero and click-gated intro (2026-11-02)
 
-- Unit: 97 passed (15 files). `astro check`: 136 files, 0 errors, 0 warnings, 0 hints. `npm run build`: succeeds. E2E after the fix below: 89 passed, 1 skipped (the staging-only layout spec).
+- Unit: 97 passed (15 files). `astro check`: 0 errors, 0 warnings, 0 hints. `npm run build`: succeeds. E2E after the final-review fixes: 96 passed, 1 skipped (the staging-only layout spec).
 - The first full e2e run had one pre-existing canonical-env failure, not caused by the hero: `seo.spec.ts` expects `https://cyprintmakers.densetheory.cc/...` while `site/.env` sets `PUBLIC_SITE_URL` to the Vercel staging origin (observed `https://cyprus-printmakers-site.vercel.app`), so the canonical link asserted against local env. Ruling applied: `playwright.config.ts` now pins `PUBLIC_SITE_URL: 'https://cyprintmakers.densetheory.cc'` in the Playwright `webServer.env` only. Production env is unchanged; the dev server is started with the pin and the suite is deterministic.
 - Axe (wcag2a/aa): zero violations on the cover and after entry, in EN and EL. `hero.spec.ts` audits the pending cover; `a11y.spec.ts` audits `/`, `/el`, `/about`, `/el/about`, `/members`, `/el/members`, `/projects`, `/el/projects`, `/news`, `/el/news`, `/membership` and `/el/membership` after entry. A separate 320 px pass audited both the pending cover and the settled page on `/` and `/el`: `[]` violations in all four states.
 - Hero behaviour covered by `hero.spec.ts`: the cover button is the only tabbable element, so Tab/Shift+Tab never reach the skip link, nav or footer (focus stays on the button or resets to the body); Escape skips; Enter starts; the header brand exists only off home; with `intro.js` blocked the mark is still shown and the 4 s guard reveals the page; reduced motion and no JS go straight to the hero; the 320 px Greek hand-off matches the hero lockup within 1 px on every edge.
 - Overflow at 320 px (`scrollWidth - innerWidth`, gate ≤ 1): 0 px on `/` and `/el`, both while the cover waits and after it settles. The Greek overflow spec also passes on `/el`, `/el/members`, `/el/membership` and `/el/projects`.
-- Client JS on `/` and `/el`: 4 scripts, 24,037 bytes by `transferSize` (including response overhead on the uncompressed dev server) and 23,282 bytes of uncompressed JS payload by `decodedBodySize` (ClientRouter 14,098 / 13,908; `intro.js` 7,019 / 6,830; prefetch 2,686 / 2,497; page 234 / 47, each pair `transferSize` / `decodedBodySize`). Both totals are under the 30 KB cap. Source scripts: `wc -c site/public/scripts/*.js` = 11,706 bytes total (forms 2,402; intro 6,830; members-filter 1,711; projects-filter 763).
+- Client JS on `/` and `/el` after the final-review fixes: 4 scripts, 23,348 bytes by `transferSize` on the uncompressed static server. Source scripts: `wc -c site/public/scripts/*.js` = 11,017 bytes total (forms 2,402; intro 6,141; members-filter 1,711; projects-filter 763). Under the 30 KB cap.
 - Lighthouse (built static output from `dist/client` on port 4322, Chrome for Testing headless, 2026-11-02):
 
 | URL   | Performance | Accessibility |
@@ -73,8 +73,9 @@
 | `/`   | 100         | 100           |
 | `/el` | 100         | 100           |
 
-- Entry lifecycle: the cover waits for a click; the wordmark slides in, the optional paragraph reveals from 600 ms and fades out at 4100–6100 ms, then the stage moves to the hero lockup (0.6 s without a paragraph, 6.1 s with one), holds the hand-off for 120 ms and fades for 300 ms. The nav, `CURRENT` line and page stay hidden (`.page { visibility: hidden }`) while the cover waits and moves; they appear at the hand-off. Focus lands on `main` after entry or an early Escape.
-- The cover appears on every full home load (not once per session), and is skipped with reduced motion, with JS off, and on client-side arrivals at home.
+- Entry lifecycle: the cover waits indefinitely for a click; the whole-sequence watchdog starts only on entry, while the separate 4 s guard reveals the hero if `intro.js` never initialises. On click the wordmark slides in, the optional paragraph reveals, holds and fades on one mask/opacity timeline, the stage moves to the hero lockup, and the overlay fades. The nav, `CURRENT` line and page stay hidden (`.page { visibility: hidden }`) while the cover waits and moves; they appear at the hand-off. Focus lands on `main` after entry or an early Escape.
+- The cover appears on every full home load (not once per session), and is skipped with reduced motion, with JS off, and on client-side arrivals at home. Enabling reduced motion while the cover is pending reveals the page immediately.
+- Final whole-branch review fixes (2026-11-03): reduced-motion-while-pending no longer blanks the page; the paragraph reveal is a single timeline; the pending mark is centred by its own rect; animation rejection/cancel paths clean up and a watchdog covers the active sequence; the footer returns to normal flow (320×256 no overlap); the desktop paragraph sits below/right of the wordmark; the idle cover no longer auto-dismisses. Re-run after fixes: 96 e2e passed, 1 skipped; Lighthouse 100/100 on `/` and `/el`.
 
 ## Bilingual pass
 
