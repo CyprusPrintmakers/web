@@ -69,6 +69,22 @@ test.describe('seo surface', () => {
     await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
   })
 
+  test('serves a declared favicon', async ({ page, request }) => {
+    await page.goto('/')
+
+    const icons = page.locator('link[rel="icon"]')
+    expect(await icons.count()).toBeGreaterThan(0)
+
+    const href = await icons.first().getAttribute('href')
+    expect(href).toBeTruthy()
+
+    const response = await request.get(href!)
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toMatch(
+      /image\/(png|x-icon|vnd\.microsoft\.icon)/,
+    )
+  })
+
   test('news and project pages carry their JSON-LD types', async ({ page }) => {
     await page.goto('/news/printmaking-days-2026')
     const article = await page
