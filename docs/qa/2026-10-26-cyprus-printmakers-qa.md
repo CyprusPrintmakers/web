@@ -125,3 +125,10 @@
 - About uses the archived workshop photo between the intro and history, sliding in from the right on entry (horizontal only; reduced motion and no-JS render it in place).
 - Fixed the year-page parser to decode named Greek entities; re-imported the 20 projects, so “Teachers Workshop” now reads «Μεταξοτυπία και Στένσιλ» instead of the corrupted string. Project detail pages no longer print the summary twice.
 - Verified: 120 unit tests, 0 Astro errors, 98 e2e passed / 1 skipped, production build clean. Live checks on `cyprus-printmakers-web.vercel.app`: header lockup, 18 member rows with bios and permalinks, 20 project rows, Greek summary present, one copy of the summary in the project body.
+
+## Member profile pass (2026-11-04)
+
+- Rebuilt `/members/<slug>` as a two-column page: name, discipline, bio and contact links on the left; a 4:5 portrait plate on the right, sticky on desktop, with an offset hairline behind it. Members without a portrait show the mark at low opacity.
+- Bio is body size at 1.6 line height, capped at **34em** (about 65–70 characters). The site measure token was changed from 65ch to 34em because Geologica's `0` is wide and 65ch produced ~90-character lines.
+- Entrance fade: back link, header, bio, details and portrait stagger in; the hairline under the name draws across; links have sliding arrows and the portrait scales 2% on hover. All off under `prefers-reduced-motion`.
+- Verified: 120 unit tests, 0 Astro errors, 98 e2e passed / 1 skipped, production build clean; axe passes on the member pages.

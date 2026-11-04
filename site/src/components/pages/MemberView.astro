@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
-import Figure from '../ui/Figure.astro'
 import LocalizedText from '../ui/LocalizedText.astro'
 import Prose from '../ui/Prose.astro'
 import { imageAttrs } from '../../lib/media'
@@ -21,10 +20,9 @@ const { lang, member } = Astro.props
 
 const noindex = lang === 'el' && !isFullyTranslated(member, 'member', 'el')
 
-// No image URL builder exists yet, so a portrait resolves to the 1 px rule
-// placeholder instead of a broken image (same as the home cover).
 const portrait = imageAttrs(member.portrait, { urlFor: sanityImageUrl })
 const bio = pickRich(member.bio, lang)
+const email = member.email?.trim() || undefined
 const website = member.website?.trim() || undefined
 const instagram = member.instagram?.trim()
   ? `https://www.instagram.com/${member.instagram.trim().replace(/^@/, '')}`
@@ -47,101 +45,279 @@ const joined =
       <span aria-hidden="true">←</span> {t('members.directory', lang)}
     </a>
 
-    <h1 class="member__name t-display">
-      <LocalizedText value={member.name} lang={lang} />
-    </h1>
+    <div class="member__layout">
+      <div class="member__text">
+        <header class="member__header">
+          <h1 class="member__name t-display">
+            <LocalizedText value={member.name} lang={lang} />
+          </h1>
+          <p class="member__discipline t-label">
+            <LocalizedText value={member.discipline} lang={lang} />
+          </p>
+        </header>
 
-    <p class="member__discipline t-label">
-      <LocalizedText value={member.discipline} lang={lang} />
-    </p>
+        <div class="member__bio">
+          <Prose value={bio} lang={lang} />
+        </div>
 
-    {
-      portrait.src !== undefined && (
-        <Figure
-          src={portrait.src}
-          alt={portrait.alt}
-          width={portrait.width}
-          height={portrait.height}
-          lang={lang}
-        />
-      )
-    }
+        {
+          (email || website || instagram || joined) && (
+            <footer class="member__details">
+              {(email || website || instagram) && (
+                <ul class="member__links t-small">
+                  {email && (
+                    <li>
+                      <a href={`mailto:${email}`}>{t('members.email', lang)}</a>
+                    </li>
+                  )}
+                  {website && (
+                    <li>
+                      <a href={website} rel="noopener">
+                        {t('members.website', lang)}
+                      </a>
+                    </li>
+                  )}
+                  {instagram && (
+                    <li>
+                      <a href={instagram} rel="noopener">
+                        {t('members.instagram', lang)}
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              )}
+              {joined && <p class="member__joined t-label">{joined}</p>}
+            </footer>
+          )
+        }
+      </div>
 
-    <div class="member__bio">
-      <Prose value={bio} lang={lang} />
+      <aside class="member__portrait" aria-label={pickLocalized(member.name, lang).text}>
+        <figure class="member__plate">
+          <div class="member__frame">
+            {
+              portrait.src !== undefined ? (
+                <img
+                  class="member__image"
+                  src={portrait.src}
+                  alt={portrait.alt}
+                  width={portrait.width}
+                  height={portrait.height}
+                  loading="eager"
+                  decoding="async"
+                />
+              ) : (
+                <img class="member__mark" src="/mark.png" alt="" width="158" height="192" />
+              )
+            }
+          </div>
+        </figure>
+      </aside>
     </div>
-
-    {
-      (website || instagram) && (
-        <ul class="member__links">
-          {website && (
-            <li>
-              <a href={website} rel="noopener">
-                {t('members.website', lang)}
-              </a>
-            </li>
-          )}
-          {instagram && (
-            <li>
-              <a href={instagram} rel="noopener">
-                {t('members.instagram', lang)}
-              </a>
-            </li>
-          )}
-        </ul>
-      )
-    }
-
-    {joined && <p class="member__joined t-small">{joined}</p>}
   </article>
 </BaseLayout>
 
 <style>
+  @keyframes member-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes member-rule {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
   .member {
     display: flex;
     flex-direction: column;
-    max-width: 40em;
   }
 
   .member__back {
     align-self: flex-start;
-    margin-bottom: clamp(24px, 4vw, 40px);
+    margin-bottom: clamp(32px, 6vw, 72px);
     text-decoration: none;
+    animation: member-in 500ms var(--ease-out-expo) both;
   }
 
   .member__back:hover {
     text-decoration: underline;
   }
 
+  .member__layout {
+    align-items: start;
+    display: grid;
+    gap: clamp(32px, 5vw, 80px);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .member__text {
+    min-width: 0;
+  }
+
+  .member__header {
+    animation: member-in 650ms var(--ease-out-expo) 60ms both;
+    max-width: var(--measure);
+  }
+
   .member__name {
-    margin-bottom: clamp(16px, 2vw, 32px);
+    text-wrap: balance;
+  }
+
+  .member__name::after {
+    animation: member-rule 900ms var(--ease-out-expo) 380ms both;
+    background: var(--ink);
+    content: '';
+    display: block;
+    height: 1px;
+    margin-top: clamp(20px, 3vw, 32px);
+    transform-origin: left center;
   }
 
   .member__discipline {
-    color: var(--muted-text);
-    margin-bottom: clamp(32px, 5vw, 64px);
+    margin-top: clamp(12px, 2vw, 20px);
   }
 
   .member__bio {
-    margin-bottom: clamp(32px, 5vw, 64px);
+    animation: member-in 650ms var(--ease-out-expo) 200ms both;
+    margin-top: clamp(32px, 5vw, 56px);
   }
 
-  .member :global(.figure__image) {
-    max-height: min(70vh, 640px);
-    object-fit: contain;
-    width: 100%;
+  .member__bio :global(.prose) {
+    font-size: var(--text-body);
+    line-height: 1.6;
+    max-width: var(--measure);
+  }
+
+  .member__bio :global(.prose p) {
+    margin-bottom: 1em;
+  }
+
+  .member__details {
+    animation: member-in 650ms var(--ease-out-expo) 320ms both;
+    border-top: var(--rule);
+    margin-top: clamp(32px, 5vw, 56px);
+    padding-top: 16px;
   }
 
   .member__links {
-    display: grid;
-    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
     list-style: none;
-    margin: 0 0 24px;
+    margin: 0 0 12px;
     padding: 0;
   }
 
+  .member__links a {
+    text-decoration: none;
+  }
+
+  .member__links a::after {
+    content: '→';
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform var(--motion-fast) var(--ease-out-expo);
+  }
+
+  .member__links a:hover {
+    text-decoration: underline;
+  }
+
+  .member__links a:hover::after {
+    transform: translateX(4px);
+  }
+
   .member__joined {
-    color: var(--muted-text);
     margin: 0;
+  }
+
+  .member__portrait {
+    animation: member-in 900ms var(--ease-out-expo) 140ms both;
+    margin: 0;
+  }
+
+  .member__plate {
+    margin: 0;
+    position: relative;
+  }
+
+  /* A second hairline plate sits behind the portrait, offset down-right. */
+  .member__plate::after {
+    border: var(--rule);
+    content: '';
+    inset: 12px -12px -12px 12px;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+  }
+
+  .member__frame {
+    aspect-ratio: 4 / 5;
+    background: var(--paper);
+    border: var(--rule);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  .member__image {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    padding: clamp(8px, 1.5vw, 16px);
+    transition: transform 700ms var(--ease-out-expo);
+    width: 100%;
+  }
+
+  .member__plate:hover .member__image {
+    transform: scale(1.02);
+  }
+
+  .member__mark {
+    height: auto;
+    left: 50%;
+    opacity: 0.25;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+  }
+
+  @media (min-width: 900px) {
+    .member__layout {
+      grid-template-columns: minmax(0, 1fr) clamp(280px, 30vw, 420px);
+    }
+
+    .member__portrait {
+      position: sticky;
+      top: clamp(24px, 5vw, 64px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .member__back,
+    .member__header,
+    .member__bio,
+    .member__details,
+    .member__portrait,
+    .member__name::after {
+      animation: none;
+    }
+
+    .member__image,
+    .member__links a::after {
+      transition: none;
+    }
   }
 </style>

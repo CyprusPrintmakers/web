@@ -17,7 +17,7 @@ describe('type scale', () => {
       expect(tokens).toContain(`${name}:`)
     }
     expect(tokens).toContain('clamp(')
-    expect(tokens).toContain('--measure: 65ch')
+    expect(tokens).toContain('--measure: 34em')
   })
 
   it('drives the utilities from the tokens instead of fixed px', () => {

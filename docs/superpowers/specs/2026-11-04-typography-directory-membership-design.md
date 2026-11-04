@@ -23,7 +23,7 @@ The mockups supplied on 2026-11-04 are the visual source for the members index a
 
 ## 3. Goals
 
-- Body text at 17px on mobile and 20px on desktop, 1.5 line height, measure capped at ~65 characters, left-aligned (ragged right).
+- Body text at 17px on mobile and 20px on desktop, 1.5 line height, measure capped at ~65 characters (`34em` in Geologica, whose `ch` is wider), left-aligned (ragged right).
 - A four-step hierarchy (display / title / body / small) that is visibly distinct at every width.
 - A members index that shows committee, A–Z filter, numbered member rows, email addresses, and an inline grey bio with a permalink to the member's page.
 - A membership page that is a single request form: back link, short intro, name/email/mobile/why/CV, consent, submit.
@@ -65,7 +65,7 @@ The mockups supplied on 2026-11-04 are the visual source for the members index a
 --text-body:    clamp(1.0625rem, 0.98rem + 0.35vw, 1.25rem);    /* 17 → 20 */
 --text-title:   clamp(1.375rem, 1.1rem + 1.1vw,   2rem);        /* 22 → 32 */
 --text-display: clamp(2rem,     1.3rem + 2.8vw,    3.5rem);     /* 32 → 56 */
---measure:      65ch;
+--measure:      34em;
 ```
 
 Line heights: display 1.05, title 1.15, body 1.5, note 1.45, small 1.4.
@@ -111,9 +111,10 @@ Line heights: display 1.05, title 1.15, body 1.5, note 1.45, small 1.4.
 
 Kept and linked as permalinks. Minor pass only:
 
-- New type scale; discipline as `.t-label`.
-- Portrait stays a bordered plate but capped at `min(70vh, 640px)` height with `object-fit: contain` so tall images don't take over the page.
-- Bio uses the 65ch measure.
+- Two columns on desktop: text left, portrait plate right and sticky while the bio scrolls; stacked on mobile with the portrait after the text.
+- Text: name, a hairline rule, `.t-label` discipline, bio at body size with 1.6 line height and the `34em` measure, then email/website/Instagram links with animated arrows.
+- Portrait: 4:5 plate with a hairline frame, a second offset plate behind it, `object-fit: contain` on paper, and a very small hover scale. Members without a portrait show the mark at low opacity.
+- Entrance: staggered fade/rise for the back link, header, bio, details and portrait, plus the rule drawing in. All disabled under `prefers-reduced-motion`.
 - Add a back link “← All members”.
 
 ## 8. Membership page (`/membership`, `/el/membership`)
