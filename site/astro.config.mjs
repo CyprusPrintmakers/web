@@ -7,6 +7,14 @@ import { loadEnv } from 'vite'
 
 // Config runs before Astro loads .env into process.env, so read it explicitly.
 const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '')
+
+// The dev server's SSR runtime reads `process.env`, and Astro does not copy
+// .env into it in dev (builds do). Without this, `npm run dev` silently falls
+// back to the fixture content.
+for (const [key, value] of Object.entries(env)) {
+  if (process.env[key] === undefined) process.env[key] = value
+}
+
 const projectId = process.env.SANITY_PROJECT_ID ?? env.SANITY_PROJECT_ID
 const dataset = process.env.SANITY_DATASET ?? env.SANITY_DATASET ?? 'production'
 const siteUrl =
