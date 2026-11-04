@@ -41,7 +41,8 @@ Content source is deterministic: `CONTENT_SOURCE` wins when set; otherwise `sani
 - Seed the initial content once: `npm run seed` (idempotent for singletons, non-destructive for collections; `-- --dry-run` prints payloads without credentials).
 - After changing schema types, regenerate the embedded Studio manifest: `npm run manifest` (writes `public/admin/static` and `public/static`). The committed manifest is what the Studio and Dashboard read.
 - Draft preview: the `/preview/<path>` route renders a minimal draft page. The Presentation tool only registers when `PUBLIC_SANITY_VISUAL_EDITING_ENABLED=true` and a read token are set; full visual editing is still deferred.
-- Import the archived Wix content: `npm run import:content:dry` prints the counts and project/cover mapping; `npm run import:content` uploads the year covers and member portraits, writes projects/members/committee with deterministic ids, removes the sample documents and points home `CURRENT` at the first 2019 project. It pauses the publish webhook for the batch and re-enables it. The archive lives in `../wix-archive` (not in git). `import:projects` / `import:members` remain the older dry-run-only helpers.
+- Import the archived Wix content: `npm run import:content:dry` prints the counts and project/cover mapping; `npm run import:content` uploads the year covers and member portraits, writes projects/members/committee with deterministic ids, removes the sample documents and points home `CURRENT` at the first 2019 project. It pauses the publish webhook for the batch and re-enables it. `npm run import:pages` then writes the about page copy, contact details, home intro paragraph and the Greek names recorded on the old committee page. Both read `../wix-archive` (not in git); `import:projects` / `import:members` remain the older dry-run-only helpers.
+- What the archive does **not** contain: news posts (the old news page is empty), Greek copy for the about/contact/membership pages, membership prices, opening hours or a privacy notice. The site keeps those sections empty or gated until the committee supplies them.
 - Publishing rebuilds the site: Sanity webhook → Vercel deploy hook (verify with a test publish; the rebuild should start within 60 s).
 
 ## Backups
@@ -50,17 +51,17 @@ Weekly: `npx sanity dataset export production backup-$(date +%F).tar.gz` — kee
 
 ## Deploy
 
-Vercel project root is this `site/` directory, framework Astro, Node 22.x. Production (which currently *is* the staging host) runs with `PUBLIC_STAGING=true` and `PUBLIC_SITE_URL=https://cyprus-printmakers-web.vercel.app`. Moving to `www.cyprintmakers.com` is an env change only: flip `PUBLIC_STAGING=false`, change `PUBLIC_SITE_URL`, verify the domain in Resend, redeploy.
+Vercel project root is this `site/` directory, framework Astro, Node 22.x. Production (which currently *is* the staging host) runs with `PUBLIC_STAGING=true` and `PUBLIC_SITE_URL=https://cyprintmakers.densetheory.cc`. Moving to `www.cyprintmakers.com` is an env change only: flip `PUBLIC_STAGING=false`, change `PUBLIC_SITE_URL`, verify the domain in Resend, redeploy.
 
 The Vercel project has **no environment variables**; builds take their env from the local `.env`. Deploy a content update with a local build of the same shape:
 
 ```sh
 cd site
-PUBLIC_STAGING=true PUBLIC_SITE_URL=https://cyprus-printmakers-web.vercel.app npx astro build
+PUBLIC_STAGING=true PUBLIC_SITE_URL=https://cyprintmakers.densetheory.cc npx astro build
 npx vercel deploy --prebuilt --prod
 ```
 
-The Sanity → `/api/sanity-webhook` → `VERCEL_DEPLOY_HOOK_URL` chain only works once the deploy hook and the other variables are added to the Vercel project; until then, deploying is the manual step above.
+The project's domains are `cyprintmakers.densetheory.cc` and `cyprus-printmakers.vercel.app`. The Sanity → `/api/sanity-webhook` → `VERCEL_DEPLOY_HOOK_URL` chain only works once the deploy hook and the other variables are added to the Vercel project; until then, deploying is the manual step above.
 
 ## Licence
 

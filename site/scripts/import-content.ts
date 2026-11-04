@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@sanity/client'
-import { parseYearProjects, type ArchiveProject } from './lib/archive'
+import { parseCommitteePage, parseYearProjects, type ArchiveProject } from './lib/archive'
 import {
   buildCommitteeSeeds,
   buildMemberSeeds,
@@ -11,6 +11,7 @@ import {
   type ImportManifest,
   type SeedDocument,
 } from './lib/content-import'
+import { withWebhookPaused } from './lib/sanity-hooks'
 import { loadMemberDrafts } from './lib/inputs'
 
 const siteDir = fileURLToPath(new URL('..', import.meta.url))
@@ -29,9 +30,12 @@ for (let year = 2009; year <= 2019; year += 1) {
 }
 
 const members = loadMemberDrafts()
+const committeeTranslations = parseCommitteePage(
+  await readFile(resolve(archiveDir, 'pages', 'executive-committee.html'), 'utf8'),
+)
 const projectSeeds = buildProjectSeeds(projects, manifest)
 const memberSeeds = buildMemberSeeds(members, manifest)
-const committeeSeeds = buildCommitteeSeeds(members, manifest)
+const committeeSeeds = buildCommitteeSeeds(members, manifest, committeeTranslations)
 
 if (dryRun) {
   console.log(
@@ -70,32 +74,6 @@ const client = createClient({
   useCdn: false,
 })
 
-type Hook = { id: string; name: string }
-
-async function listHooks(): Promise<Hook[]> {
-  const response = await fetch(
-    `https://api.sanity.io/v2025-02-19/hooks/projects/${projectId}`,
-    { headers: { Authorization: `Bearer ${token}` } },
-  )
-  if (!response.ok) throw new Error(`hooks list failed: ${response.status}`)
-  return (await response.json()) as Hook[]
-}
-
-async function setHookDisabled(id: string, disabled: boolean): Promise<void> {
-  const response = await fetch(
-    `https://api.sanity.io/v2025-02-19/hooks/projects/${projectId}/${id}`,
-    {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ isDisabledByUser: disabled }),
-    },
-  )
-  if (!response.ok) throw new Error(`hook patch failed: ${response.status}`)
-}
-
 const imageCache = new Map<string, { _type: string; asset: { _type: string; _ref: string }; alt: string }>()
 
 async function uploadImage(
@@ -129,13 +107,7 @@ async function existingImage(id: string, field: string) {
   return undefined
 }
 
-const hook = (await listHooks()).find(entry => entry.name === 'Vercel rebuild')
-if (hook) {
-  await setHookDisabled(hook.id, true)
-  console.log('webhook disabled during import')
-}
-
-try {
+await withWebhookPaused(projectId, token, async () => {
   const documents: SeedDocument[] = []
 
   for (const seed of projectSeeds) {
@@ -189,9 +161,4 @@ try {
   console.log(
     `imported ${projectSeeds.length} projects, ${memberSeeds.length} members, ${committeeSeeds.length} committee entries; removed sample documents`,
   )
-} finally {
-  if (hook) {
-    await setHookDisabled(hook.id, false)
-    console.log('webhook re-enabled')
-  }
-}
+})

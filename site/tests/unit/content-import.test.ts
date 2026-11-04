@@ -1,10 +1,21 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { parseYearProjects, type ArchiveProject } from '../../scripts/lib/archive'
 import {
+  parseAboutPage,
+  parseCommitteePage,
+  parseContactPage,
+  parseYearProjects,
+  type ArchiveProject,
+} from '../../scripts/lib/archive'
+import {
+  buildAboutPatch,
+  buildCommitteeGreekPatches,
   buildCommitteeSeeds,
+  buildContactPatch,
+  buildMemberNamePatches,
   buildMemberSeeds,
   buildProjectSeeds,
+  buildSettingsPatch,
   coverForProject,
   SAMPLE_DOCUMENT_IDS,
   type ImportManifest,
@@ -130,5 +141,201 @@ describe('content import seeds', () => {
   it('lists the sample documents that the live import replaces', () => {
     expect(SAMPLE_DOCUMENT_IDS).toContain('member-georgiou')
     expect(SAMPLE_DOCUMENT_IDS).toContain('news-printmaking-days-2026')
+  })
+})
+
+const longParagraph = (text: string) =>
+  `${text} ${'The association has organised exhibitions, workshops and open studios since the workshop was founded in 1996. '.repeat(2)}`.trim()
+
+describe('archive page parsers', () => {
+  it('reads the about headline, three intro paragraphs and three history paragraphs', () => {
+    const html = `
+      <p>HOME</p><p>ABOUT</p>
+      <h6><span>CYPRIOT PRINTMAKERS &amp; MODEL PRINTMAKING WORKSHOP, CYPRUS CHAMBER OF FINE ARTS (CCFA)</span></h6>
+      <p>${longParagraph('The idea of establishing a Model Printmaking Workshop was initiated by the need to practise contemporary printmaking.')}</p>
+      <p>${longParagraph('The Model Printmaking Workshop of the Cyprus Chamber of Fine Arts was established in 1996.')}</p>
+      <p>${longParagraph('The workshop is located in the area of Pallouriotissa, Nicosia, and provides the necessary infrastructure.')}</p>
+      <p>${longParagraph('Since its inception, the workshop has hosted a significant number of notable events.')}</p>
+      <p>${longParagraph('In December 2010, the members went on to found a non-for-profit company called Cypriot Printmakers.')}</p>
+      <p>${longParagraph('Within this framework, several events have taken place with many more in the making.')}</p>
+      <p>0035799351153</p>
+    `
+
+    const about = parseAboutPage(html)
+
+    expect(about.headline).toBe(
+      'Cypriot Printmakers & Model Printmaking Workshop, Cyprus Chamber of Fine Arts (CCFA)',
+    )
+    expect(about.body).toHaveLength(3)
+    expect(about.body[1]).toContain('established in 1996')
+    expect(about.history).toHaveLength(3)
+    expect(about.history[2]).toContain('several events have taken place')
+  })
+
+  it('reads the workshop note and splits the address into display lines', () => {
+    const html = `
+      <p>HOME</p>
+      <p>The workshop is located in the area of Palouriotissa in Nicosia.</p>
+      <p>AIGEOS 7, PALOURIOTISSA 1035,</p>
+      <p>NICOSIA</p>
+      <p>CYPRUS</p>
+      <p>0035799351153</p>
+    `
+
+    expect(parseContactPage(html)).toEqual({
+      openingNote: 'The workshop is located in the area of Palouriotissa in Nicosia.',
+      address: ['Aigeos 7', 'Palouriotissa 1035', 'Nicosia', 'Cyprus'],
+    })
+  })
+
+  it('pairs committee names with their roles and decodes the Greek entities', () => {
+    const html = `
+      <h4>Efklides Papadopoulos / &Epsilon;&upsilon;&kappa;&lambda;&epsilon;ί&delta;&eta;&sigmaf; &Pi;&alpha;&pi;&alpha;&delta;ό&pi;&omicron;&upsilon;&lambda;&omicron;&sigmaf;</h4>
+      <h6>Chair / &Pi;&rho;ό&epsilon;&delta;&rho;&omicron;&sigmaf;</h6>
+      <h4>Anni Erotocritou / Άννη Ερωτοκρίτου</h4>
+      <h6>Member / Μέλος</h6>
+    `
+
+    expect(parseCommitteePage(html)).toEqual([
+      {
+        name: 'Efklides Papadopoulos',
+        greekName: 'Ευκλείδης Παπαδόπουλος',
+        role: 'Chair',
+        greekRole: 'Πρόεδρος',
+      },
+      {
+        name: 'Anni Erotocritou',
+        greekName: 'Άννη Ερωτοκρίτου',
+        role: 'Member',
+        greekRole: 'Μέλος',
+      },
+    ])
+  })
+})
+
+describe('page import patches', () => {
+  it('replaces the invented Greek about copy with the English archive text', () => {
+    const patch = buildAboutPatch({
+      headline: 'Cypriot Printmakers & Model Printmaking Workshop',
+      body: ['One.', 'Two.'],
+      history: ['Three.'],
+    })
+
+    expect(patch.headline).toHaveLength(1)
+    expect(patch.headline[0].value).toBe('Cypriot Printmakers & Model Printmaking Workshop')
+    expect(patch.body[0].value).toHaveLength(2)
+    expect(patch.partners.map(partner => partner.name)).toEqual([
+      'Cyprus Chamber of Fine Arts (CCFA)',
+      'Cultural Services, Ministry of Education and Culture',
+      'University of Cyprus',
+    ])
+  })
+
+  it('builds a map link from the archive address', () => {
+    const patch = buildContactPatch({
+      openingNote: 'The workshop is located in the area of Palouriotissa in Nicosia.',
+      address: ['Aigeos 7', 'Palouriotissa 1035', 'Nicosia', 'Cyprus'],
+    })
+
+    expect(patch.openingNote).toHaveLength(1)
+    expect(decodeURIComponent(patch.mapUrl)).toContain('Aigeos 7, Palouriotissa 1035, Nicosia, Cyprus')
+  })
+
+  it('writes the real contact details into site settings', () => {
+    const patch = buildSettingsPatch({
+      openingNote: 'x',
+      address: ['Aigeos 7', 'Palouriotissa 1035', 'Nicosia', 'Cyprus'],
+    })
+
+    expect(patch.contact.address).toEqual(['Aigeos 7', 'Palouriotissa 1035', 'Nicosia', 'Cyprus'])
+    expect(patch.contact.phoneHref).toBe('tel:+35799351153')
+  })
+
+  it('attaches Greek names to the members the old committee page listed', () => {
+    const patches = buildMemberNamePatches(
+      [
+        {
+          _id: 'member-annie-erotocritou',
+          slug: 'annie-erotocritou',
+          name: 'Annie Erotocritou',
+          email: 'a@example.com',
+          status: 'active' as const,
+        },
+      ],
+      [
+        {
+          name: 'Anni Erotocritou',
+          greekName: 'Άννη Ερωτοκρίτου',
+          role: 'Member',
+          greekRole: 'Μέλος',
+        },
+      ],
+    )
+
+    expect(patches).toHaveLength(1)
+    expect(patches[0]._id).toBe('member-annie-erotocritou')
+    expect(patches[0].name).toEqual([
+      { _key: 'en', _type: 'internationalizedArrayStringValue', language: 'en', value: 'Annie Erotocritou' },
+      { _key: 'el', _type: 'internationalizedArrayStringValue', language: 'el', value: 'Άννη Ερωτοκρίτου' },
+    ])
+  })
+
+  it('gives committee records both languages when the archive has them', () => {
+    const seeds = buildCommitteeSeeds(
+      [
+        {
+          _id: 'member-annie-erotocritou',
+          slug: 'annie-erotocritou',
+          name: 'Annie Erotocritou',
+          email: 'a@example.com',
+          status: 'active' as const,
+        },
+      ],
+      manifest,
+      [
+        {
+          name: 'Anni Erotocritou',
+          greekName: 'Άννη Ερωτοκρίτου',
+          role: 'Member',
+          greekRole: 'Μέλος',
+        },
+      ],
+    )
+
+    const member = seeds.find(seed => seed.doc.memberRef === 'annie-erotocritou')
+    expect(member?.doc.name).toEqual([
+      { _key: 'en', _type: 'internationalizedArrayStringValue', language: 'en', value: 'Annie Erotocritou' },
+      { _key: 'el', _type: 'internationalizedArrayStringValue', language: 'el', value: 'Άννη Ερωτοκρίτου' },
+    ])
+  })
+})
+
+describe('committee localisation patches', () => {
+  it('patches the committee record with the Greek name and a corrected Greek role', () => {
+    const patches = buildCommitteeGreekPatches(
+      [
+        {
+          _id: 'member-michalis-phantaros',
+          slug: 'michalis-phantaros',
+          name: 'Michalis Phantaros',
+          email: 'm@example.com',
+          status: 'active' as const,
+        },
+      ],
+      [
+        {
+          name: 'Michalis Phantaros',
+          greekName: 'Μιχάλης Φαντάρος',
+          role: 'Treasurer',
+          greekRole: 'Ταμείας',
+        },
+      ],
+    )
+
+    expect(patches[0]._id).toBe('committee-michalis-phantaros')
+    expect(patches[0].role).toEqual([
+      { _key: 'en', _type: 'internationalizedArrayStringValue', language: 'en', value: 'Treasurer' },
+      { _key: 'el', _type: 'internationalizedArrayStringValue', language: 'el', value: 'Ταμίας' },
+    ])
   })
 })

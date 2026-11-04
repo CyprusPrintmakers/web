@@ -1,4 +1,4 @@
-import type { ArchiveProject } from './archive'
+import type { ArchiveAbout, ArchiveContact, ArchiveProject, ArchiveCommitteeMember } from './archive'
 import type { MemberDraft } from './wix'
 
 export type ImportManifest = {
@@ -33,6 +33,28 @@ type PortableBlock = {
 
 const intlString = (value: string): IntlStringValue[] => [
   { _key: 'en', _type: 'internationalizedArrayStringValue', language: 'en', value },
+]
+
+type IntlBilingualValue = {
+  _key: 'en' | 'el'
+  _type: 'internationalizedArrayStringValue'
+  language: 'en' | 'el'
+  value: string
+}
+
+/** English plus a Greek value when the archive actually records one. */
+const intlBilingual = (english: string, greek?: string): IntlBilingualValue[] => [
+  { _key: 'en', _type: 'internationalizedArrayStringValue', language: 'en', value: english },
+  ...(greek
+    ? [
+        {
+          _key: 'el' as const,
+          _type: 'internationalizedArrayStringValue' as const,
+          language: 'el' as const,
+          value: greek,
+        },
+      ]
+    : []),
 ]
 
 const portableBlocks = (paragraphs: string[]): PortableBlock[] =>
@@ -156,31 +178,41 @@ const COMMITTEE: Array<{ name: string; role: string }> = [
   { name: 'Hourig Torossian', role: 'Member' },
 ]
 
-function nameKey(value: string): string {
-  return value
+/** The archive spells two names differently from the members list. */
+const NAME_ALIASES: Record<string, string> = {
+  'anni erotocritou': 'annie erotocritou',
+  'hurig torossian': 'hourig torossian',
+}
+
+export function normalizedName(value: string): string {
+  const key = value
     .toLowerCase()
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
     .replace(/\s+/g, ' ')
     .trim()
+  return NAME_ALIASES[key] ?? key
 }
 
 export function buildCommitteeSeeds(
   members: MemberDraft[],
   manifest: ImportManifest,
+  translations: ArchiveCommitteeMember[] = [],
 ): CommitteeSeed[] {
-  const byName = new Map(members.map(member => [nameKey(member.name), member]))
+  const byName = new Map(members.map(member => [normalizedName(member.name), member]))
+  const greekByName = new Map(translations.map(entry => [normalizedName(entry.name), entry]))
   const portraits = new Map(manifest.memberPortraits.map(portrait => [portrait.slug, portrait.file]))
   return COMMITTEE.map((entry, index) => {
-    const member = byName.get(nameKey(entry.name))
-    const slug = member?.slug ?? nameKey(entry.name).replace(/[^a-z0-9]+/g, '-')
+    const member = byName.get(normalizedName(entry.name))
+    const greek = greekByName.get(normalizedName(entry.name))
+    const slug = member?.slug ?? normalizedName(entry.name).replace(/[^a-z0-9]+/g, '-')
     return {
       doc: {
         _id: `committee-${slug}`,
         _type: 'committeeMember',
         slug: { _type: 'slug', current: slug },
-        name: intlString(member?.name ?? entry.name),
-        role: intlString(entry.role),
+        name: intlBilingual(member?.name ?? entry.name, greek?.greekName),
+        role: intlBilingual(entry.role, greekRoleOf(greek?.greekRole)),
         bio: intlRich(
           member?.bio
             ? [member.bio]
@@ -191,6 +223,98 @@ export function buildCommitteeSeeds(
       },
       imageFile: member ? portraits.get(member.slug) : undefined,
     }
+  })
+}
+
+export const ABOUT_PARTNERS = [
+  'Cyprus Chamber of Fine Arts (CCFA)',
+  'Cultural Services, Ministry of Education and Culture',
+  'University of Cyprus',
+]
+
+export function buildAboutPatch(about: ArchiveAbout) {
+  return {
+    headline: intlString(about.headline),
+    body: intlRich(about.body),
+    history: intlRich(about.history),
+    partners: ABOUT_PARTNERS.map((name, index) => ({
+      _key: `partner-${index + 1}`,
+      _type: 'partner',
+      name,
+    })),
+  }
+}
+
+export function buildContactPatch(contact: ArchiveContact) {
+  return {
+    openingNote: intlString(contact.openingNote),
+    // The archive gives no opening hours; the committee has to confirm them.
+    officeHours: intlString('Visits by appointment'),
+    mapUrl: `https://maps.google.com/?q=${encodeURIComponent(contact.address.join(', '))}`,
+  }
+}
+
+export function buildSettingsPatch(contact: ArchiveContact) {
+  return {
+    contact: {
+      _type: 'contactDetails',
+      address: contact.address,
+      phone: '0035799351153',
+      phoneHref: 'tel:+35799351153',
+      email: 'cyprintmakers@gmail.com',
+    },
+  }
+}
+
+export function buildHomeHeroPatch(about: ArchiveAbout) {
+  return {
+    heroBody: [
+      {
+        _key: 'en',
+        _type: 'internationalizedArrayTextValue',
+        language: 'en',
+        value: about.body[1],
+      },
+    ],
+  }
+}
+
+/** Greek names only exist for the seven committee members on the old site. */
+export function buildMemberNamePatches(
+  members: MemberDraft[],
+  translations: ArchiveCommitteeMember[],
+): Array<{ _id: string; name: IntlBilingualValue[] }> {
+  const byName = new Map(members.map(member => [normalizedName(member.name), member]))
+  return translations.flatMap(entry => {
+    const member = byName.get(normalizedName(entry.name))
+    if (!member) return []
+    return [{ _id: member._id, name: intlBilingual(member.name, entry.greekName) }]
+  })
+}
+
+/** The old committee page spells the treasurer's role "Ταμείας"; "Ταμίας" is correct. */
+const GREEK_ROLE_FIXES: Record<string, string> = {
+  Ταμείας: 'Ταμίας',
+}
+
+const greekRoleOf = (value?: string): string | undefined =>
+  value ? (GREEK_ROLE_FIXES[value] ?? value) : undefined
+
+export function buildCommitteeGreekPatches(
+  members: MemberDraft[],
+  translations: ArchiveCommitteeMember[],
+): Array<{ _id: string; name: IntlBilingualValue[]; role: IntlBilingualValue[] }> {
+  const byName = new Map(members.map(member => [normalizedName(member.name), member]))
+  return translations.flatMap(entry => {
+    const member = byName.get(normalizedName(entry.name))
+    if (!member) return []
+    return [
+      {
+        _id: `committee-${member.slug}`,
+        name: intlBilingual(member.name, entry.greekName),
+        role: intlBilingual(entry.role, greekRoleOf(entry.greekRole)),
+      },
+    ]
   })
 }
 
