@@ -25,6 +25,18 @@ test.describe('projects index', () => {
     )
   })
 
+  test('shows a cover preview while hovering a row', async ({ page }) => {
+    await page.goto('/projects')
+
+    const row = page.locator('[data-project]').first()
+    await row.evaluate(element => element.setAttribute('data-preview', '/favicon-32.png'))
+    await row.hover()
+
+    const preview = page.locator('[data-project-preview]')
+    await expect(preview).toHaveClass(/is-visible/)
+    await expect(preview.locator('img')).toHaveAttribute('src', /.+/)
+  })
+
   test('greek index renders greek labels', async ({ page }) => {
     await page.goto('/el/projects')
 

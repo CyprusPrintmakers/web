@@ -132,3 +132,11 @@
 - Bio is body size at 1.6 line height, capped at **34em** (about 65–70 characters). The site measure token was changed from 65ch to 34em because Geologica's `0` is wide and 65ch produced ~90-character lines.
 - Entrance fade: back link, header, bio, details and portrait stagger in; the hairline under the name draws across; links have sliding arrows and the portrait scales 2% on hover. All off under `prefers-reduced-motion`.
 - Verified: 120 unit tests, 0 Astro errors, 98 e2e passed / 1 skipped, production build clean; axe passes on the member pages.
+
+## Dark mode and project preview (2026-11-04)
+
+- Added a dark theme through the existing colour tokens: paper `#0b0b0b`, ink `#f4f4f2`, muted text `#a6a6a6`, plate stays `#fff`. `color-scheme: dark` is set for form controls; the mark is inverted; the body crossfades in 200 ms (off under reduced motion).
+- The header carries a dark-mode switch beside EN/ΕΛ. The inline head script reads `localStorage` first, then `prefers-color-scheme`, before paint; the switch writes the choice back. `meta[name=theme-color]` follows.
+- Cropped the baked-in “ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ” caption out of `mark.png`; the header caption is live text now, so it themes correctly and is not duplicated.
+- `/projects` shows a cover preview beside the cursor on hover (fine pointer, no reduced motion); the preview is decorative and does not block clicks.
+- Verified: 120 unit tests, 0 Astro errors, 102 e2e passed / 1 skipped, build clean. Theme tests cover system default, toggle persistence and the inverted mark.

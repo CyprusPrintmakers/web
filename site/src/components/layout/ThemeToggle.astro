@@ -1,0 +1,94 @@
+---
+import type { Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+---
+
+<button
+  class="theme-toggle"
+  type="button"
+  data-theme-toggle
+  aria-label={t('theme.toggle', lang)}
+  aria-pressed="false"
+>
+  <span class="theme-toggle__mark" aria-hidden="true"></span>
+</button>
+
+<script is:inline>
+  (() => {
+    if (window.__cpTheme) return
+    window.__cpTheme = true
+
+    const root = document.documentElement
+
+    function sync() {
+      const dark = root.dataset.theme === 'dark'
+      for (const button of document.querySelectorAll('[data-theme-toggle]')) {
+        button.setAttribute('aria-pressed', String(dark))
+      }
+      const meta = document.querySelector('meta[name="theme-color"]')
+      if (meta) meta.setAttribute('content', dark ? '#0b0b0b' : '#ffffff')
+    }
+
+    function init() {
+      for (const button of document.querySelectorAll('[data-theme-toggle]')) {
+        button.onclick = () => {
+          const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
+          root.dataset.theme = next
+          try {
+            localStorage.setItem('cp-theme', next)
+          } catch {}
+          sync()
+        }
+      }
+      sync()
+    }
+
+    init()
+    document.addEventListener('astro:page-load', init)
+  })()
+</script>
+
+<style>
+  .theme-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    height: 32px;
+    justify-content: center;
+    padding: 0;
+    width: 32px;
+  }
+
+  .theme-toggle__mark {
+    border: 1px solid currentColor;
+    display: block;
+    height: 14px;
+    position: relative;
+    width: 14px;
+  }
+
+  .theme-toggle__mark::after {
+    background: currentColor;
+    content: '';
+    inset: 2px 2px 2px 50%;
+    position: absolute;
+  }
+
+  :global(html[data-theme='dark']) .theme-toggle__mark::after {
+    inset: 2px 50% 2px 2px;
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+</style>

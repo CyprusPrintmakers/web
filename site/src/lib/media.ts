@@ -72,9 +72,10 @@ export function imageAttrs(
   )
 
   const hasAsset = typeof image?.asset?._ref === 'string' && image.asset._ref !== ''
+  const url = image && hasAsset ? urlFor(image) : ''
 
   return {
-    src: image && hasAsset ? urlFor(image) : undefined,
+    src: url !== '' ? url : undefined,
     alt: image?.alt ?? '',
     width,
     height,

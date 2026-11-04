@@ -52,6 +52,23 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
 <html lang={lang} transition:animate={fade({ duration: 300 })}>
   <head>
     <meta charset="utf-8" />
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('cp-theme')
+          const theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+          document.documentElement.dataset.theme = theme
+        } catch {
+          document.documentElement.dataset.theme = 'light'
+        }
+      })()
+    </script>
+    <meta name="theme-color" content="#ffffff" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -119,6 +136,13 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
 </html>
 
 <style is:global>
+  [data-theme='dark'] .header__mark,
+  [data-theme='dark'] .hero-brand__mark,
+  [data-theme='dark'] .intro__ghost,
+  [data-theme='dark'] .member__mark {
+    filter: invert(1);
+  }
+
   .page {
     display: flex;
     flex-direction: column;

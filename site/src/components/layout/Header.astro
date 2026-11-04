@@ -4,6 +4,7 @@ import { localePath } from '../../lib/i18n/locales'
 import { t, type UIKey } from '../../lib/i18n/ui'
 import { brandWordmark } from '../../lib/brand'
 import LanguageSwitcher from './LanguageSwitcher.astro'
+import ThemeToggle from './ThemeToggle.astro'
 
 interface Props {
   lang: Locale
@@ -40,7 +41,7 @@ const wordmark = brandWordmark(lang)
             src="/mark.png"
             alt=""
             width="158"
-            height="192"
+            height="152"
             decoding="async"
           />
           <span class="header__caption" lang="el">ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ</span>
@@ -70,7 +71,10 @@ const wordmark = brandWordmark(lang)
       </ul>
     </nav>
 
-    <LanguageSwitcher lang={lang} alternates={alternates} />
+    <div class="header__actions">
+      <LanguageSwitcher lang={lang} alternates={alternates} />
+      <ThemeToggle lang={lang} />
+    </div>
   </div>
 </header>
 
@@ -118,6 +122,13 @@ const wordmark = brandWordmark(lang)
     letter-spacing: 0.14em;
     line-height: 1.2;
     text-align: center;
+  }
+
+  .header__actions {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    grid-area: lang;
   }
 
   .nav {

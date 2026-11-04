@@ -49,6 +49,7 @@ dd {
 }
 
 html {
+  background: var(--paper);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -62,6 +63,7 @@ body {
   line-height: 1.5;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 200ms var(--ease-out-expo), color 200ms var(--ease-out-expo);
 }
 
 p {
@@ -165,6 +167,10 @@ textarea {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+
   *,
   *::before,
   *::after {

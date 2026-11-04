@@ -44,7 +44,12 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
           const cover = imageAttrs(project.coverImage, { urlFor: sanityImageUrl })
 
           return (
-            <li class="projects__item" data-project data-year={String(project.year)}>
+            <li
+              class="projects__item"
+              data-project
+              data-year={String(project.year)}
+              data-preview={cover.src}
+            >
               <details class="projects__entry" id={`project-${project.slug}`} name="project">
                 <summary class="projects__row">
                   <span class="projects__number" aria-hidden="true">
@@ -84,8 +89,14 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
         })
       }
     </ol>
+
+    <div class="project-preview" data-project-preview aria-hidden="true">
+      <img alt="" width="600" height="400" decoding="async" />
+    </div>
   </article>
 </BaseLayout>
+
+<script is:inline src="/scripts/project-preview.js" defer></script>
 
 <style>
   .projects {
@@ -181,6 +192,35 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
     color: var(--ink);
     justify-self: start;
     text-underline-offset: 0.15em;
+  }
+
+  .project-preview {
+    background: var(--plate);
+    border: var(--rule);
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    transition: opacity 140ms var(--ease-out-expo);
+    width: clamp(180px, 18vw, 300px);
+    z-index: 40;
+  }
+
+  .project-preview.is-visible {
+    opacity: 1;
+  }
+
+  .project-preview img {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .project-preview {
+      display: none;
+    }
   }
 
   @media (min-width: 700px) {

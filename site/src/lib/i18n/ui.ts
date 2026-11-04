@@ -15,6 +15,7 @@ const en = {
   'language.en': 'EN',
   'language.el': 'ΕΛ',
   'language.label': 'Language',
+  'theme.toggle': 'Dark mode',
 
   'a11y.skipToContent': 'Skip to content',
 
@@ -113,6 +114,7 @@ const el: Record<UIKey, string> = {
   'language.en': 'EN',
   'language.el': 'ΕΛ',
   'language.label': 'Γλώσσα',
+  'theme.toggle': 'Σκοτεινό θέμα',
 
   'a11y.skipToContent': 'Μετάβαση στο περιεχόμενο',
 

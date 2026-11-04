@@ -6,6 +6,8 @@
   --muted-text: #6e6e6e;
   --graphite: #3e3e3e;
   --control: #d9d9d9;
+  /* Image plates stay on paper in both themes. */
+  --plate: #fff;
 
   /* Type */
   --font-sans: "Geologica", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -36,4 +38,15 @@
   --motion-settle: 600ms;
   --motion-intro: 1400ms;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: #f4f4f2;
+  --paper: #0b0b0b;
+  --muted: #4a4a4a;
+  --muted-text: #a6a6a6;
+  --graphite: #d0d0d0;
+  --control: #262626;
+  --plate: #fff;
 }
