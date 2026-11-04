@@ -3,7 +3,6 @@ import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
 import { t, type UIKey } from '../../lib/i18n/ui'
 import { brandWordmark } from '../../lib/brand'
-import Brand from './Brand.astro'
 import LanguageSwitcher from './LanguageSwitcher.astro'
 
 interface Props {
@@ -28,7 +27,27 @@ const wordmark = brandWordmark(lang)
 ---
 
 <header class="header shell">
-  <div class="header__top">
+  <div class:list={['header__top', { 'header__top--nobrand': !showBrand }]}>
+    {
+      showBrand && (
+        <a
+          class="header__brand"
+          href={localePath('/', lang)}
+          aria-label={`ΚΥΡΙΟΙ ΧΑΡΑΚΤΕΣ — ${wordmark.join(' ')}`}
+        >
+          <img
+            class="header__mark"
+            src="/mark.png"
+            alt=""
+            width="158"
+            height="192"
+            decoding="async"
+          />
+          <span class="header__caption" lang="el">ΚΥΡΙΟΙ ΧΑΡΑΚΤΕΣ</span>
+        </a>
+      )
+    }
+
     <nav class="nav">
       <ul class="nav__list">
         {
@@ -50,16 +69,9 @@ const wordmark = brandWordmark(lang)
         }
       </ul>
     </nav>
+
     <LanguageSwitcher lang={lang} alternates={alternates} />
   </div>
-
-  {
-    showBrand && (
-      <div class="header__brand">
-        <Brand lang={lang} href={localePath('/', lang)} label={wordmark.join(' ')} />
-      </div>
-    )
-  }
 </header>
 
 <style>
@@ -68,14 +80,49 @@ const wordmark = brandWordmark(lang)
   }
 
   .header__top {
-    align-items: flex-start;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: space-between;
+    align-items: start;
+    display: grid;
+    gap: 12px 32px;
+    grid-template-areas: 'brand nav lang';
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .header__top--nobrand {
+    grid-template-areas: 'nav lang';
+    grid-template-columns: 1fr auto;
+  }
+
+  .header__brand {
+    align-items: center;
+    color: inherit;
+    display: grid;
+    gap: 4px;
+    grid-area: brand;
+    justify-items: center;
+    text-decoration: none;
+    width: clamp(48px, 7vw, 64px);
+  }
+
+  .header__brand:hover .header__caption {
+    color: var(--ink);
+  }
+
+  .header__mark {
+    height: auto;
+    width: 100%;
+  }
+
+  .header__caption {
+    color: var(--muted-text);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+    text-align: center;
   }
 
   .nav {
+    grid-area: nav;
+    justify-self: end;
     min-width: 0;
   }
 
@@ -101,8 +148,22 @@ const wordmark = brandWordmark(lang)
     text-decoration: underline;
   }
 
-  .header__brand {
-    margin-top: clamp(48px, 9vw, 139px);
+  @media (max-width: 899px) {
+    .header__top {
+      grid-template-areas:
+        'brand . lang'
+        'nav nav nav';
+      grid-template-columns: auto 1fr auto;
+    }
+
+    .header__top--nobrand {
+      grid-template-areas: 'nav lang';
+      grid-template-columns: 1fr auto;
+    }
+
+    .nav {
+      justify-self: start;
+    }
   }
 
   @media (min-width: 900px) {

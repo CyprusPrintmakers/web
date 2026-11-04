@@ -55,6 +55,19 @@ describe('archive year parser', () => {
     expect(projects[0].slug).toBe('printmaking-exhibition-gloria-gallery-2019')
   })
 
+  it('decodes named Greek entities in titles and paragraphs', () => {
+    const html = `
+      <section>
+        <h2>TEACHERS WORKSHOP</h2>
+        <p>&quot;&Mu;&epsilon;&tau;&alpha;&xi;&omicron;&tau;&upsilon;&pi;ί&alpha; &kappa;&alpha;&iota; &Sigma;&tau;έ&nu;&sigma;&iota;&lambda;&quot; - Εργαστήρι</p>
+      </section>
+    `
+
+    const [project] = parseYearProjects(html, 2018)
+    expect(project.title).toBe('TEACHERS WORKSHOP')
+    expect(project.summary).toContain('Μεταξοτυπία και Στένσιλ')
+  })
+
   it('keeps the PDF posters and programmes attached to their project section', () => {
     const html = `
       <section>

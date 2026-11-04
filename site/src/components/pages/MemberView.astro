@@ -10,6 +10,7 @@ import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
 import { isFullyTranslated } from '../../lib/content/translation'
 import { t } from '../../lib/i18n/ui'
+import { localePath } from '../../lib/i18n/locales'
 
 interface Props {
   lang: Locale
@@ -42,6 +43,10 @@ const joined =
   alternates={{ en: `/members/${member.slug}`, el: `/el/members/${member.slug}` }}
 >
   <article class="member">
+    <a class="member__back t-small" href={localePath('/members', lang)}>
+      <span aria-hidden="true">←</span> {t('members.directory', lang)}
+    </a>
+
     <h1 class="member__name t-display">
       <LocalizedText value={member.name} lang={lang} />
     </h1>
@@ -96,6 +101,16 @@ const joined =
     display: flex;
     flex-direction: column;
     max-width: 40em;
+  }
+
+  .member__back {
+    align-self: flex-start;
+    margin-bottom: clamp(24px, 4vw, 40px);
+    text-decoration: none;
+  }
+
+  .member__back:hover {
+    text-decoration: underline;
   }
 
   .member__name {

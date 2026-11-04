@@ -9,15 +9,46 @@ test.describe('members index', () => {
     await expect(page.locator('[data-member-count]')).toHaveText('3 members')
   })
 
-  test('filters client-side as the query changes', async ({ page }) => {
+  test('filters by first-name letter and updates the count', async ({ page }) => {
     await page.goto('/members')
 
-    await page.fill('[data-member-search]', 'geo')
+    await page.getByRole('button', { name: 'M', exact: true }).click()
     await expect(page.locator('[data-member]:not([hidden])')).toHaveCount(1)
     await expect(page.locator('[data-member-count]')).toHaveText('1 member')
 
-    await page.fill('[data-member-search]', 'zzz')
-    await expect(page.locator('[data-member]:not([hidden])')).toHaveCount(0)
+    await page.getByRole('button', { name: 'M', exact: true }).click()
+    await expect(page.locator('[data-member]:not([hidden])')).toHaveCount(3)
+    await expect(page.locator('[data-member-count]')).toHaveText('3 members')
+  })
+
+  test('opens a member bio in place with a permalink', async ({ page }) => {
+    await page.goto('/members')
+
+    const details = page.locator('#member-georgiou')
+    await expect(details).not.toHaveAttribute('open', '')
+    await details.locator('summary').click()
+
+    await expect(details).toHaveAttribute('open', '')
+    await expect(details.locator('.members__bio')).toBeVisible()
+    await expect(details.getByRole('link', { name: /full profile/i })).toHaveAttribute(
+      'href',
+      '/members/georgiou',
+    )
+  })
+
+  test('keeps one bio open at a time and toggles with the keyboard', async ({ page }) => {
+    await page.goto('/members')
+
+    await page.locator('#member-georgiou summary').click()
+    await expect(page.locator('#member-georgiou')).toHaveAttribute('open', '')
+
+    await page.locator('#member-athanasiou summary').click()
+    await expect(page.locator('#member-athanasiou')).toHaveAttribute('open', '')
+    await expect(page.locator('#member-georgiou')).not.toHaveAttribute('open', '')
+
+    await page.locator('#member-andreas-petrou summary').focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#member-andreas-petrou')).toHaveAttribute('open', '')
   })
 
   test('greek index counts members in greek', async ({ page }) => {

@@ -22,6 +22,8 @@ const en = {
 
   'members.heading': 'Members',
   'members.committee': 'Committee',
+  'members.committeeLong': 'Executive Committee Members',
+  'members.profile': 'Full profile',
   'members.search': 'Search members',
   'members.countOne': '{n} member',
   'members.countMany': '{n} members',
@@ -32,6 +34,10 @@ const en = {
   'members.joined': 'Joined {n}',
 
   'projects.heading': 'Projects',
+  'projects.indexLabel': 'Index',
+  'projects.nameLabel': 'Name',
+  'projects.yearLabel': 'Year',
+  'projects.profile': 'Full project',
   'projects.allYears': 'All years',
   'projects.years': 'Filter by year',
   'projects.gallery': 'Gallery',
@@ -114,6 +120,8 @@ const el: Record<UIKey, string> = {
 
   'members.heading': 'Μέλη',
   'members.committee': 'Επιτροπή',
+  'members.committeeLong': 'Εκτελεστική Επιτροπή',
+  'members.profile': 'Πλήρες προφίλ',
   'members.search': 'Αναζήτηση μελών',
   'members.countOne': '{n} μέλος',
   'members.countMany': '{n} μέλη',
@@ -124,6 +132,10 @@ const el: Record<UIKey, string> = {
   'members.joined': 'Μέλος από {n}',
 
   'projects.heading': 'Έργα',
+  'projects.indexLabel': 'Αρ.',
+  'projects.nameLabel': 'Έργο',
+  'projects.yearLabel': 'Έτος',
+  'projects.profile': 'Πλήρες έργο',
   'projects.allYears': 'Όλα τα έτη',
   'projects.years': 'Φίλτρο έτους',
   'projects.gallery': 'Συλλογή',

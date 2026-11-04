@@ -25,23 +25,6 @@ export type ArchiveProject = {
   links: Array<{ label: string; href: string }>
 }
 
-function decodeEntities(value: string): string {
-  return value
-    .replace(/&laquo;/g, '\u00ab')
-    .replace(/&raquo;/g, '\u00bb')
-    .replace(/&#8203;/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
-    .replace(/&amp;/g, '&')
-    .replace(/&[a-z]+;/gi, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function textOf(html: string): string {
-  return decodeEntities(html.replace(/<[^>]+>/g, ' '))
-}
-
 /** Full entity decoding, needed for the Greek names on the committee page. */
 function decodeMarkup(value: string): string {
   return decodeHTML(value.replace(/<[^>]+>/g, ' '))
@@ -175,16 +158,16 @@ export function parseYearProjects(html: string, year: number): ArchiveProject[] 
     const heading = section.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)
     if (!heading) continue
 
-    const title = textOf(heading[1])
+    const title = decodeMarkup(heading[1])
     if (title === '' || CHROME.test(title)) continue
 
     const paragraphs = [...section.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)]
-      .map(match => textOf(match[1]))
+      .map(match => decodeMarkup(match[1]))
       .filter(text => text.length > 1 && !PARAGRAPH_CHROME.test(text))
 
     // The old project sections link their posters and programmes as PDFs.
     const links = [...section.matchAll(/<a\b[^>]*href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi)]
-      .map(match => ({ href: match[1], label: textOf(match[2]) }))
+      .map(match => ({ href: match[1], label: decodeMarkup(match[2]) }))
       .filter(link => link.label !== '')
 
     let slug = `${slugify(title)}-${year}`

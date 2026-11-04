@@ -42,6 +42,17 @@ const headings = {
       <Prose value={body} lang={lang} />
     </div>
 
+    <figure class="about__photo" data-about-photo>
+      <img
+        src="/images/about-workshop.jpg"
+        alt="The printmaking workshop in Pallouriotissa, Nicosia: a press and work tables."
+        width="1600"
+        height="1074"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+
     <div class="about__history">
       <Prose value={history} lang={lang} />
     </div>
@@ -113,6 +124,22 @@ const headings = {
     margin-bottom: clamp(32px, 5vw, 80px);
   }
 
+  .about__photo {
+    margin: 0 0 clamp(48px, 6vw, 96px) auto;
+    transition: transform var(--motion-settle) var(--ease-out-expo);
+    width: min(100%, 560px);
+    will-change: transform;
+  }
+
+  .about__photo[data-state='pending'] {
+    transform: translateX(clamp(48px, 12vw, 240px));
+  }
+
+  .about__photo img {
+    height: auto;
+    width: 100%;
+  }
+
   .about__history {
     margin-bottom: clamp(48px, 6vw, 96px);
   }
@@ -149,3 +176,39 @@ const headings = {
     font-size: 20px;
   }
 </style>
+
+<script is:inline>
+  (() => {
+    function init() {
+      const photo = document.querySelector('[data-about-photo]')
+      if (!photo || photo.dataset.state) return
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+      photo.dataset.state = 'pending'
+
+      const reveal = () => {
+        photo.dataset.state = 'moving'
+      }
+
+      if (!('IntersectionObserver' in window)) {
+        reveal()
+        return
+      }
+
+      const observer = new IntersectionObserver(
+        entries => {
+          if (entries.some(entry => entry.isIntersecting)) {
+            reveal()
+            observer.disconnect()
+          }
+        },
+        { threshold: 0.2 },
+      )
+
+      observer.observe(photo)
+    }
+
+    init()
+    document.addEventListener('astro:page-load', init)
+  })()
+</script>

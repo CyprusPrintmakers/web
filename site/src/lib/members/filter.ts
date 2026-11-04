@@ -19,10 +19,18 @@ function matches(haystack: string, needle: string, lang: Locale): boolean {
   return foldCase(haystack, lang).includes(foldCase(needle, lang))
 }
 
-/** The last whitespace-separated word of the localised name. */
-export function surname(localizedName: string): string {
-  const parts = localizedName.trim().split(/\s+/)
-  return parts[parts.length - 1] ?? ''
+/** The first whitespace-separated word of the localised name. */
+export function firstName(localizedName: string): string {
+  return localizedName.trim().split(/\s+/)[0] ?? ''
+}
+
+/** Alphabetical by first name, using the active locale's collation. */
+export function sortByFirstName(members: Member[], lang: Locale): Member[] {
+  return [...members].sort((a, b) =>
+    pickLocalized(a.name, lang).text.localeCompare(pickLocalized(b.name, lang).text, lang, {
+      sensitivity: 'base',
+    }),
+  )
 }
 
 export function filterMembers(
@@ -34,9 +42,9 @@ export function filterMembers(
   return members.filter(member => {
     const name = pickLocalized(member.name, lang).text
     const discipline = pickLocalized(member.discipline, lang).text
-    const surnameLetter = surname(name).charAt(0)
+    const firstLetter = firstName(name).charAt(0)
 
-    if (letter !== null && surnameLetter.localeCompare(letter, lang, { sensitivity: 'base' }) !== 0)
+    if (letter !== null && firstLetter.localeCompare(letter, lang, { sensitivity: 'base' }) !== 0)
       return false
 
     return matches(`${name} ${discipline}`, query.trim(), lang)
@@ -48,7 +56,7 @@ export function groupByLetter(members: Member[], lang: Locale): Map<string, Memb
 
   for (const member of members) {
     const name = pickLocalized(member.name, lang).text
-    const letter = surname(name).charAt(0).toLocaleUpperCase(lang)
+    const letter = firstName(name).charAt(0).toLocaleUpperCase(lang)
     const bucket = groups.get(letter)
     if (bucket) bucket.push(member)
     else groups.set(letter, [member])

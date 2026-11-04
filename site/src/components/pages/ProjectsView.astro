@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import Figure from '../ui/Figure.astro'
 import LocalizedText from '../ui/LocalizedText.astro'
-import ProjectFilter from '../filters/ProjectFilter.astro'
 import { getContent } from '../../lib/content/source'
-import { yearsOf } from '../../lib/projects/filter'
+import { imageAttrs } from '../../lib/media'
+import { sanityImageUrl } from '../../lib/sanity/image'
 import { localePath, type Locale } from '../../lib/i18n/locales'
 import { pickLocalized } from '../../lib/i18n/localized'
 import { t } from '../../lib/i18n/ui'
@@ -17,7 +18,6 @@ const { lang } = Astro.props
 const { projects } = await getContent()
 
 const noindex = lang === 'el' && projects.some(item => !isFullyTranslated(item, 'project', 'el'))
-const years = yearsOf(projects)
 const newestFirst = [...projects].sort((a, b) => b.year - a.year)
 ---
 
@@ -31,36 +31,61 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
   <article class="projects">
     <h1 class="sr-only">{t('projects.heading', lang)}</h1>
 
-    <ProjectFilter lang={lang} years={years} />
+    <div class="projects__head t-label" aria-hidden="true">
+      <span>{t('projects.indexLabel', lang)}</span>
+      <span>{t('projects.nameLabel', lang)}</span>
+      <span>{t('projects.yearLabel', lang)}</span>
+    </div>
 
-    <ul class="projects__list">
+    <ol class="projects__list">
       {
-        newestFirst.map(project => {
+        newestFirst.map((project, index) => {
           const summary = pickLocalized(project.summary, lang)
+          const cover = imageAttrs(project.coverImage, { urlFor: sanityImageUrl })
 
           return (
             <li class="projects__item" data-project data-year={String(project.year)}>
-              <span class="projects__year t-small">{project.year}</span>
-              <a
-                class="projects__title t-title"
-                href={localePath(`/projects/${project.slug}`, lang)}
-              >
-                <LocalizedText value={project.title} lang={lang} />
-              </a>
-              {summary.text !== '' && (
-                <p class="projects__summary t-body" lang={summary.isFallback ? 'en' : lang}>
-                  {summary.text}
-                </p>
-              )}
+              <details class="projects__entry" id={`project-${project.slug}`} name="project">
+                <summary class="projects__row">
+                  <span class="projects__number" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <span class="projects__title">
+                    <LocalizedText value={project.title} lang={lang} />
+                  </span>
+                  <span class="projects__year">{project.year}</span>
+                </summary>
+
+                <div class="projects__body">
+                  {cover.src !== undefined && (
+                    <Figure
+                      src={cover.src}
+                      alt={cover.alt}
+                      width={cover.width}
+                      height={cover.height}
+                      lang={lang}
+                    />
+                  )}
+                  {summary.text !== '' && (
+                    <p class="projects__summary" lang={summary.isFallback ? 'en' : lang}>
+                      {summary.text}
+                    </p>
+                  )}
+                  <a
+                    class="projects__permalink t-small"
+                    href={localePath(`/projects/${project.slug}`, lang)}
+                  >
+                    {t('projects.profile', lang)} <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </details>
             </li>
           )
         })
       }
-    </ul>
+    </ol>
   </article>
 </BaseLayout>
-
-<script is:inline src="/scripts/projects-filter.js" defer></script>
 
 <style>
   .projects {
@@ -68,39 +93,104 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
     flex-direction: column;
   }
 
-  .projects__list {
-    border-top: var(--rule);
+  .projects__head,
+  .projects__row {
+    align-items: baseline;
     display: grid;
+    gap: 4px 24px;
+    grid-template-areas:
+      'number title'
+      'number year';
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+
+  .projects__head {
+    grid-template-areas: 'number title year';
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    margin-bottom: 8px;
+  }
+
+  .projects__list {
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-
-  .projects__item {
-    border-bottom: var(--rule);
-    display: grid;
-    gap: 8px;
-    padding: 24px 0;
   }
 
   .projects__item[hidden] {
     display: none;
   }
 
-  .projects__year {
+  .projects__entry summary {
+    list-style: none;
+  }
+
+  .projects__entry summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .projects__row {
+    cursor: pointer;
+    min-height: 44px;
+    padding: 10px 0;
+  }
+
+  .projects__number {
     color: var(--muted-text);
+    font-size: var(--text-small);
+    font-variant-numeric: tabular-nums;
+    grid-area: number;
   }
 
   .projects__title {
-    text-decoration: none;
+    font-size: var(--text-body);
+    grid-area: title;
+    line-height: 1.3;
   }
 
-  .projects__title:hover {
+  .projects__year {
+    color: var(--muted-text);
+    font-size: var(--text-small);
+    grid-area: year;
+    justify-self: start;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .projects__row:hover .projects__title {
     text-decoration: underline;
   }
 
+  .projects__body {
+    color: var(--muted-text);
+    display: grid;
+    gap: 16px;
+    margin: 0 0 24px 2.5rem;
+    max-width: var(--measure);
+  }
+
+  .projects__body :global(.figure) {
+    max-width: 420px;
+  }
+
   .projects__summary {
+    font-size: var(--text-note);
+    line-height: 1.45;
     margin: 0;
-    max-width: 40em;
+  }
+
+  .projects__permalink {
+    color: var(--ink);
+    justify-self: start;
+    text-underline-offset: 0.15em;
+  }
+
+  @media (min-width: 700px) {
+    .projects__row {
+      grid-template-areas: 'number title year';
+      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    }
+
+    .projects__year {
+      justify-self: end;
+    }
   }
 </style>

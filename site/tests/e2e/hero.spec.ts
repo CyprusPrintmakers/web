@@ -45,7 +45,7 @@ test('every full load shows the cover, but a client arrival does not', async ({ 
   await expect(page.locator('[data-home-intro]')).toBeVisible()
 
   await page.goto('/about')
-  await page.locator('header .brand').click()
+  await page.locator('header .header__brand').click()
   await expect(page).toHaveURL(/\/$/)
   await expect(page.locator('[data-home-intro]')).toBeHidden()
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
@@ -122,9 +122,9 @@ test('the skip link is hidden and tab cannot leave the cover button', async ({ p
 
 test('the header brand is only hidden on home', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('header .brand')).toHaveCount(0)
+  await expect(page.locator('header .header__brand')).toHaveCount(0)
   await page.goto('/about')
-  await expect(page.locator('header .brand')).toHaveCount(1)
+  await expect(page.locator('header .header__brand')).toHaveCount(1)
 })
 
 test('a failed intro module reveals the hero', async ({ page }) => {

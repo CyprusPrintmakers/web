@@ -10,15 +10,19 @@ test.describe('projects index', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/projects/i)
   })
 
-  test('filters by year client-side', async ({ page }) => {
+  test('expands a project in place with its cover and summary', async ({ page }) => {
     await page.goto('/projects')
 
-    await page.getByRole('button', { name: '2019' }).click()
-    await expect(page.locator('[data-project]:not([hidden])')).toHaveCount(1)
-    await expect(page.locator('[data-project]:not([hidden])')).toContainText('2019')
+    const entry = page.locator('#project-printmaking-days-2019')
+    await expect(entry).not.toHaveAttribute('open', '')
+    await entry.locator('summary').click()
 
-    await page.getByRole('button', { name: /all years/i }).click()
-    await expect(page.locator('[data-project]:not([hidden])')).toHaveCount(3)
+    await expect(entry).toHaveAttribute('open', '')
+    await expect(entry.locator('.projects__summary')).toBeVisible()
+    await expect(entry.getByRole('link', { name: /full project/i })).toHaveAttribute(
+      'href',
+      '/projects/printmaking-days-2019',
+    )
   })
 
   test('greek index renders greek labels', async ({ page }) => {
@@ -26,7 +30,7 @@ test.describe('projects index', () => {
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'el')
     await expect(page.locator('[data-project]')).toHaveCount(3)
-    await expect(page.getByRole('button', { name: /όλα τα έτη/i })).toBeVisible()
+    await expect(page.locator('.projects__head')).toContainText('Έργο')
   })
 
   test('the full list is in the HTML without JavaScript', async ({ browser }) => {

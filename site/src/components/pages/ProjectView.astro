@@ -12,6 +12,7 @@ import type { Locale } from '../../lib/i18n/locales'
 import { pickLocalized, pickRich } from '../../lib/i18n/localized'
 import { isFullyTranslated } from '../../lib/content/translation'
 import { visualArtworkJsonLd } from '../../lib/seo'
+import { bodyWithoutLead } from '../../lib/projects/summary'
 import { t } from '../../lib/i18n/ui'
 
 interface Props {
@@ -26,10 +27,10 @@ const jsonLd = [visualArtworkJsonLd(project, lang)]
 
 const cover = imageAttrs(project.coverImage, { urlFor: sanityImageUrl })
 const gallery = project.gallery.map(image => imageAttrs(image, { urlFor: sanityImageUrl }))
-const body = pickRich(project.body, lang)
 
 const title = pickLocalized(project.title, lang)
 const summary = pickLocalized(project.summary, lang)
+const body = bodyWithoutLead(pickRich(project.body, lang), summary.text)
 const venue = pickLocalized(project.venue, lang)
 
 const start = project.dates.start ? formatDate(project.dates.start, lang) : ''

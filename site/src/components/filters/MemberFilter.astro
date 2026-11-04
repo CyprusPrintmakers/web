@@ -14,17 +14,6 @@ const initialCount =
 ---
 
 <div class="member-filter">
-  <label class="member-filter__label t-small" for="member-search">
-    {t('members.search', lang)}
-  </label>
-  <input
-    id="member-search"
-    class="member-filter__input"
-    type="search"
-    autocomplete="off"
-    data-member-search
-  />
-
   <p
     class="member-filter__count t-small"
     data-member-count
@@ -40,7 +29,7 @@ const initialCount =
       letters.map(letter => (
         <button
           type="button"
-          class="member-filter__letter"
+          class="member-filter__letter t-small"
           data-letter-button
           data-letter={letter}
           aria-pressed="false"
@@ -57,21 +46,8 @@ const initialCount =
     align-items: baseline;
     display: flex;
     flex-wrap: wrap;
-    gap: 16px 24px;
-    margin-bottom: clamp(24px, 4vw, 48px);
-  }
-
-  .member-filter__label {
-    color: var(--muted-text);
-  }
-
-  .member-filter__input {
-    background: transparent;
-    border: 0;
-    border-bottom: var(--rule);
-    font-size: 20px;
-    min-width: 220px;
-    padding: 4px 2px;
+    gap: 12px 32px;
+    margin-bottom: clamp(16px, 3vw, 24px);
   }
 
   .member-filter__count {
@@ -82,21 +58,24 @@ const initialCount =
   .member-filter__letters {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 4px clamp(6px, 1.4vw, 18px);
     margin-left: auto;
   }
 
   .member-filter__letter {
     background: transparent;
     border: 0;
+    color: var(--muted-text);
     cursor: pointer;
-    font-size: 20px;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0;
+    letter-spacing: 0.06em;
+    min-height: 24px;
+    min-width: 24px;
+    padding: 2px;
   }
 
+  .member-filter__letter:hover,
   .member-filter__letter[aria-pressed='true'] {
+    color: var(--ink);
     text-decoration: underline;
     text-underline-offset: 0.15em;
   }

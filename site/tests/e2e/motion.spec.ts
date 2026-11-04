@@ -32,11 +32,11 @@ test('focus and scroll reset after navigation', async ({ page }) => {
 
 test('member filter still works after navigating away and back', async ({ page }) => {
   await page.goto('/members')
-  await page.fill('[data-member-search]', 'geo')
+  await page.getByRole('button', { name: 'M', exact: true }).click()
   await expect(page.locator('[data-member]:visible')).toHaveCount(1)
   await page.getByRole('navigation').getByRole('link', { name: 'ABOUT' }).click()
   await page.getByRole('navigation').getByRole('link', { name: 'MEMBERS' }).click()
-  await page.fill('[data-member-search]', 'geo')
+  await page.getByRole('button', { name: 'M', exact: true }).click()
   await expect(page.locator('[data-member]:visible')).toHaveCount(1)
 })
 
@@ -104,14 +104,14 @@ test('membership form still submits after navigating away and back', async ({ pa
   await submit()
 })
 
-test('projects filter still works after navigating away and back', async ({ page }) => {
+test('project rows still expand after navigating away and back', async ({ page }) => {
   await page.goto('/projects')
-  await page.getByRole('button', { name: '2019' }).click()
-  await expect(page.locator('[data-project]:not([hidden])')).toHaveCount(1)
+  await page.locator('#project-printmaking-days-2019 summary').click()
+  await expect(page.locator('#project-printmaking-days-2019')).toHaveAttribute('open', '')
   await page.getByRole('navigation').getByRole('link', { name: 'ABOUT' }).click()
   await page.getByRole('navigation').getByRole('link', { name: 'PROJECTS' }).click()
-  await page.getByRole('button', { name: '2019' }).click()
-  await expect(page.locator('[data-project]:not([hidden])')).toHaveCount(1)
+  await page.locator('#project-printmaking-days-2019 summary').click()
+  await expect(page.locator('#project-printmaking-days-2019')).toHaveAttribute('open', '')
 })
 
 test.describe('reduced motion', () => {
