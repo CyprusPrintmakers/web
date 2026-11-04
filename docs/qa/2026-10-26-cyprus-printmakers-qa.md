@@ -83,6 +83,7 @@
 - The sample members, committee, projects and news posts were removed; home `CURRENT` now points at “PRINTMAKING EXHIBITION - GLORIA GALLERY” (`/projects/printmaking-exhibition-gloria-gallery-2019`). The news section is empty until the committee supplies posts.
 - Project pages were verified locally: 20 English + 20 Greek project pages, 18 English + 18 Greek member pages; portraits resolve through the Sanity CDN; the Greek member fallback renders English with `noindex`.
 - The publish webhook was disabled for the batch and re-enabled afterwards, so the import did not trigger one deployment per document.
+- Deployed the imported content to `https://cyprus-printmakers-web.vercel.app` (also served on `cyprintmakers.densetheory.cc`) with a prebuilt production deploy. Verified live: home `CURRENT` is Gloria 2019, `/members/` lists 18 members, `/projects/` lists 20 projects, `/about/` shows the committee with Efklides Papadopoulos as Chair, project and portrait images load from `cdn.sanity.io`, `/news/` is empty but returns 200, and the Greek member fallback is `noindex,nofollow`. The Vercel project has no env vars, so the Sanity deploy hook cannot rebuild yet — deploys are manual (`site/README.md` → Deploy).
 - The import script is `site/scripts/import-content.ts` (`npm run import:content`), with a dry run via `npm run import:content:dry`. It expects the archive in `../wix-archive`, outside the repo.
 - Still pending: real news posts, Greek translations, committee-confirmed membership prices, privacy notice, and the static page copy.
 

@@ -50,7 +50,17 @@ Weekly: `npx sanity dataset export production backup-$(date +%F).tar.gz` — kee
 
 ## Deploy
 
-Vercel project root is this `site/` directory, framework Astro, Node 22.x. Production (which currently *is* the staging host) runs with `PUBLIC_STAGING=true` and `PUBLIC_SITE_URL=https://cyprintmakers.densetheory.cc`. Moving to `www.cyprintmakers.com` is an env change only: flip `PUBLIC_STAGING=false`, change `PUBLIC_SITE_URL`, verify the domain in Resend, redeploy.
+Vercel project root is this `site/` directory, framework Astro, Node 22.x. Production (which currently *is* the staging host) runs with `PUBLIC_STAGING=true` and `PUBLIC_SITE_URL=https://cyprus-printmakers-web.vercel.app`. Moving to `www.cyprintmakers.com` is an env change only: flip `PUBLIC_STAGING=false`, change `PUBLIC_SITE_URL`, verify the domain in Resend, redeploy.
+
+The Vercel project has **no environment variables**; builds take their env from the local `.env`. Deploy a content update with a local build of the same shape:
+
+```sh
+cd site
+PUBLIC_STAGING=true PUBLIC_SITE_URL=https://cyprus-printmakers-web.vercel.app npx astro build
+npx vercel deploy --prebuilt --prod
+```
+
+The Sanity → `/api/sanity-webhook` → `VERCEL_DEPLOY_HOOK_URL` chain only works once the deploy hook and the other variables are added to the Vercel project; until then, deploying is the manual step above.
 
 ## Licence
 
