@@ -34,7 +34,7 @@ const committeeTranslations = parseCommitteePage(
   await readFile(resolve(archiveDir, 'pages', 'executive-committee.html'), 'utf8'),
 )
 const projectSeeds = buildProjectSeeds(projects, manifest)
-const memberSeeds = buildMemberSeeds(members, manifest)
+const memberSeeds = buildMemberSeeds(members, manifest, committeeTranslations)
 const committeeSeeds = buildCommitteeSeeds(members, manifest, committeeTranslations)
 
 if (dryRun) {
@@ -107,6 +107,23 @@ async function existingImage(id: string, field: string) {
   return undefined
 }
 
+type ProjectLink = { _key: string; _type: string; label: string; href: string }
+
+const pdfCache = new Map<string, string>()
+
+async function uploadPdf(href: string): Promise<string> {
+  const cached = pdfCache.get(href)
+  if (cached) return cached
+
+  const filename = decodeURIComponent(href.split('/').pop() ?? 'document.pdf')
+  const asset = await client.assets.upload('file', await readFile(resolve(archiveDir, 'pdfs', filename)), {
+    filename,
+  })
+  pdfCache.set(href, asset.url)
+  console.log(`uploaded ${filename}`)
+  return asset.url
+}
+
 await withWebhookPaused(projectId, token, async () => {
   const documents: SeedDocument[] = []
 
@@ -114,6 +131,16 @@ await withWebhookPaused(projectId, token, async () => {
     const image =
       (await existingImage(seed.doc._id, 'coverImage')) ??
       (seed.coverFile ? await uploadImage(seed.coverFile, seed.coverAlt) : undefined)
+
+    // Posters and programmes were PDF links on the old site; host them on
+    // Sanity so they survive the old site being switched off.
+    const links = seed.doc.links as ProjectLink[]
+    for (const link of links) {
+      if (/^https?:\/\/.+\.pdf$/i.test(link.href)) {
+        link.href = await uploadPdf(link.href)
+      }
+    }
+
     documents.push({ ...seed.doc, ...(image ? { coverImage: image } : {}) })
   }
 

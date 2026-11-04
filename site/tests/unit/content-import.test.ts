@@ -54,6 +54,24 @@ describe('archive year parser', () => {
     ])
     expect(projects[0].slug).toBe('printmaking-exhibition-gloria-gallery-2019')
   })
+
+  it('keeps the PDF posters and programmes attached to their project section', () => {
+    const html = `
+      <section>
+        <h2>PRINTMAKING DAYS 2009</h2>
+        <p>The 2009 programme included a photopolymer workshop.</p>
+        <p><a href="https://example.com/ugd/poster.pdf">PHOTOPOLYMER WORKSHOP - Yiannis Gourzis</a></p>
+      </section>
+    `
+
+    const [project] = parseYearProjects(html, 2009)
+    expect(project.links).toEqual([
+      {
+        href: 'https://example.com/ugd/poster.pdf',
+        label: 'PHOTOPOLYMER WORKSHOP - Yiannis Gourzis',
+      },
+    ])
+  })
 })
 
 describe('content import seeds', () => {
@@ -82,6 +100,7 @@ describe('content import seeds', () => {
       title: 'COMING TOGETHER',
       summary: 'x',
       paragraphs: ['x'],
+      links: [],
     }
     expect(coverForProject(project, 0, manifest)).toContain('2017-extra-1')
     expect(coverForProject(project, 3, manifest)).toBe('wix-archive/rescrape/projects/2017.png')
@@ -141,6 +160,26 @@ describe('content import seeds', () => {
   it('lists the sample documents that the live import replaces', () => {
     expect(SAMPLE_DOCUMENT_IDS).toContain('member-georgiou')
     expect(SAMPLE_DOCUMENT_IDS).toContain('news-printmaking-days-2026')
+  })
+
+  it('maps archive PDF links onto the project document', () => {
+    const html = `
+      <section>
+        <h2>PRINTMAKING DAYS 2009</h2>
+        <p>A workshop programme from 2009.</p>
+        <p><a href="https://example.com/ugd/poster.pdf">PHOTOPOLYMER WORKSHOP</a></p>
+      </section>
+    `
+    const [seed] = buildProjectSeeds(parseYearProjects(html, 2009), manifest)
+
+    expect(seed.doc.links).toEqual([
+      {
+        _key: 'link-1',
+        _type: 'link',
+        label: 'PHOTOPOLYMER WORKSHOP',
+        href: 'https://example.com/ugd/poster.pdf',
+      },
+    ])
   })
 })
 

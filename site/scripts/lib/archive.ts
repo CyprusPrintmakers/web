@@ -22,6 +22,7 @@ export type ArchiveProject = {
   title: string
   summary: string
   paragraphs: string[]
+  links: Array<{ label: string; href: string }>
 }
 
 function decodeEntities(value: string): string {
@@ -181,6 +182,11 @@ export function parseYearProjects(html: string, year: number): ArchiveProject[] 
       .map(match => textOf(match[1]))
       .filter(text => text.length > 1 && !PARAGRAPH_CHROME.test(text))
 
+    // The old project sections link their posters and programmes as PDFs.
+    const links = [...section.matchAll(/<a\b[^>]*href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi)]
+      .map(match => ({ href: match[1], label: textOf(match[2]) }))
+      .filter(link => link.label !== '')
+
     let slug = `${slugify(title)}-${year}`
     let suffix = 2
     while (usedSlugs.has(slug)) {
@@ -195,6 +201,7 @@ export function parseYearProjects(html: string, year: number): ArchiveProject[] 
       title,
       summary: paragraphs[0] ?? title,
       paragraphs: paragraphs.length > 0 ? paragraphs : [title],
+      links: [...new Map(links.map(link => [link.href, link])).values()],
     })
   }
 

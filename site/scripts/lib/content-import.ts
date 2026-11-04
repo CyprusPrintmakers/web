@@ -136,7 +136,12 @@ export function buildProjectSeeds(
           gallery: [],
           participants: [],
           dates: {},
-          links: [],
+          links: project.links.map((link, linkIndex) => ({
+            _key: `link-${linkIndex + 1}`,
+            _type: 'link',
+            label: link.label,
+            href: link.href,
+          })),
         },
         coverFile: coverForProject(project, index, manifest),
         coverAlt: project.title,
@@ -149,14 +154,16 @@ export function buildProjectSeeds(
 export function buildMemberSeeds(
   members: MemberDraft[],
   manifest: ImportManifest,
+  translations: ArchiveCommitteeMember[] = [],
 ): MemberSeed[] {
   const portraits = new Map(manifest.memberPortraits.map(portrait => [portrait.slug, portrait.file]))
+  const greekByName = new Map(translations.map(entry => [normalizedName(entry.name), entry.greekName]))
   return members.map((member, index) => ({
     doc: {
       _id: member._id,
       _type: 'member',
       slug: { _type: 'slug', current: member.slug },
-      name: intlString(member.name),
+      name: intlBilingual(member.name, greekByName.get(normalizedName(member.name))),
       discipline: intlString('Printmaker'),
       bio: intlRich(member.bio ? [member.bio] : [`${member.name} is a member of the Cyprus Printmakers Association.`]),
       email: member.email,
