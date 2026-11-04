@@ -16,7 +16,9 @@
     "seed": "node --disable-warning=ExperimentalWarning scripts/seed.ts",
     "manifest": "sanity manifest extract --path public/admin/static && mkdir -p public/static && cp public/admin/static/* public/static/",
     "import:projects": "tsx scripts/import-projects.ts --dry-run",
-    "import:members": "tsx scripts/import-members.ts --dry-run"
+    "import:members": "tsx scripts/import-members.ts --dry-run",
+    "import:content": "tsx scripts/import-content.ts",
+    "import:content:dry": "tsx scripts/import-content.ts --dry-run"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.1",
@@ -41,6 +43,7 @@
     "@astrojs/check": "^0.9.12",
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^5.0.5"
   }

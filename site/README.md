@@ -41,7 +41,7 @@ Content source is deterministic: `CONTENT_SOURCE` wins when set; otherwise `sani
 - Seed the initial content once: `npm run seed` (idempotent for singletons, non-destructive for collections; `-- --dry-run` prints payloads without credentials).
 - After changing schema types, regenerate the embedded Studio manifest: `npm run manifest` (writes `public/admin/static` and `public/static`). The committed manifest is what the Studio and Dashboard read.
 - Draft preview: the `/preview/<path>` route renders a minimal draft page. The Presentation tool only registers when `PUBLIC_SANITY_VISUAL_EDITING_ENABLED=true` and a read token are set; full visual editing is still deferred.
-- Import the archived Wix content: `npm run import:projects` / `npm run import:members` print the exact write payloads (NDJSON) as a dry run; the live write path is wired to `createOrReplace` on fixed ids and is reviewed before running.
+- Import the archived Wix content: `npm run import:content:dry` prints the counts and project/cover mapping; `npm run import:content` uploads the year covers and member portraits, writes projects/members/committee with deterministic ids, removes the sample documents and points home `CURRENT` at the first 2019 project. It pauses the publish webhook for the batch and re-enables it. The archive lives in `../wix-archive` (not in git). `import:projects` / `import:members` remain the older dry-run-only helpers.
 - Publishing rebuilds the site: Sanity webhook → Vercel deploy hook (verify with a test publish; the rebuild should start within 60 s).
 
 ## Backups

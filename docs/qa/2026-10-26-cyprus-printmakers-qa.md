@@ -77,6 +77,15 @@
 - The cover appears on every full home load (not once per session), and is skipped with reduced motion, with JS off, and on client-side arrivals at home. Enabling reduced motion while the cover is pending reveals the page immediately.
 - Final whole-branch review fixes (2026-11-03): reduced-motion-while-pending no longer blanks the page; the paragraph reveal is a single timeline; the pending mark is centred by its own rect; animation rejection/cancel paths clean up and a watchdog covers the active sequence; the footer returns to normal flow (320×256 no overlap); the desktop paragraph sits below/right of the wordmark; the idle cover no longer auto-dismisses. Re-run after fixes: 96 e2e passed, 1 skipped; Lighthouse 100/100 on `/` and `/el`.
 
+## Archive content import (2026-11-04)
+
+- Imported **20 projects**, **18 members** and **7 committee entries** from `wix-archive` into `hyel0os7/production`, with **31 images** (11 year covers, 3 extra 2017 project images, 17 member portraits). Each project cover is the year cover from the old `/project` index; 2017’s three extras are assigned to its first three projects. Nicolas Mouros has no portrait on the old site and keeps the placeholder.
+- The sample members, committee, projects and news posts were removed; home `CURRENT` now points at “PRINTMAKING EXHIBITION - GLORIA GALLERY” (`/projects/printmaking-exhibition-gloria-gallery-2019`). The news section is empty until the committee supplies posts.
+- Project pages were verified locally: 20 English + 20 Greek project pages, 18 English + 18 Greek member pages; portraits resolve through the Sanity CDN; the Greek member fallback renders English with `noindex`.
+- The publish webhook was disabled for the batch and re-enabled afterwards, so the import did not trigger one deployment per document.
+- The import script is `site/scripts/import-content.ts` (`npm run import:content`), with a dry run via `npm run import:content:dry`. It expects the archive in `../wix-archive`, outside the repo.
+- Still pending: real news posts, Greek translations, committee-confirmed membership prices, privacy notice, and the static page copy.
+
 ## Bilingual pass
 
 ## Accessibility
