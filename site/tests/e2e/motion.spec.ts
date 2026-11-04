@@ -73,10 +73,16 @@ test('membership form still submits after navigating away and back', async ({ pa
     }),
   )
   const submit = async () => {
-    await page.getByLabel('Name').fill('Maria')
+    await page.getByLabel(/full name/i).fill('Maria')
     await page.getByLabel('Email').fill('maria@example.com')
+    await page.getByLabel(/why do you want/i).fill('I would like to join.')
+    await page.getByLabel(/send us your cv/i).setInputFiles({
+      name: 'cv.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from('%PDF-1.4 test fixture'),
+    })
     await page.getByRole('checkbox', { name: /privacy/ }).check()
-    await page.getByRole('button', { name: 'Send application' }).click()
+    await page.getByRole('button', { name: 'Submit' }).click()
     await expect(page.getByRole('status')).toContainText('Thank you')
   }
 

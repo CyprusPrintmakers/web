@@ -1,13 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import LocalizedText from '../ui/LocalizedText.astro'
-import Prose from '../ui/Prose.astro'
-import Rule from '../ui/Rule.astro'
-import TierList from './TierList.astro'
 import MembershipForm from '../forms/MembershipForm.astro'
 import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
-import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { localePath } from '../../lib/i18n/locales'
+import { pickLocalized } from '../../lib/i18n/localized'
 import { isFullyTranslated } from '../../lib/content/translation'
 import { t } from '../../lib/i18n/ui'
 
@@ -19,7 +17,6 @@ const { lang } = Astro.props
 const { membership } = await getContent()
 const noindex = lang === 'el' && !isFullyTranslated(membership, 'membershipPage', 'el')
 const intro = pickLocalized(membership.intro, lang)
-const formIntro = pickLocalized(membership.formIntro, lang)
 ---
 
 <BaseLayout
@@ -30,7 +27,11 @@ const formIntro = pickLocalized(membership.formIntro, lang)
   alternates={{ en: '/membership', el: '/el/membership' }}
 >
   <article class="membership">
-    <h1 class="membership__heading t-display">{t('membership.heading', lang)}</h1>
+    <h1 class="sr-only">{t('membership.heading', lang)}</h1>
+
+    <a class="membership__back t-body" href={localePath('/members', lang)}>
+      <span aria-hidden="true">←</span> {t('membership.back', lang)}
+    </a>
 
     {
       intro.text !== '' && (
@@ -40,51 +41,15 @@ const formIntro = pickLocalized(membership.formIntro, lang)
       )
     }
 
-    <TierList tiers={membership.tiers} confirmed={membership.tiersConfirmed} lang={lang} />
-
-    {
-      membership.processSteps.length > 0 && (
-        <section class="membership__process" aria-labelledby="process-heading">
-          <ol class="membership__steps">
-            {membership.processSteps.map(step => {
-              const title = pickLocalized(step.title, lang)
-              const body = pickRich(step.body, lang)
-
-              return (
-                <li class="membership__step">
-                  {title.text !== '' && (
-                    <h2 class="membership__step-title t-title" lang={title.isFallback ? 'en' : lang}>
-                      {title.text}
-                    </h2>
-                  )}
-                  <Prose value={body} lang={lang} />
-                </li>
-              )
-            })}
-          </ol>
-        </section>
-      )
-    }
-
-    <Rule />
-
-    <section class="membership__form" aria-labelledby="membership-form-heading">
-      <h2 id="membership-form-heading" class="t-title">{t('membership.form', lang)}</h2>
-      {
-        formIntro.text !== '' && (
-          <p class="membership__form-intro t-body">
-            <LocalizedText value={membership.formIntro} lang={lang} />
-          </p>
-        )
-      }
+    <section class="membership__form" aria-label={t('membership.form', lang)}>
       <MembershipForm lang={lang} />
     </section>
 
     <section class="membership__privacy" aria-labelledby="privacy-heading" id="privacy">
-      <h2 id="privacy-heading" class="t-small membership__label">
-        {t('form.consent', lang)}
+      <h2 id="privacy-heading" class="t-label membership__label">
+        {t('form.privacyHeading', lang)}
       </h2>
-      <p class="membership__privacy-note t-body">
+      <p class="membership__privacy-note t-note">
         <LocalizedText value={membership.privacyNote} lang={lang} />
       </p>
     </section>
@@ -97,44 +62,26 @@ const formIntro = pickLocalized(membership.formIntro, lang)
     flex-direction: column;
   }
 
-  .membership__heading {
-    margin-bottom: clamp(16px, 2vw, 32px);
+  .membership__back {
+    align-self: flex-start;
+    font-weight: var(--fw-medium);
+    margin-bottom: clamp(48px, 8vw, 96px);
+    margin-top: clamp(24px, 5vw, 56px);
+    text-decoration: none;
+  }
+
+  .membership__back:hover {
+    text-decoration: underline;
   }
 
   .membership__intro {
-    margin: 0 0 clamp(32px, 5vw, 64px);
-    max-width: 40em;
-  }
-
-  .membership__process {
-    margin: clamp(48px, 6vw, 96px) 0;
-  }
-
-  .membership__steps {
-    display: grid;
-    gap: 24px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .membership__step-title {
-    margin: 0 0 8px;
+    margin: 0 0 clamp(48px, 7vw, 80px);
+    max-width: var(--measure);
   }
 
   .membership__form {
-    border: var(--rule);
-    margin-bottom: clamp(24px, 4vw, 64px);
-    max-width: 40em;
-    padding: 24px;
-  }
-
-  .membership__form h2 {
-    margin-bottom: 16px;
-  }
-
-  .membership__form-intro {
-    margin-bottom: 24px;
+    margin-bottom: clamp(48px, 7vw, 80px);
+    max-width: var(--measure);
   }
 
   .membership__privacy {
@@ -142,11 +89,10 @@ const formIntro = pickLocalized(membership.formIntro, lang)
   }
 
   .membership__label {
-    color: var(--muted-text);
     margin: 0 0 8px;
   }
 
   .membership__privacy-note {
-    max-width: 40em;
+    max-width: var(--measure);
   }
 </style>

@@ -38,9 +38,7 @@ export function buildMembershipMails(
     row('Name', input.name ?? ''),
     row('Email', input.email ?? ''),
     ...(input.phone ? [row('Phone', input.phone)] : []),
-    ...(input.tier ? [row('Membership tier', input.tier)] : []),
-    ...(input.practice ? [row('Practice', input.practice)] : []),
-    ...(input.message ? [row('Message', input.message)] : []),
+    ...(input.message ? [row('Why they want to join', input.message)] : []),
     ...(input.cv ? [row('CV', input.cv.name ?? 'attached')] : []),
   ].join('')
 

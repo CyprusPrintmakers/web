@@ -1,30 +1,24 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('membership', () => {
-  test('gates all prices until tiers are confirmed', async ({ page }) => {
+  test('is the application page, not the tier table', async ({ page }) => {
     await page.goto('/membership')
 
-    await expect(page.getByText('terms to be confirmed')).toBeVisible()
-    await expect(page.getByText('€50')).toHaveCount(0)
-    await expect(page.getByText('€90')).toHaveCount(0)
-    await expect(page.getByText('€250')).toHaveCount(0)
+    await expect(page.locator('[data-tier]')).toHaveCount(0)
+    await expect(page.getByText('Choose the tier')).toHaveCount(0)
+    await expect(page.getByRole('link', { name: /become a member/i })).toHaveAttribute(
+      'href',
+      '/members',
+    )
+    await expect(page.locator('form[action="/api/membership"]')).toHaveCount(1)
   })
 
-  test('renders three tiers with corporate levels', async ({ page }) => {
-    await page.goto('/membership')
-
-    await expect(page.locator('[data-tier]')).toHaveCount(3)
-    await expect(page.locator('[data-tier]').last()).toContainText('Silver')
-    await expect(page.locator('[data-tier]').last()).toContainText('Gold')
-    await expect(page.locator('[data-tier]').last()).toContainText('Platinum')
-  })
-
-  test('greek tiers are translated', async ({ page }) => {
+  test('greek application page has translated labels', async ({ page }) => {
     await page.goto('/el/membership')
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'el')
-    await expect(page.locator('[data-tier]').first()).not.toContainText('Individual')
-    await expect(page.locator('[data-tier]').first()).toContainText('Ατομική')
+    await expect(page.getByRole('link', { name: /γίνετε μέλος/i })).toBeVisible()
+    await expect(page.getByLabel(/ονοματεπώνυμο/i)).toBeVisible()
   })
 
   test('hosts the privacy note section and the application form', async ({ page }) => {

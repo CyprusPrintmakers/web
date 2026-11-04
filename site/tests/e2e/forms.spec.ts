@@ -1,5 +1,24 @@
 import { expect, test } from '@playwright/test'
 
+const cvFile = {
+  name: 'cv.pdf',
+  mimeType: 'application/pdf',
+  buffer: Buffer.from('%PDF-1.4 test fixture'),
+}
+
+async function fillApplication(page: import('@playwright/test').Page, lang: 'en' | 'el' = 'en') {
+  const labels =
+    lang === 'el'
+      ? { name: /ονοματεπώνυμο/i, why: /γιατί θέλετε/i, cv: /βιογραφικό/i }
+      : { name: /full name/i, why: /why do you want/i, cv: /send us your cv/i }
+
+  await page.getByLabel(labels.name).fill('Maria')
+  await page.getByLabel('Email').fill('maria@example.com')
+  await page.getByLabel(labels.why).fill('I would like to join the association.')
+  await page.getByLabel(labels.cv).setInputFiles(cvFile)
+  await page.getByRole('checkbox', { name: /privacy|απόρρητο/i }).check()
+}
+
 test.describe('membership form', () => {
   test('submits inline and shows a status message', async ({ page }) => {
     await page.route('**/api/membership', route =>
@@ -11,10 +30,8 @@ test.describe('membership form', () => {
     )
     await page.goto('/membership')
 
-    await page.getByLabel('Name').fill('Maria')
-    await page.getByLabel('Email').fill('maria@example.com')
-    await page.getByRole('checkbox', { name: /privacy/ }).check()
-    await page.getByRole('button', { name: 'Send application' }).click()
+    await fillApplication(page)
+    await page.getByRole('button', { name: 'Submit' }).click()
 
     await expect(page.getByRole('status')).toContainText('Thank you')
   })
@@ -50,12 +67,11 @@ test.describe('membership form', () => {
         body: '<h1>Thank you</h1>',
       }),
     )
-    await raw.goto('http://localhost:4321/membership')
+    const baseURL = String(test.info().project.use.baseURL)
+    await raw.goto(`${baseURL}/membership`)
 
-    await raw.getByLabel('Name').fill('Maria')
-    await raw.getByLabel('Email').fill('maria@example.com')
-    await raw.getByRole('checkbox', { name: /privacy/ }).check()
-    await raw.getByRole('button', { name: 'Send application' }).click()
+    await fillApplication(raw)
+    await raw.getByRole('button', { name: 'Submit' }).click()
 
     await expect(raw.getByRole('heading')).toContainText('Thank you')
     await noJs.close()

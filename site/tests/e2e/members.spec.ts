@@ -31,7 +31,8 @@ test.describe('members index', () => {
     const noJs = await browser.newContext({ javaScriptEnabled: false })
     const raw = await noJs.newPage()
 
-    await raw.goto('http://localhost:4321/members')
+    const baseURL = String(test.info().project.use.baseURL)
+    await raw.goto(`${baseURL}/members`)
     await expect(raw.locator('[data-member]')).toHaveCount(3)
 
     await noJs.close()

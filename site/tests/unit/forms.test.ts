@@ -13,8 +13,8 @@ const cv = (size: number, type = 'application/pdf', name = 'cv.pdf') => ({
 const valid: FormInput = {
   name: 'Maria Georgiou',
   email: 'maria@example.com',
+  message: 'I would like to join the association.',
   consent: true,
-  tier: 'individual',
   cv: cv(1000),
 }
 
@@ -45,6 +45,19 @@ describe('validateMembership', () => {
         email: 'Enter a valid email address',
         consent: 'Please accept the privacy notice',
       })
+    }
+  })
+
+  it('requires the motivation and the CV', () => {
+    const result = validateMembership(
+      { name: 'Maria', email: 'maria@example.com', consent: true },
+      'en',
+      0,
+    )
+    expect(result.ok).toBe(false)
+    if (!result.ok && !result.silent) {
+      expect(result.errors.message).toBe('Tell us why you want to join')
+      expect(result.errors.cv).toBe('Attach your CV')
     }
   })
 

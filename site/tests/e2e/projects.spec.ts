@@ -33,7 +33,8 @@ test.describe('projects index', () => {
     const noJs = await browser.newContext({ javaScriptEnabled: false })
     const raw = await noJs.newPage()
 
-    await raw.goto('http://localhost:4321/projects')
+    const baseURL = String(test.info().project.use.baseURL)
+    await raw.goto(`${baseURL}/projects`)
     await expect(raw.locator('[data-project]')).toHaveCount(3)
 
     await noJs.close()

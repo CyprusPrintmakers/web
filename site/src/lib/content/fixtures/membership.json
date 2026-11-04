@@ -5,19 +5,27 @@
     {
       "_key": "en",
       "language": "en",
-      "value": "Membership supports the association's exhibitions, workshops and archive. Choose the tier that fits your practice."
+      "value": "Membership supports the association's exhibitions, workshops and archive. Tell us about your practice and send your CV; the committee reviews applications as they arrive."
     },
     {
       "_key": "el",
       "language": "el",
-      "value": "Η συνδρομή στηρίζει τις εκθέσεις, τα εργαστήρια και το αρχείο του συλλόγου. Επιλέξτε την κατηγορία που ταιριάζει στην πρακτική σας."
+      "value": "Η συνδρομή στηρίζει τις εκθέσεις, τα εργαστήρια και το αρχείο του συλλόγου. Πείτε μας για την πρακτική σας και στείλτε το βιογραφικό σας· η επιτροπή εξετάζει τις αιτήσεις καθώς φτάνουν."
     }
   ],
   "tiers": [
     {
       "name": [
-        { "_key": "en", "language": "en", "value": "Individual" },
-        { "_key": "el", "language": "el", "value": "Ατομική" }
+        {
+          "_key": "en",
+          "language": "en",
+          "value": "Individual"
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": "Ατομική"
+        }
       ],
       "price": "€50",
       "benefits": [
@@ -31,7 +39,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-is1", "text": "Voting rights at the general assembly", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-is1",
+                  "text": "Voting rights at the general assembly",
+                  "marks": []
+                }
               ]
             },
             {
@@ -40,7 +53,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-is2", "text": "Priority booking for workshops and talks", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-is2",
+                  "text": "Priority booking for workshops and talks",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -55,7 +73,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-is1", "text": "Δικαίωμα ψήφου στη γενική συνέλευση", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-is1",
+                  "text": "Δικαίωμα ψήφου στη γενική συνέλευση",
+                  "marks": []
+                }
               ]
             },
             {
@@ -64,7 +87,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-is2", "text": "Προτεραιότητα σε εργαστήρια και ομιλίες", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-is2",
+                  "text": "Προτεραιότητα σε εργαστήρια και ομιλίες",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -73,8 +101,16 @@
     },
     {
       "name": [
-        { "_key": "en", "language": "en", "value": "Group (up to 4 persons)" },
-        { "_key": "el", "language": "el", "value": "Ομαδική (έως 4 άτομα)" }
+        {
+          "_key": "en",
+          "language": "en",
+          "value": "Group (up to 4 persons)"
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": "Ομαδική (έως 4 άτομα)"
+        }
       ],
       "price": "€90",
       "benefits": [
@@ -88,7 +124,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-gs1", "text": "All individual member benefits for up to four people", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-gs1",
+                  "text": "All individual member benefits for up to four people",
+                  "marks": []
+                }
               ]
             },
             {
@@ -97,7 +138,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-gs2", "text": "Shared listing in the members' directory", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-gs2",
+                  "text": "Shared listing in the members' directory",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -112,7 +158,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-gs1", "text": "Όλα τα προνόμια της ατομικής συνδρομής για έως τέσσερα άτομα", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-gs1",
+                  "text": "Όλα τα προνόμια της ατομικής συνδρομής για έως τέσσερα άτομα",
+                  "marks": []
+                }
               ]
             },
             {
@@ -121,7 +172,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-gs2", "text": "Κοινή καταχώριση στον κατάλογο μελών", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-gs2",
+                  "text": "Κοινή καταχώριση στον κατάλογο μελών",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -130,8 +186,16 @@
     },
     {
       "name": [
-        { "_key": "en", "language": "en", "value": "Corporate" },
-        { "_key": "el", "language": "el", "value": "Εταιρική" }
+        {
+          "_key": "en",
+          "language": "en",
+          "value": "Corporate"
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": "Εταιρική"
+        }
       ],
       "price": "€250",
       "benefits": [
@@ -145,7 +209,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-cs1", "text": "Recognition on the supporters page", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-cs1",
+                  "text": "Recognition on the supporters page",
+                  "marks": []
+                }
               ]
             },
             {
@@ -154,7 +223,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-cs2", "text": "Invitations to exhibition previews", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-cs2",
+                  "text": "Invitations to exhibition previews",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -169,7 +243,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-cs1", "text": "Αναγνώριση στη σελίδα υποστηρικτών", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-cs1",
+                  "text": "Αναγνώριση στη σελίδα υποστηρικτών",
+                  "marks": []
+                }
               ]
             },
             {
@@ -178,24 +257,46 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-cs2", "text": "Προσκλήσεις σε προεπισκοπήσεις εκθέσεων", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-cs2",
+                  "text": "Προσκλήσεις σε προεπισκοπήσεις εκθέσεων",
+                  "marks": []
+                }
               ]
             }
           ]
         }
       ],
       "levels": [
-        { "name": "Silver", "price": "€400" },
-        { "name": "Gold", "price": "€800" },
-        { "name": "Platinum", "price": "€1500" }
+        {
+          "name": "Silver",
+          "price": "€400"
+        },
+        {
+          "name": "Gold",
+          "price": "€800"
+        },
+        {
+          "name": "Platinum",
+          "price": "€1500"
+        }
       ]
     }
   ],
   "processSteps": [
     {
       "title": [
-        { "_key": "en", "language": "en", "value": "Choose a tier" },
-        { "_key": "el", "language": "el", "value": "Επιλέξτε κατηγορία" }
+        {
+          "_key": "en",
+          "language": "en",
+          "value": "Choose a tier"
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": "Επιλέξτε κατηγορία"
+        }
       ],
       "body": [
         {
@@ -208,7 +309,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-ps1", "text": "Pick the tier that matches your practice. If you are unsure, choose 'Not sure yet' in the form.", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-ps1",
+                  "text": "Pick the tier that matches your practice. If you are unsure, choose 'Not sure yet' in the form.",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -223,7 +329,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-ps1", "text": "Επιλέξτε την κατηγορία που ταιριάζει στην πρακτική σας. Αν δεν είστε σίγουροι, επιλέξτε «Δεν έχω αποφασίσει ακόμη» στη φόρμα.", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-ps1",
+                  "text": "Επιλέξτε την κατηγορία που ταιριάζει στην πρακτική σας. Αν δεν είστε σίγουροι, επιλέξτε «Δεν έχω αποφασίσει ακόμη» στη φόρμα.",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -232,8 +343,16 @@
     },
     {
       "title": [
-        { "_key": "en", "language": "en", "value": "Send the form" },
-        { "_key": "el", "language": "el", "value": "Στείλτε τη φόρμα" }
+        {
+          "_key": "en",
+          "language": "en",
+          "value": "Send the form"
+        },
+        {
+          "_key": "el",
+          "language": "el",
+          "value": "Στείλτε τη φόρμα"
+        }
       ],
       "body": [
         {
@@ -246,7 +365,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "en-ps2", "text": "Tell us about your work and attach a CV if you have one. We reply within two weeks.", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "en-ps2",
+                  "text": "Tell us about your work and attach a CV if you have one. We reply within two weeks.",
+                  "marks": []
+                }
               ]
             }
           ]
@@ -261,7 +385,12 @@
               "style": "normal",
               "markDefs": [],
               "children": [
-                { "_type": "span", "_key": "el-ps2", "text": "Πείτε μας για τη δουλειά σας και επισυνάψτε βιογραφικό αν έχετε. Απαντάμε εντός δύο εβδομάδων.", "marks": [] }
+                {
+                  "_type": "span",
+                  "_key": "el-ps2",
+                  "text": "Πείτε μας για τη δουλειά σας και επισυνάψτε βιογραφικό αν έχετε. Απαντάμε εντός δύο εβδομάδων.",
+                  "marks": []
+                }
               ]
             }
           ]

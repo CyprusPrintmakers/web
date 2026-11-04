@@ -55,6 +55,9 @@ function orderedMembershipErrors(
     add('name', t('form.errors.name', lang))
   if (input.email === undefined || !EMAIL_RE.test(input.email))
     add('email', t('form.errors.email', lang))
+  if (input.message === undefined || input.message.trim() === '')
+    add('message', t('form.errors.why', lang))
+  if (input.cv === undefined) add('cv', t('form.errors.cvRequired', lang))
   if (input.consent !== true) add('consent', t('form.errors.consent', lang))
 
   return errors

@@ -25,21 +25,29 @@ const { lang } = Astro.props
     <input id="membership-website" type="text" name="website" tabindex="-1" autocomplete="off" />
   </div>
 
-  <div class="form__field">
-    <label class="form__label t-small" for="membership-name">{t('form.name', lang)}</label>
-    <input
-      class="form__input"
-      id="membership-name"
-      name="name"
-      type="text"
-      required
-      autocomplete="name"
-    />
-    <p class="form__error t-small" data-error="name"></p>
+  <div class="form__row">
+    <div class="form__field">
+      <label class="form__label t-label" for="membership-name">
+        {t('form.fullName', lang)} <span aria-hidden="true">*</span>
+      </label>
+      <input
+        class="form__input"
+        id="membership-name"
+        name="name"
+        type="text"
+        required
+        autocomplete="name"
+      />
+      <p class="form__error t-small" data-error="name"></p>
+    </div>
+
+    <p class="form__required-note t-small">{t('form.requiredNote', lang)}</p>
   </div>
 
   <div class="form__field">
-    <label class="form__label t-small" for="membership-email">{t('form.email', lang)}</label>
+    <label class="form__label t-label" for="membership-email">
+      {t('form.email', lang)} <span aria-hidden="true">*</span>
+    </label>
     <input
       class="form__input"
       id="membership-email"
@@ -52,7 +60,9 @@ const { lang } = Astro.props
   </div>
 
   <div class="form__field">
-    <label class="form__label t-small" for="membership-phone">{t('form.phone', lang)}</label>
+    <label class="form__label t-label" for="membership-phone">
+      {t('form.mobile', lang)}
+    </label>
     <input
       class="form__input"
       id="membership-phone"
@@ -64,37 +74,25 @@ const { lang } = Astro.props
   </div>
 
   <div class="form__field">
-    <label class="form__label t-small" for="membership-tier">{t('form.tier', lang)}</label>
-    <select class="form__input" id="membership-tier" name="tier">
-      <option value="">{t('form.tierUnsure', lang)}</option>
-      <option value="individual">Individual / Ατομική</option>
-      <option value="group">Group / Ομαδική</option>
-      <option value="corporate">Corporate / Εταιρική</option>
-    </select>
-    <p class="form__error t-small" data-error="tier"></p>
-  </div>
-
-  <div class="form__field">
-    <label class="form__label t-small" for="membership-practice">{t('form.practice', lang)}</label>
-    <input class="form__input" id="membership-practice" name="practice" type="text" />
-    <p class="form__error t-small" data-error="practice"></p>
-  </div>
-
-  <div class="form__field">
-    <label class="form__label t-small" for="membership-message">{t('form.message', lang)}</label>
-    <textarea class="form__input" id="membership-message" name="message" rows="5"></textarea>
+    <label class="form__label t-label" for="membership-message">
+      {t('form.why', lang)} <span aria-hidden="true">*</span>
+    </label>
+    <textarea class="form__input" id="membership-message" name="message" rows="4" required></textarea>
     <p class="form__error t-small" data-error="message"></p>
   </div>
 
-  <div class="form__field">
-    <label class="form__label t-small" for="membership-cv">{t('form.cv', lang)}</label>
+  <div class="form__field form__field--cv">
     <input
-      class="form__input"
+      class="form__file"
       id="membership-cv"
       name="cv"
       type="file"
       accept=".pdf,.doc,.docx"
+      required
     />
+    <label class="form__label form__label--action t-label" for="membership-cv">
+      {t('form.cvAction', lang)} <span aria-hidden="true">* →</span>
+    </label>
     <p class="form__note t-small">{t('form.cvNote', lang)}</p>
     <p class="form__error t-small" data-error="cv"></p>
   </div>
@@ -117,13 +115,18 @@ const { lang } = Astro.props
 <style>
   .form {
     display: grid;
-    gap: 24px;
-    max-width: 40em;
+    gap: 28px;
   }
 
   .form__honeypot {
     left: -9999px;
     position: absolute;
+  }
+
+  .form__row {
+    display: grid;
+    gap: 8px 32px;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .form__field {
@@ -133,28 +136,54 @@ const { lang } = Astro.props
   }
 
   .form__field--consent {
-    grid-template-columns: auto 1fr;
     align-items: start;
+    grid-template-columns: auto 1fr;
   }
 
   .form__label {
+    color: var(--ink);
+  }
+
+  .form__required-note {
     color: var(--muted-text);
+    margin: 0;
   }
 
   .form__input {
     background: transparent;
     border: 0;
     border-bottom: var(--rule);
-    font-size: 20px;
+    border-radius: 0;
+    color: var(--ink);
+    font-size: var(--text-body);
+    min-height: 48px;
     min-width: 0;
-    padding: 8px 2px;
+    padding: 8px 0;
     width: 100%;
   }
 
-  select.form__input,
   textarea.form__input {
-    border: var(--rule);
-    padding: 8px;
+    resize: vertical;
+  }
+
+  .form__file {
+    height: 1px;
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .form__label--action {
+    color: var(--ink);
+    cursor: pointer;
+    justify-self: start;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .form__file:focus-visible + .form__label--action {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
   }
 
   .form__checkbox {
@@ -180,18 +209,32 @@ const { lang } = Astro.props
   }
 
   .form__submit {
-    background: transparent;
-    border: var(--rule);
+    background: var(--control);
+    border: 0;
     border-radius: var(--radius-pill);
+    color: var(--ink);
     cursor: pointer;
-    font-size: 20px;
+    font-size: var(--text-body);
+    font-weight: var(--fw-medium);
     justify-self: start;
-    min-height: 44px;
+    min-height: 48px;
+    min-width: 180px;
     padding: 0 32px;
   }
 
   .form__submit:hover {
     background: var(--ink);
     color: var(--paper);
+  }
+
+  @media (min-width: 700px) {
+    .form__row {
+      align-items: end;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .form__required-note {
+      padding-bottom: 10px;
+    }
   }
 </style>
