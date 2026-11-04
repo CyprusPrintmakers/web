@@ -1,10 +1,9 @@
 import { defineField, defineType } from 'sanity'
 import { computeTranslations } from '../../lib/content/translation'
+import { isNonEmpty, requiredEnglish, type IntlEntry } from '../validation'
 import type { ContentKind } from '../../lib/content/types'
 
 type PrepareSelection = Record<string, unknown>
-
-type IntlEntry = { language?: unknown; value?: unknown }
 
 /**
  * Must list exactly the fields `translation.ts` requires per kind — the badge
@@ -55,11 +54,6 @@ const PREVIEW_FALLBACK: Record<ContentKind, string> = {
   committeeMember: 'Committee member',
   project: 'Project',
   newsPost: 'News post',
-}
-
-function isNonEmpty(value: unknown): boolean {
-  if (typeof value === 'string') return value.trim() !== ''
-  return Array.isArray(value) && value.length > 0
 }
 
 function localizedTitle(values: unknown, fallback: string): string {
@@ -568,19 +562,19 @@ export default [
         name: 'title',
         title: 'Title',
         type: 'internationalizedArrayString',
-        validation: Rule => Rule.required(),
+        validation: requiredEnglish('Add an English title'),
       }),
       defineField({
         name: 'excerpt',
         title: 'Excerpt',
         type: 'internationalizedArrayString',
-        validation: Rule => Rule.required(),
+        validation: requiredEnglish('Add an English excerpt'),
       }),
       defineField({
         name: 'body',
         title: 'Body',
         type: 'internationalizedArrayPortableText',
-        validation: Rule => Rule.required(),
+        validation: requiredEnglish('Add English body copy'),
       }),
       defineField({
         name: 'publishedAt',

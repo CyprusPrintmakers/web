@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-11-02T15:40:06.493Z",
+  "createdAt": "2026-11-04T19:56:31.266Z",
   "studioVersion": "6.20.0",
   "version": 3,
   "workspaces": [
@@ -15,7 +15,7 @@
       },
       "name": "default",
       "projectId": "hyel0os7",
-      "schema": "382b11d9.create-schema.json",
+      "schema": "aabaa8fd.create-schema.json",
       "title": "Cyprus Printmakers Association",
       "tools": "a1fd46b5.create-tools.json"
     }

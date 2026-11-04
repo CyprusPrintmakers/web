@@ -1010,6 +1010,34 @@
       },
       {
         "options": {
+          "apiVersion": "2025-10-15",
+          "languages": [
+            {
+              "id": "en",
+              "title": "English"
+            },
+            {
+              "id": "el",
+              "title": "Greek"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "name": "heroBody",
+        "type": "internationalizedArrayText",
+        "title": "Hero paragraph (intro only)"
+      },
+      {
+        "options": {
           "hotspot": true
         },
         "name": "coverImage",
@@ -2164,8 +2192,7 @@
             "level": "error",
             "rules": [
               {
-                "flag": "presence",
-                "constraint": "required"
+                "flag": "custom"
               }
             ]
           }
@@ -2192,8 +2219,7 @@
             "level": "error",
             "rules": [
               {
-                "flag": "presence",
-                "constraint": "required"
+                "flag": "custom"
               }
             ]
           }
@@ -2220,8 +2246,7 @@
             "level": "error",
             "rules": [
               {
-                "flag": "presence",
-                "constraint": "required"
+                "flag": "custom"
               }
             ]
           }
