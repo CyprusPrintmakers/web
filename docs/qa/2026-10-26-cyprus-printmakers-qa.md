@@ -116,3 +116,12 @@
 - Dev fix: `astro dev` does not copy `.env` into `process.env`, so the content loader silently fell back to fixtures. `astro.config.mjs` now loads the file into `process.env` at startup; `npm run dev` serves Sanity without exporting variables first. Port 4321 was also occupied by another project's preview, so the dev server had fallen back to 4324.
 - Verified: 117 unit tests, `astro check` 0 errors, 96 e2e passed / 1 skipped (run on `E2E_PORT=4331` to avoid the other project on 4321), production build completes. Live `cyprus-printmakers-web.vercel.app/membership/` shows the form with no `[data-tier]`, required CV, and the Greek labels.
 - Still pending from the design: the member directory disclosure, the About picture's horizontal slide, the projects table, and the tier-free membership copy review.
+
+## Mockup alignment pass (2026-11-04)
+
+- Header now matches the inner-page exports: compact mark with the «ΚΥΡΙΟΙ ΧΑΡΑΚΤΕΣ» caption at top-left, nav and language switcher right; home keeps the nav-only header. Main content gets a top gap so the table header no longer sits against the brand.
+- `/members` is the index from the mockup: “Become a member →”, grey “Executive Committee Members”, “All members”, first-name A–Z, numbered rows with emails, and an inline grey bio with “Full profile →” and a mailto link. Sorted by first name; the letter buttons filter rows. Slugs stay.
+- `/projects` is an INDEX / NAME / YEAR table; each row expands to its cover, summary and “Full project →”. The year filter was removed.
+- About uses the archived workshop photo between the intro and history, sliding in from the right on entry (horizontal only; reduced motion and no-JS render it in place).
+- Fixed the year-page parser to decode named Greek entities; re-imported the 20 projects, so “Teachers Workshop” now reads «Μεταξοτυπία και Στένσιλ» instead of the corrupted string. Project detail pages no longer print the summary twice.
+- Verified: 120 unit tests, 0 Astro errors, 98 e2e passed / 1 skipped, production build clean. Live checks on `cyprus-printmakers-web.vercel.app`: header lockup, 18 member rows with bios and permalinks, 20 project rows, Greek summary present, one copy of the summary in the project body.
