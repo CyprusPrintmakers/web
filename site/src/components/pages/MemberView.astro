@@ -46,7 +46,7 @@ const joined =
       <LocalizedText value={member.name} lang={lang} />
     </h1>
 
-    <p class="member__discipline t-title">
+    <p class="member__discipline t-label">
       <LocalizedText value={member.discipline} lang={lang} />
     </p>
 
@@ -109,6 +109,12 @@ const joined =
 
   .member__bio {
     margin-bottom: clamp(32px, 5vw, 64px);
+  }
+
+  .member :global(.figure__image) {
+    max-height: min(70vh, 640px);
+    object-fit: contain;
+    width: 100%;
   }
 
   .member__links {

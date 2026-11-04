@@ -26,24 +26,26 @@ const html = portableToHtml(value, { lang, imageUrl })
 
 <style>
   .prose {
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--text-body);
+    line-height: 1.5;
+    max-width: var(--measure);
   }
 
   .prose :global(p) {
-    margin: 0 0 24px;
+    margin: 0 0 0.9em;
   }
 
   .prose :global(h2) {
-    font-size: 36px;
-    line-height: 1.1;
-    margin: 48px 0 16px;
+    font-size: var(--text-title);
+    line-height: 1.15;
+    margin: 2em 0 0.6em;
   }
 
   .prose :global(h3) {
-    font-size: 32px;
-    line-height: 1.15;
-    margin: 32px 0 16px;
+    font-size: var(--text-note);
+    font-weight: var(--fw-medium);
+    line-height: 1.3;
+    margin: 2em 0 0.6em;
   }
 
   .prose :global(ul),
