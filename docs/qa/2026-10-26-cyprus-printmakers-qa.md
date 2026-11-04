@@ -106,3 +106,13 @@
 - Overflow gate: `scrollWidth - innerWidth <= 1` at 320px passes on `/el`, `/el/members`, `/el/membership`, `/el/projects` (form inputs needed `min-width: 0; width: 100%`).
 - Axe (wcag2a + wcag2aa): zero violations on `/`, `/about`, `/members`, `/projects`, `/news`, `/membership` and their `/el` twins; every page has `lang`, every image an `alt`, every visible control a label.
 - Note: Lighthouse numbers were measured against the prerendered static output; the deployed page adds no client JS beyond the 4.4 KB of scripts measured here.
+
+## Typography and membership pass (2026-11-04)
+
+- Added a fluid type scale in `site/src/styles/tokens.css`: small 14–15 px, note 16–18 px, body 17–20 px, title 22–32 px, display 32–56 px, prose measure 65ch. The `.t-*` utilities and `Prose` use the tokens, so every page inherits the change. About history is no longer forced to 36 px; the member discipline is a small tracked label.
+- `/membership` is now the application page from the request-form mockup: back link, black intro, full name, email, mobile, motivation, CV, consent and submit. The tier table, process steps, tier select and practice field are gone; `/support` keeps its tiers. Email, motivation and CV are required in client markup and server validation.
+- Rewrote the membership intro in English and Greek and patched `membershipPage.intro` in `hyel0os7/production`; the checked-in fixture carries the same copy.
+- Header navigation is 16–18 px instead of 24/32 px, so it wraps to two rows on a phone instead of three.
+- Dev fix: `astro dev` does not copy `.env` into `process.env`, so the content loader silently fell back to fixtures. `astro.config.mjs` now loads the file into `process.env` at startup; `npm run dev` serves Sanity without exporting variables first. Port 4321 was also occupied by another project's preview, so the dev server had fallen back to 4324.
+- Verified: 117 unit tests, `astro check` 0 errors, 96 e2e passed / 1 skipped (run on `E2E_PORT=4331` to avoid the other project on 4321), production build completes. Live `cyprus-printmakers-web.vercel.app/membership/` shows the form with no `[data-tier]`, required CV, and the Greek labels.
+- Still pending from the design: the member directory disclosure, the About picture's horizontal slide, the projects table, and the tier-free membership copy review.
