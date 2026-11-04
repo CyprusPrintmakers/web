@@ -119,7 +119,7 @@
 
 ## Mockup alignment pass (2026-11-04)
 
-- Header now matches the inner-page exports: compact mark with the «ΚΥΡΙΟΙ ΧΑΡΑΚΤΕΣ» caption at top-left, nav and language switcher right; home keeps the nav-only header. Main content gets a top gap so the table header no longer sits against the brand.
+- Header now matches the inner-page exports: compact mark with the «ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ» caption at top-left, nav and language switcher right; home keeps the nav-only header. Main content gets a top gap so the table header no longer sits against the brand.
 - `/members` is the index from the mockup: “Become a member →”, grey “Executive Committee Members”, “All members”, first-name A–Z, numbered rows with emails, and an inline grey bio with “Full profile →” and a mailto link. Sorted by first name; the letter buttons filter rows. Slugs stay.
 - `/projects` is an INDEX / NAME / YEAR table; each row expands to its cover, summary and “Full project →”. The year filter was removed.
 - About uses the archived workshop photo between the intro and history, sliding in from the right on entry (horizontal only; reduced motion and no-JS render it in place).
