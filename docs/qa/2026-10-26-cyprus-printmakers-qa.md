@@ -140,3 +140,5 @@
 - Cropped the baked-in “ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ” caption out of `mark.png`; the header caption is live text now, so it themes correctly and is not duplicated.
 - `/projects` shows a cover preview beside the cursor on hover (fine pointer, no reduced motion); the preview is decorative and does not block clicks.
 - Verified: 120 unit tests, 0 Astro errors, 102 e2e passed / 1 skipped, build clean. Theme tests cover system default, toggle persistence and the inverted mark.
+
+- Fixed the dark theme resetting on client-side navigation: Astro's page swap replaces the document and drops the runtime `data-theme`, so the theme script now restores the stored/system theme on `astro:after-swap` before paint and re-syncs the switch on `astro:page-load`. Covered by an e2e test that toggles, navigates to Members and asserts the theme and `aria-pressed` survive.

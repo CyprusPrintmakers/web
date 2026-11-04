@@ -29,6 +29,23 @@ test.describe('theme', () => {
     await expect(page.locator('html')).toHaveAttribute('data-theme', after ?? '')
   })
 
+  test('keeps the chosen theme across client-side navigation', async ({ page }) => {
+    await page.goto('/about')
+
+    const before = await page.locator('html').getAttribute('data-theme')
+    const target = before === 'dark' ? 'light' : 'dark'
+    await page.getByRole('button', { name: /dark mode/i }).click()
+    await expect(page.locator('html')).toHaveAttribute('data-theme', target)
+
+    await page.getByRole('navigation').getByRole('link', { name: /members/i }).click()
+    await expect(page).toHaveURL(/\/members$/)
+    await expect(page.locator('html')).toHaveAttribute('data-theme', target)
+    await expect(page.getByRole('button', { name: /dark mode/i })).toHaveAttribute(
+      'aria-pressed',
+      String(target === 'dark'),
+    )
+  })
+
   test('keeps the mark readable and the meta colour in step', async ({ page }) => {
     await page.goto('/about')
     await page.getByRole('button', { name: /dark mode/i }).click()
