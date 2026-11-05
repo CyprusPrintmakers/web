@@ -33,14 +33,14 @@ const mapLabel = lang === 'en' ? 'Open in Google Maps' : 'Άνοιγμα στο�
     <h1 class="sr-only">{t('nav.contact', lang)}</h1>
 
     <div class="contact__grid">
-      <div class="contact__note t-title">
+      <div class="contact__note t-title" data-reveal>
         <LocalizedText value={contact.openingNote} lang={lang} as="p" />
         <p class="contact__hours t-small">
           <LocalizedText value={contact.officeHours} lang={lang} />
         </p>
       </div>
 
-      <address class="contact__address t-title">
+      <address class="contact__address t-title" data-reveal style="--reveal-delay: 80ms">
         {address.map(line => <span class="contact__line">{line}</span>)}
         {
           mapUrl && (
@@ -51,13 +51,13 @@ const mapLabel = lang === 'en' ? 'Open in Google Maps' : 'Άνοιγμα στο�
         }
       </address>
 
-      <div class="contact__channels t-title">
+      <div class="contact__channels t-title" data-reveal style="--reveal-delay: 160ms">
         <a class="contact__line" href={telHref}>{details.phone}</a>
         <a class="contact__line" href={emailHref}>{details.email}</a>
       </div>
     </div>
 
-    <section class="contact__form" aria-labelledby="contact-form-heading">
+    <section class="contact__form" aria-labelledby="contact-form-heading" data-reveal>
       <h2 id="contact-form-heading" class="t-title">{t('form.sendMessage', lang)}</h2>
       <ContactForm lang={lang} />
     </section>

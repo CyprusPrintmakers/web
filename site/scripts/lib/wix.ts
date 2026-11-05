@@ -111,37 +111,71 @@ export function parseYearPage(html: string): string[] {
 
 const CSV_COLUMNS = ['name', 'email', 'bio', 'status'] as const
 
-function parseCsvLine(line: string): string[] {
-  const fields: string[] = []
+function parseCsvRecords(csv: string): string[][] {
+  const records: string[][] = []
+  let fields: string[] = []
   let current = ''
   let quoted = false
-  for (const char of line) {
-    if (char === '"') {
-      quoted = !quoted
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const char = csv[index]
+
+    if (quoted) {
+      if (char === '"') {
+        if (csv[index + 1] === '"') {
+          current += '"'
+          index += 1
+        } else {
+          quoted = false
+        }
+      } else {
+        current += char
+      }
       continue
     }
-    if (char === ',' && !quoted) {
+
+    if (char === '"') {
+      quoted = true
+      continue
+    }
+
+    if (char === ',') {
       fields.push(current)
       current = ''
       continue
     }
+
+    if (char === '\n') {
+      fields.push(current)
+      records.push(fields)
+      fields = []
+      current = ''
+      continue
+    }
+
+    if (char === '\r') continue
+
     current += char
   }
-  fields.push(current)
-  return fields
+
+  if (current !== '' || fields.length > 0) {
+    fields.push(current)
+    records.push(fields)
+  }
+
+  return records.filter(record => record.some(cell => cell.trim() !== ''))
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function parseMembersCsv(csv: string): MemberDraft[] {
-  const [headerLine, ...lines] = csv.split(/\r?\n/).filter(line => line.trim() !== '')
-  const header = parseCsvLine(headerLine)
+  const [header, ...rows] = parseCsvRecords(csv)
   if (header.join(',') !== CSV_COLUMNS.join(',')) {
-    throw new Error(`unexpected CSV header: ${headerLine}`)
+    throw new Error(`unexpected CSV header: ${header.join(',')}`)
   }
 
-  return lines.map(line => {
-    const [name, email, bio, status] = parseCsvLine(line)
+  return rows.map(fields => {
+    const [name, email, bio, status] = fields
     if (!EMAIL_RE.test(email ?? '')) {
       throw new Error(`invalid email for member "${name}": ${email}`)
     }

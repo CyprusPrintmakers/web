@@ -46,6 +46,12 @@ describe('wix archive parsers', () => {
     }
   })
 
+  it('keeps paragraph breaks inside quoted bios', () => {
+    const quoted = 'name,email,bio,status\n"Maria","maria@example.com","One.\n\nTwo.","active"\n'
+    const [member] = parseMembersCsv(quoted)
+    expect(member.bio).toBe('One.\n\nTwo.')
+  })
+
   it('rejects malformed CSV rows instead of importing them silently', () => {
     const broken = 'name,email,bio,status\n"Broken",not-an-email,,"active"\n'
     expect(() => parseMembersCsv(broken)).toThrow(/invalid email/)

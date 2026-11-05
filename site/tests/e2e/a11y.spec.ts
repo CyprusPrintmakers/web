@@ -9,6 +9,7 @@ test.describe('accessibility', () => {
     test(`axe finds no wcag2a/aa violations on ${path}`, async ({ page }) => {
       await page.goto(path)
       await enterHome(page)
+      await page.waitForTimeout(900)
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'])
@@ -22,6 +23,7 @@ test.describe('accessibility', () => {
     }) => {
       await page.goto(`/el${path === '/' ? '' : path}`)
       await enterHome(page)
+      await page.waitForTimeout(900)
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'])

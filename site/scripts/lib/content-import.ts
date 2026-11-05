@@ -165,7 +165,9 @@ export function buildMemberSeeds(
       slug: { _type: 'slug', current: member.slug },
       name: intlBilingual(member.name, greekByName.get(normalizedName(member.name))),
       discipline: intlString('Printmaker'),
-      bio: intlRich(member.bio ? [member.bio] : [`${member.name} is a member of the Cyprus Printmakers Association.`]),
+      bio: intlRich(
+        bioParagraphs(member.bio, `${member.name} is a member of the Cyprus Printmakers Association.`),
+      ),
       email: member.email,
       status: member.status,
       featured: false,
@@ -221,9 +223,10 @@ export function buildCommitteeSeeds(
         name: intlBilingual(member?.name ?? entry.name, greek?.greekName),
         role: intlBilingual(entry.role, greekRoleOf(greek?.greekRole)),
         bio: intlRich(
-          member?.bio
-            ? [member.bio]
-            : [`${entry.name} is a member of the Cyprus Printmakers Association committee.`],
+          bioParagraphs(
+            member?.bio,
+            `${entry.name} is a member of the Cyprus Printmakers Association committee.`,
+          ),
         ),
         order: (index + 1) * 10,
         memberRef: member?.slug,
@@ -306,6 +309,16 @@ const GREEK_ROLE_FIXES: Record<string, string> = {
 
 const greekRoleOf = (value?: string): string | undefined =>
   value ? (GREEK_ROLE_FIXES[value] ?? value) : undefined
+
+/** The archive keeps paragraph breaks in its `<br>` tags; the CSV joins them. */
+export function bioParagraphs(bio: string | undefined, fallback: string): string[] {
+  const paragraphs = (bio ?? '')
+    .split(/\n{2,}/)
+    .map(paragraph => paragraph.trim())
+    .filter(Boolean)
+
+  return paragraphs.length > 0 ? paragraphs : [fallback]
+}
 
 export function buildCommitteeGreekPatches(
   members: MemberDraft[],

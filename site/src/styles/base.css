@@ -70,6 +70,28 @@ p {
   text-wrap: pretty;
 }
 
+html[data-reveal='on'] [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 600ms var(--ease-out-expo),
+    transform 600ms var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html[data-reveal='on'] [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-reveal='on'] [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 img,
 picture,
 svg {

@@ -126,6 +126,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
       <Footer lang={lang} />
     </div>
     <slot name="overlay" />
+    <script is:inline src="/scripts/page-motion.js" defer></script>
     <script is:inline>
       document.addEventListener('astro:after-swap', () => {
         const main = document.querySelector('main#main')

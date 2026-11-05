@@ -164,3 +164,7 @@
 - Mobile home vertical pass: the nav now gets a full-width row below the language/theme (two rows instead of three), the lockup sits at 32% of the viewport on phones 640 px or taller, and CURRENT drops from 24 px to the note size. At 390x844 the header is 137 px, the lockup 239-367, CURRENT 668-736 and the footer 736-844, with no scroll or horizontal overflow.
 - The line under the menu was the `main` focus ring painted after the intro hands focus to the landmark; `main:focus` now has no outline. The remaining rule is the footer border.
 - Verified: 120 unit / 110 e2e passed / 1 skipped, build clean.
+
+- Member bios are paragraphs again. The original Wix page used `<br>` between paragraphs; the CSV had flattened them. The member CSV now stores the recovered breaks, the CSV parser handles quoted newlines, and `buildMemberSeeds` maps each paragraph to a portable-text block. Re-imported all 18 members (Nicolas has no bio; Savvas and Evgenia each had one paragraph).
+- Added a small shared reveal: `page-motion.js` fades About and Contact blocks in as they enter, with an 80 ms stagger on Contact's three columns. The About photo's horizontal slide moved into the same script so it also runs after client-side navigation. Reduced motion shows the final state; axe is run after the 600 ms transition settles.
+- Verified: 120 unit / 110 e2e passed / 1 skipped, build clean.

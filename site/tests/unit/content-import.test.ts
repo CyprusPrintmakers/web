@@ -8,6 +8,7 @@ import {
   type ArchiveProject,
 } from '../../scripts/lib/archive'
 import {
+  bioParagraphs,
   buildAboutPatch,
   buildCommitteeGreekPatches,
   buildCommitteeSeeds,
@@ -84,6 +85,21 @@ describe('archive year parser', () => {
         label: 'PHOTOPOLYMER WORKSHOP - Yiannis Gourzis',
       },
     ])
+  })
+})
+
+describe('member bio paragraphs', () => {
+  it('splits the recovered archive breaks into blocks', () => {
+    expect(bioParagraphs('One.\n\nTwo.\n\nThree.', 'fallback')).toEqual([
+      'One.',
+      'Two.',
+      'Three.',
+    ])
+  })
+
+  it('falls back when there is no bio', () => {
+    expect(bioParagraphs('', 'Fallback.')).toEqual(['Fallback.'])
+    expect(bioParagraphs(undefined, 'Fallback.')).toEqual(['Fallback.'])
   })
 })
 

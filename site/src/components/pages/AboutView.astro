@@ -34,11 +34,11 @@ const headings = {
   alternates={{ en: '/about', el: '/el/about' }}
 >
   <article class="about">
-    <h1 class="about__headline t-display">
+    <h1 class="about__headline t-display" data-reveal>
       <LocalizedText value={about.headline} lang={lang} />
     </h1>
 
-    <div class="about__intro">
+    <div class="about__intro" data-reveal style="--reveal-delay: 60ms">
       <Prose value={body} lang={lang} />
     </div>
 
@@ -53,13 +53,13 @@ const headings = {
       />
     </figure>
 
-    <div class="about__history">
+    <div class="about__history" data-reveal>
       <Prose value={history} lang={lang} />
     </div>
 
     <Rule />
 
-    <section class="about__section" aria-labelledby="committee-heading">
+    <section class="about__section" aria-labelledby="committee-heading" data-reveal>
       <h2 id="committee-heading" class="t-title">{headings.committee}</h2>
       <ul class="about__committee">
         {
@@ -89,7 +89,7 @@ const headings = {
 
     <Rule />
 
-    <section class="about__section" aria-labelledby="partners-heading">
+    <section class="about__section" aria-labelledby="partners-heading" data-reveal>
       <h2 id="partners-heading" class="t-title">{headings.partners}</h2>
       <ul class="about__partners">
         {
@@ -176,39 +176,3 @@ const headings = {
     font-size: 20px;
   }
 </style>
-
-<script is:inline>
-  (() => {
-    function init() {
-      const photo = document.querySelector('[data-about-photo]')
-      if (!photo || photo.dataset.state) return
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-      photo.dataset.state = 'pending'
-
-      const reveal = () => {
-        photo.dataset.state = 'moving'
-      }
-
-      if (!('IntersectionObserver' in window)) {
-        reveal()
-        return
-      }
-
-      const observer = new IntersectionObserver(
-        entries => {
-          if (entries.some(entry => entry.isIntersecting)) {
-            reveal()
-            observer.disconnect()
-          }
-        },
-        { threshold: 0.2 },
-      )
-
-      observer.observe(photo)
-    }
-
-    init()
-    document.addEventListener('astro:page-load', init)
-  })()
-</script>
