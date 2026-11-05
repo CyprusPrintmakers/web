@@ -93,10 +93,6 @@ const { lang, title, body } = Astro.props
     visibility: hidden;
   }
 
-  html[data-intro='pending'] .intro .hero-brand__mark {
-    animation: intro-float 3s ease-in-out infinite;
-  }
-
   .intro__ghost {
     left: 0;
     opacity: 0;
@@ -126,24 +122,10 @@ const { lang, title, body } = Astro.props
     }
   }
 
-  @keyframes intro-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-
-    50% {
-      transform: translateY(-12px);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .intro {
       display: none !important;
     }
 
-    html[data-intro='pending'] .intro .hero-brand__mark {
-      animation: none;
-    }
   }
 </style>

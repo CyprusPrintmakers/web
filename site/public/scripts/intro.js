@@ -32,6 +32,7 @@
     reduce.removeEventListener('change', onReduce)
     document.removeEventListener('keydown', onKey)
     window.removeEventListener('resize', onResize)
+    layout?.disconnect()
     for (const animation of effects) {
       try {
         animation.cancel()
@@ -56,6 +57,7 @@
   const onKey = event => { if (event.key === 'Escape') skip() }
   const onResize = () => { if (!started && !cleaned) centre() }
   let watchdog
+  let layout
   reduce.addEventListener('change', onReduce)
 
   const reveal = () => {
@@ -178,6 +180,13 @@
   window.addEventListener('resize', onResize)
   root.dataset.introRan = '1'
 
-  try { centre() } catch { done() }
+  try {
+    centre()
+    requestAnimationFrame(() => { if (!started && !cleaned) centre() })
+    if ('ResizeObserver' in window) {
+      layout = new ResizeObserver(() => { if (!started && !cleaned) centre() })
+      layout.observe(stage)
+    }
+  } catch { done() }
   document.fonts?.ready.then(onResize).catch(done)
 })()

@@ -150,3 +150,5 @@
 - Verified: 19 hero e2e tests pass, full suite 120 unit / 103 e2e passed / 1 skipped, build clean. Mobile measurement at 390 px: paragraph 27-369 px wide, 16 px below the tail, inside the viewport.
 
 - Reworked the home hand-off: the intro no longer translates or scales the lockup. The cover stays in place, the underlying home hero is aligned to the same mark-centred position by `public/scripts/home-hero.js` (clamped 16 px inside the viewport), and the header, CURRENT line and footer fade in over 500 ms while the cover fades out. Verified overlay/hero alignment within 0.5 px at 390, 900 and 1440 px and no horizontal overflow at 320-1440 px; new e2e test asserts the hero's box does not move during the hand-off and the chrome ends at opacity 1.
+
+- Removed the floating mark animation from the cover; it was stopping at the first click and making the logo jump. The intro now centres the mark on first layout, a ResizeObserver keeps it centred until the sequence starts, and the paragraph does not move it. New e2e test measures the mark centre before the click, during the move and while the paragraph is visible at 390 px; all within 1 px of the viewport centre.

@@ -51,6 +51,39 @@ test('every full load shows the cover, but a client arrival does not', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 })
 
+test('the cover mark stays centred when the paragraph arrives', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  const centre = () =>
+    page.evaluate(() => {
+      const mark = document.querySelector('[data-home-intro] .hero-brand__mark')
+      if (!(mark instanceof HTMLElement)) return null
+      const rect = mark.getBoundingClientRect()
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+    })
+
+  await expect
+    .poll(async () => {
+      const point = await centre()
+      return point === null ? 999 : Math.abs(point.x - 195)
+    })
+    .toBeLessThanOrEqual(1)
+
+  const before = await centre()
+  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+  await page.waitForTimeout(500)
+  const moving = await centre()
+  await page.waitForTimeout(2400)
+  const paragraph = await centre()
+
+  expect(before).not.toBeNull()
+  expect(Math.abs(before!.x - 195)).toBeLessThanOrEqual(1)
+  expect(Math.abs(moving!.x - before!.x)).toBeLessThanOrEqual(1)
+  expect(Math.abs(paragraph!.x - before!.x)).toBeLessThanOrEqual(1)
+  expect(Math.abs(paragraph!.y - before!.y)).toBeLessThanOrEqual(1)
+})
+
 test('the hero stays put while the chrome fades in', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
