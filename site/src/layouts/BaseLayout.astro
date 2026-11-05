@@ -162,6 +162,13 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     visibility: hidden;
   }
 
+  /* The hero stays put; the chrome arrives once the cover starts to fade. */
+  html[data-intro='revealing'] .header,
+  html[data-intro='revealing'] .home-cover__current,
+  html[data-intro='revealing'] .page footer {
+    opacity: 0;
+  }
+
   /* Fail-safe: if reduced motion is requested while the cover is up, the
      hidden .intro must never keep the page hidden. */
   @media (prefers-reduced-motion: reduce) {

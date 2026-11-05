@@ -51,6 +51,24 @@ test('every full load shows the cover, but a client arrival does not', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 })
 
+test('the hero stays put while the chrome fades in', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+  await page.waitForFunction(() => document.documentElement.dataset.intro === 'handoff')
+
+  const before = await page.locator('[data-hero-lockup]').boundingBox()
+  await page.waitForFunction(() => !document.documentElement.dataset.intro, null, { timeout: 5000 })
+  const after = await page.locator('[data-hero-lockup]').boundingBox()
+
+  expect(before).not.toBeNull()
+  expect(after).not.toBeNull()
+  expect(Math.abs(before!.x - after!.x)).toBeLessThanOrEqual(1)
+  expect(Math.abs(before!.y - after!.y)).toBeLessThanOrEqual(1)
+  await expect(page.locator('.header')).toHaveCSS('opacity', '1')
+  await expect(page.locator('.page footer')).toHaveCSS('opacity', '1')
+  await expect(page.locator('.home-cover__current')).toHaveCSS('opacity', '1')
+})
+
 test('Escape skips the sequence', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: /Enter the Cyprus/ }).click()

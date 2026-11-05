@@ -32,7 +32,7 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
   homeHero={true}
 >
   <section class="home-hero">
-    <div class="home-hero__center">
+    <div class="home-hero__center" data-home-hero>
       <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
     </div>
 
@@ -49,6 +49,8 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
 
   <HomeIntro slot="overlay" lang={lang} title={title.text} body={heroBody} />
 </BaseLayout>
+
+<script is:inline src="/scripts/home-hero.js" defer></script>
 
 <style>
   /*

@@ -63,11 +63,33 @@
     try {
       html.dataset.intro = 'revealing'
       root.style.pointerEvents = 'none'
+
+      const chrome = [
+        document.querySelector('.header'),
+        document.querySelector('.home-cover__current'),
+        document.querySelector('.page footer'),
+      ].filter(isEl)
+
       const fade = play(root, [{ opacity: 1 }, { opacity: 0 }], {
         duration: 300, easing: 'ease-out',
       })
-      fade.finished.then(done, done)
+      const chromeFade = Promise.all(
+        chrome.map(element =>
+          play(element, [{ opacity: 0 }, { opacity: 1 }], {
+            duration: 500, delay: 80, easing: 'ease-out',
+          }).finished,
+        ),
+      )
+
+      Promise.all([fade.finished, chromeFade]).then(done, done)
     } catch { done() }
+  }
+
+  const centredLeft = desired => {
+    const width = stage.offsetWidth
+    const margin = 16
+    const maxLeft = Math.max(margin, innerWidth - width - margin)
+    return Math.min(Math.max(desired, margin), maxLeft)
   }
 
   const centre = () => {
@@ -75,7 +97,7 @@
     const mark = stage.querySelector('.hero-brand__mark')
     if (!isEl(mark)) return
     stage.style.transform = 'none'
-    stage.style.left = `${innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2}px`
+    stage.style.left = `${centredLeft(innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2)}px`
     stage.style.top = `${innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2}px`
   }
 
@@ -105,7 +127,7 @@
       const stageRect = stage.getBoundingClientRect()
       const mark = stage.querySelector('.hero-brand__mark')
       if (!stageRect.width || !isEl(mark)) return done()
-      const startLeft = innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2
+      const startLeft = centredLeft(innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2)
       const startTop = innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2
       stage.style.left = `${startLeft}px`
       stage.style.top = `${startTop}px`
@@ -116,8 +138,6 @@
       ghost.style.width = `${mark.offsetWidth}px`
       ghost.style.height = `${mark.offsetHeight}px`
 
-      const dx = heroRect.left - startLeft
-      const dy = heroRect.top - startTop
       const easing = getComputedStyle(html).getPropertyValue('--ease-out-expo').trim() || 'ease-out'
       play(ghost,
         [{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(120px)', opacity: 0 }],
@@ -129,8 +149,9 @@
       )
 
       const hasBody = isEl(body) && body.textContent.trim().length > 0
+      let paragraph
       if (hasBody) {
-        const paragraph = play(body,
+        paragraph = play(body,
           [
             { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 0 },
             { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 9100 },
@@ -143,11 +164,7 @@
         paragraph.finished.then(() => { if (!cleaned) body.style.visibility = 'hidden' }, done)
       }
 
-      const move = play(stage,
-        [{ transform: 'scale(1)' }, { transform: `translate(${dx}px, ${dy}px) scale(${heroRect.width / stageRect.width})` }],
-        { duration: 300, delay: hasBody ? 9100 : 600, easing },
-      )
-      await move.finished
+      if (hasBody && paragraph) await paragraph.finished
       if (cleaned || skipping) return
       html.dataset.intro = 'handoff'
       await new Promise(resolve => { hold = setTimeout(resolve, 120) })
