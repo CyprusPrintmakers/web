@@ -92,7 +92,7 @@ test.describe('membership form', () => {
   test('the consent label links to the privacy section', async ({ page }) => {
     await page.goto('/membership')
 
-    await expect(page.locator('label a[href="#privacy"]')).toBeVisible()
+    await expect(page.locator('label a[href="/privacy"]')).toBeVisible()
     await expect(page.locator('#privacy')).toBeVisible()
   })
 })

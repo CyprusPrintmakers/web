@@ -18,6 +18,7 @@ const en = {
   'theme.toggle': 'Dark mode',
 
   'a11y.skipToContent': 'Skip to content',
+  'footer.privacy': 'Privacy policy',
 
   'staging.label': 'STAGING — not the public site',
 
@@ -117,6 +118,7 @@ const el: Record<UIKey, string> = {
   'theme.toggle': 'Σκοτεινό θέμα',
 
   'a11y.skipToContent': 'Μετάβαση στο περιεχόμενο',
+  'footer.privacy': 'Πολιτική απορρήτου',
 
   'staging.label': 'ΣΕ ΔΟΚΙΜΗ — όχι η δημόσια ιστοσελίδα',
 

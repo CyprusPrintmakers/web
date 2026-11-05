@@ -15,7 +15,34 @@ const { lang, title, body } = Astro.props
 <div class="intro" data-home-intro>
   <button class="intro__enter" type="button" aria-label={t('home.enter', lang)}>
     <span class="intro__stage" data-hero-overlay>
-      <HeroBrand as="div" title={title} lang={lang} />
+      <HeroBrand as="div" title={title} lang={lang}>
+        <span slot="mark" class="hero-brand__mark intro-mark" aria-hidden="true">
+          <img
+            class="intro-mark__layer intro-mark__layer--light"
+            src="/mark-light.png"
+            alt=""
+            width="581"
+            height="560"
+            decoding="async"
+          />
+          <img
+            class="intro-mark__layer intro-mark__layer--mid"
+            src="/mark-mid.png"
+            alt=""
+            width="581"
+            height="560"
+            decoding="async"
+          />
+          <img
+            class="intro-mark__layer intro-mark__layer--black"
+            src="/mark-black.png"
+            alt=""
+            width="581"
+            height="560"
+            decoding="async"
+          />
+        </span>
+      </HeroBrand>
       <img
         class="intro__ghost"
         data-intro-ghost
@@ -91,6 +118,66 @@ const { lang, title, body } = Astro.props
   html[data-intro='pending'] .intro__ghost,
   html[data-intro='pending'] .intro__body {
     visibility: hidden;
+  }
+
+  .intro-mark {
+    aspect-ratio: 581 / 560;
+    display: block;
+    flex-shrink: 0;
+    height: auto;
+    order: -1;
+    position: relative;
+    width: clamp(64px, 12vw, 158px);
+  }
+
+  .intro-mark__layer {
+    height: 100%;
+    inset: 0;
+    object-fit: contain;
+    position: absolute;
+    width: 100%;
+  }
+
+  @media (min-width: 900px) {
+    .intro-mark {
+      order: initial;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .intro-mark__layer {
+      animation: intro-mark-in 760ms var(--ease-out-expo) both;
+    }
+
+    .intro-mark__layer--light {
+      --intro-from-x: 10%;
+      --intro-from-y: -4%;
+      animation-delay: 60ms;
+    }
+
+    .intro-mark__layer--mid {
+      --intro-from-x: -12%;
+      animation-delay: 0ms;
+    }
+
+    .intro-mark__layer--black {
+      --intro-from-scale: 0.9;
+      --intro-from-y: 10%;
+      animation-delay: 200ms;
+    }
+  }
+
+  @keyframes intro-mark-in {
+    from {
+      opacity: 0;
+      transform: translate(var(--intro-from-x, 0), var(--intro-from-y, 0))
+        scale(var(--intro-from-scale, 1));
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .intro__ghost {

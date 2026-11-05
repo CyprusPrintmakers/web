@@ -1,5 +1,7 @@
 ---
 import type { Locale } from '../../lib/i18n/locales'
+import { localePath } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
 import StagingBadge from './StagingBadge.astro'
 
 interface Props {
@@ -15,7 +17,10 @@ const year = new Date().getFullYear()
 <footer class="footer shell">
   <div class="footer__inner">
     <p class="footer__line">{name} — {year}</p>
-    <StagingBadge lang={lang} />
+    <div class="footer__links">
+      <a class="footer__privacy" href={localePath('/privacy', lang)}>{t('footer.privacy', lang)}</a>
+      <StagingBadge lang={lang} />
+    </div>
   </div>
 </footer>
 
@@ -36,7 +41,19 @@ const year = new Date().getFullYear()
 
   .footer__line {
     color: var(--graphite);
-    font-size: 24px;
+    font-size: var(--text-note);
     line-height: 1.4;
+  }
+
+  .footer__links {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer__privacy {
+    font-size: var(--text-small);
+    text-underline-offset: 0.15em;
   }
 </style>

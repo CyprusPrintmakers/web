@@ -51,6 +51,16 @@ test('every full load shows the cover, but a client arrival does not', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 })
 
+test('the cover mark assembles from its three layers', async ({ page }) => {
+  await page.goto('/')
+
+  const layers = page.locator('[data-home-intro] .intro-mark__layer')
+  await expect(layers).toHaveCount(3)
+  for (const layer of await layers.all()) {
+    expect(await layer.evaluate(el => getComputedStyle(el).animationName)).toContain('intro-mark-in')
+  }
+})
+
 test('the cover mark stays centred when the paragraph arrives', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')

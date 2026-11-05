@@ -52,6 +52,9 @@ const intro = pickLocalized(membership.intro, lang)
       <p class="membership__privacy-note t-note">
         <LocalizedText value={membership.privacyNote} lang={lang} />
       </p>
+      <a class="membership__privacy-link t-small" href={localePath('/privacy', lang)}>
+        {t('footer.privacy', lang)}
+      </a>
     </section>
   </article>
 </BaseLayout>
@@ -94,5 +97,10 @@ const intro = pickLocalized(membership.intro, lang)
 
   .membership__privacy-note {
     max-width: var(--measure);
+  }
+
+  .membership__privacy-link {
+    display: inline-block;
+    margin-top: 12px;
   }
 </style>

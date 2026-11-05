@@ -152,3 +152,11 @@
 - Reworked the home hand-off: the intro no longer translates or scales the lockup. The cover stays in place, the underlying home hero is aligned to the same mark-centred position by `public/scripts/home-hero.js` (clamped 16 px inside the viewport), and the header, CURRENT line and footer fade in over 500 ms while the cover fades out. Verified overlay/hero alignment within 0.5 px at 390, 900 and 1440 px and no horizontal overflow at 320-1440 px; new e2e test asserts the hero's box does not move during the hand-off and the chrome ends at opacity 1.
 
 - Removed the floating mark animation from the cover; it was stopping at the first click and making the logo jump. The intro now centres the mark on first layout, a ResizeObserver keeps it centred until the sequence starts, and the paragraph does not move it. New e2e test measures the mark centre before the click, during the move and while the paragraph is visible at 390 px; all within 1 px of the viewport centre.
+
+## Privacy page and logo assembly (2026-11-05)
+
+- Added `/privacy` and `/el/privacy`. The English page carries the GDPR policy drafted from the General Legal template. The Greek page shows a Greek note and the English policy, marked `noindex` until translated.
+- Linked the policy from the membership consent label, the membership privacy section and the footer. The membership privacy note no longer holds a placeholder; the Sanity copy and fixture were updated.
+- The privacy table stacks into labelled blocks below 700 px; long email links wrap, so the page has no horizontal overflow at 390 px.
+- Cover logo: no vector file exists, so the PNG was split into three flat-tone layers (`mark-black.png`, `mark-mid.png`, `mark-light.png`). They animate into the mark over 760 ms when the cover first appears, then hold. The static mark is unchanged in the header and hero; the intro swap aligns within a pixel.
+- Verified: full suite 120 unit / 110 e2e passed / 1 skipped, build clean. Privacy page axe/overflow checked; hero tests cover centring, layers and the stationary hand-off.

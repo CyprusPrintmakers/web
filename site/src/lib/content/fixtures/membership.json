@@ -414,12 +414,12 @@
     {
       "_key": "en",
       "language": "en",
-      "value": "PLACEHOLDER — Privacy notice to be confirmed before launch."
+      "value": "We use your details to consider your application and manage membership. Read the full privacy policy for how we handle your data, how long we keep it and your rights."
     },
     {
       "_key": "el",
       "language": "el",
-      "value": "ΠΡΟΣΧΕΔΙΟ — Η δήλωση απορρήτου θα επιβεβαιωθεί πριν από την έναρξη."
+      "value": "Χρησιμοποιούμε τα στοιχεία σας για να εξετάσουμε την αίτησή σας και να διαχειριστούμε τη συνδρομή σας. Διαβάστε την πλήρη πολιτική απορρήτου για τον τρόπο που χειριζόμαστε τα δεδομένα σας, τη διάρκεια διατήρησής τους και τα δικαιώματά σας."
     }
   ],
   "ctaHref": "/membership#application",

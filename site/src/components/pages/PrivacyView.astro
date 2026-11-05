@@ -1,0 +1,339 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { localePath, type Locale } from '../../lib/i18n/locales'
+import { t } from '../../lib/i18n/ui'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const english = lang === 'el'
+const title = english ? 'Πολιτική απορρήτου' : 'Privacy policy'
+const description = english
+  ? 'Πώς ο Σύλλογος Χαρακτών Κύπρου χειρίζεται τα προσωπικά δεδομένα.'
+  : 'How Cyprus Printmakers Association handles personal data.'
+---
+
+<BaseLayout
+  lang={lang}
+  noindex={english}
+  title={title}
+  description={description}
+  alternates={{ en: '/privacy', el: '/el/privacy' }}
+>
+  <article class="privacy">
+    <h1 class="privacy__title t-display">{title}</h1>
+    <p class="privacy__updated t-small">{english ? 'Ισχύει από 5 Νοεμβρίου 2026' : 'Effective 5 November 2026'}</p>
+
+    {
+      english && (
+        <p class="privacy__note t-note">
+          Η παρούσα πολιτική είναι προς το παρόν διαθέσιμη στα αγγλικά. Αν έχετε ερωτήσεις,
+          γράψτε μας στο <a href="mailto:cyprintmakers@gmail.com">cyprintmakers@gmail.com</a>.
+        </p>
+      )
+    }
+
+    <div class="prose privacy__body" lang={english ? 'en' : lang}>
+      <h2>Who we are</h2>
+      <p>
+        Cyprus Printmakers Association ("the association", "we", "us") is the controller of the
+        personal data described in this policy. We are a non-profit association based in Nicosia,
+        Cyprus.
+      </p>
+      <p>
+        Our postal address is Aigeos 7, Palouriotissa 1035, Nicosia, Cyprus. You can reach us at
+        <a href="mailto:cyprintmakers@gmail.com">cyprintmakers@gmail.com</a> or
+        <a href="tel:+35799351153">+357 99351153</a>.
+      </p>
+      <p>
+        This policy explains what personal data we collect through cyprintmakers.com and our
+        related pages, why we collect it, who receives it, how long we keep it, and the rights you
+        have under the General Data Protection Regulation (GDPR).
+      </p>
+
+      <h2>What we collect</h2>
+      <p>
+        <strong>When you contact us.</strong> If you use the contact form, we receive your name,
+        email address and message. If you email or call us, we receive whatever you choose to
+        include.
+      </p>
+      <p>
+        <strong>When you apply for membership.</strong> The application form asks for your full
+        name, email address, mobile number, a short explanation of why you want to join, and a CV.
+        The CV is sent to the committee by email. It is not stored on the public website.
+      </p>
+      <p>
+        <strong>Member profiles.</strong> With a member's agreement, we publish their name,
+        discipline, biography, portrait, website and Instagram handle on the members pages. Where
+        a member has agreed to it, we also publish their email address so that others can contact
+        them. A member can ask us to remove or change any of this at any time.
+      </p>
+      <p>
+        <strong>Technical information.</strong> Our hosting provider records standard request
+        information such as IP address, browser type, the page requested and the time of the
+        request. This is used to keep the site secure and working. We do not use analytics,
+        advertising or tracking tools.
+      </p>
+      <p>
+        <strong>Your theme choice.</strong> If you switch between the light and dark versions of
+        the site, your browser stores that preference locally. It is not sent to us.
+      </p>
+      <p>
+        We do not create visitor accounts, take payments or process special category data through
+        the site.
+      </p>
+
+      <h2>Why we use it, and our legal bases</h2>
+      <div class="privacy__table-wrap">
+        <table class="privacy__table">
+          <thead>
+            <tr><th>What we do</th><th>Data involved</th><th>Legal basis</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="What we do">Reply to enquiries sent through the contact form or by email</td>
+              <td data-label="Data involved">Name, email address, message and any details you include</td>
+              <td data-label="Legal basis">Legitimate interests: responding to people who contact the association</td>
+            </tr>
+            <tr>
+              <td data-label="What we do">Assess membership applications and administer membership</td>
+              <td data-label="Data involved">Name, email address, mobile number, motivation and CV</td>
+              <td data-label="Legal basis">
+                Legitimate interests: deciding on and managing membership. Where the law requires
+                consent, we rely on the consent you give when you submit the form
+              </td>
+            </tr>
+            <tr>
+              <td data-label="What we do">Publish member profiles and member contact details</td>
+              <td data-label="Data involved">Name, discipline, biography, portrait, website, Instagram and, if agreed, email</td>
+              <td data-label="Legal basis">Consent</td>
+            </tr>
+            <tr>
+              <td data-label="What we do">Keep the website secure and working</td>
+              <td data-label="Data involved">Technical request information</td>
+              <td data-label="Legal basis">Legitimate interests: protecting our systems and visitors</td>
+            </tr>
+            <tr>
+              <td data-label="What we do">Meet legal, accounting and regulatory obligations</td>
+              <td data-label="Data involved">Information relevant to the obligation</td>
+              <td data-label="Legal basis">Compliance with law</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Where we rely on legitimate interests, we have considered whether those interests are
+        overridden by your rights. You can object to that processing at any time.
+      </p>
+
+      <h2>Who receives it</h2>
+      <p>We share personal data only where necessary:</p>
+      <ul>
+        <li><strong>Vercel</strong> hosts the website and processes technical request information.</li>
+        <li><strong>Sanity</strong> stores the website content, including published member profiles.</li>
+        <li><strong>Resend</strong> delivers contact and membership emails, including CV attachments, to the committee inbox.</li>
+        <li><strong>Committee members</strong> who need the information to reply to you or decide on an application.</li>
+        <li><strong>Authorities or advisers</strong> where the law requires it, or where we need to establish or defend a legal claim.</li>
+      </ul>
+      <p>We do not sell personal data and we do not share it for advertising.</p>
+      <p>
+        Some of our providers are based outside the European Economic Area, including in the
+        United States. Where data is transferred outside the EEA, we rely on the safeguards those
+        providers offer, such as the European Commission's Standard Contractual Clauses or the
+        EU-US Data Privacy Framework. You can ask us for more information about the safeguard that
+        applies.
+      </p>
+
+      <h2>How long we keep it</h2>
+      <ul>
+        <li><strong>Contact enquiries:</strong> up to 12 months after the conversation ends.</li>
+        <li><strong>Membership applications:</strong> up to 12 months after a decision if the application is unsuccessful. For accepted members, we keep the application while the membership continues and for 12 months afterwards.</li>
+        <li><strong>CVs:</strong> for the same period as the application, then deleted.</li>
+        <li><strong>Published member profiles:</strong> until the member leaves or asks us to remove them.</li>
+        <li><strong>Technical logs:</strong> for the short period set by our hosting provider for security and operation.</li>
+      </ul>
+      <p>
+        When data is no longer needed, we delete it or remove anything that identifies you. If data
+        is held in a backup, we keep it isolated until the backup is replaced.
+      </p>
+
+      <h2>Security</h2>
+      <p>
+        We use HTTPS across the site, restrict editing access to committee members with accounts,
+        and keep the website software and its dependencies up to date. No system is completely
+        secure, but we take reasonable technical and organisational steps to protect the data we
+        hold.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>Under the GDPR you can ask us to:</p>
+      <ul>
+        <li>give you a copy of the personal data we hold about you;</li>
+        <li>correct anything that is wrong or incomplete;</li>
+        <li>delete your data where we no longer have a good reason to keep it;</li>
+        <li>restrict how we use it while a question about it is resolved;</li>
+        <li>transfer a machine-readable copy to you or to another organisation;</li>
+        <li>object to processing that relies on our legitimate interests;</li>
+        <li>withdraw consent where we rely on consent, without affecting what we did before you withdrew it.</li>
+      </ul>
+      <p>
+        To make a request, email <a href="mailto:cyprintmakers@gmail.com">cyprintmakers@gmail.com</a>
+        or write to us at the address above. We may ask you to confirm your identity first. We will
+        answer within one month, and we will tell you if we need longer.
+      </p>
+      <p>
+        If you are not satisfied with our response or with how we handle your data, you can
+        complain to the Office of the Commissioner for Personal Data Protection, 1 Iasonos Street,
+        1082 Nicosia, Cyprus. Email
+        <a href="mailto:commissioner@dataprotection.gov.cy">commissioner@dataprotection.gov.cy</a>
+        or call <a href="tel:+35722818456">+357 22818456</a>. You can also complain to the
+        supervisory authority in the country where you live.
+      </p>
+
+      <h2>Cookies and local storage</h2>
+      <p>
+        We do not use cookies for analytics, advertising or tracking. The only preference we store
+        in your browser is your choice of light or dark theme. You can clear it through your
+        browser settings.
+      </p>
+      <p>
+        The content management interface at /admin is used by committee editors and uses
+        authentication cookies. Visitors to the public site do not sign in.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        The site is not directed at children under 16, and we do not knowingly collect their
+        personal data. If you believe a child has sent us personal data, contact us and we will
+        delete it.
+      </p>
+
+      <h2>Automated decisions</h2>
+      <p>We do not make automated decisions about you and we do not build profiles for marketing.</p>
+
+      <h2>Changes</h2>
+      <p>
+        If we change this policy, we will post the new version here and update the effective date.
+        If a change materially affects how we use your data, we will tell you by email or with a
+        notice on the site before it takes effect.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Cyprus Printmakers Association<br />
+        Aigeos 7, Palouriotissa 1035, Nicosia, Cyprus<br />
+        <a href="mailto:cyprintmakers@gmail.com">cyprintmakers@gmail.com</a><br />
+        <a href="tel:+35799351153">+357 99351153</a>
+      </p>
+    </div>
+
+    <p class="privacy__back t-small">
+      <a href={localePath('/membership', lang)}>← {t('membership.heading', lang)}</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .privacy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .privacy__title {
+    margin-bottom: 12px;
+  }
+
+  .privacy__updated,
+  .privacy__note {
+    color: var(--muted-text);
+  }
+
+  .privacy__note {
+    margin-top: 16px;
+    max-width: var(--measure);
+  }
+
+  .privacy__body {
+    margin-top: clamp(32px, 5vw, 56px);
+  }
+
+  .privacy__body :global(a) {
+    overflow-wrap: anywhere;
+  }
+
+  .privacy__body :global(h2) {
+    margin-top: 2.2em;
+  }
+
+  .privacy__body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .privacy__table-wrap {
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+
+  .privacy__table {
+    border-collapse: collapse;
+    font-size: var(--text-small);
+    min-width: 36em;
+    width: 100%;
+  }
+
+  .privacy__table th,
+  .privacy__table td {
+    border-bottom: var(--rule);
+    padding: 10px 12px 10px 0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .privacy__table th {
+    font-weight: var(--fw-medium);
+  }
+
+  .privacy__back {
+    margin-top: clamp(32px, 5vw, 56px);
+  }
+
+  @media (max-width: 699px) {
+    .privacy__table-wrap {
+      overflow-x: visible;
+    }
+
+    .privacy__table {
+      display: block;
+      min-width: 0;
+    }
+
+    .privacy__table thead {
+      display: none;
+    }
+
+    .privacy__table tbody,
+    .privacy__table tr,
+    .privacy__table td {
+      display: block;
+    }
+
+    .privacy__table tr {
+      border-bottom: var(--rule);
+      padding: 12px 0;
+    }
+
+    .privacy__table td {
+      border: 0;
+      padding: 2px 0;
+    }
+
+    .privacy__table td::before {
+      color: var(--muted-text);
+      content: attr(data-label);
+      display: block;
+      font-size: var(--text-small);
+    }
+  }
+</style>

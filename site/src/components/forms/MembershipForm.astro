@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../../lib/i18n/locales'
+import { localePath } from '../../lib/i18n/locales'
 import { t } from '../../lib/i18n/ui'
 import FormStatus from './FormStatus.astro'
 
@@ -100,7 +101,7 @@ const { lang } = Astro.props
   <div class="form__field form__field--consent">
     <input class="form__checkbox" id="membership-consent" name="consent" type="checkbox" required />
     <label class="form__label t-small" for="membership-consent">
-      <a href="#privacy">{t('form.consent', lang)}</a>
+      <a href={localePath('/privacy', lang)}>{t('form.consent', lang)}</a>
     </label>
     <p class="form__error t-small" data-error="consent"></p>
   </div>
