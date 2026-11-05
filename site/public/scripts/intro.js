@@ -133,19 +133,19 @@
         const paragraph = play(body,
           [
             { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 0 },
-            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 6100 },
-            { opacity: 1, clipPath: 'inset(0)', offset: 2600 / 6100 },
-            { opacity: 1, clipPath: 'inset(0)', offset: 4100 / 6100 },
+            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 9100 },
+            { opacity: 1, clipPath: 'inset(0)', offset: 2600 / 9100 },
+            { opacity: 1, clipPath: 'inset(0)', offset: 7100 / 9100 },
             { opacity: 0, clipPath: 'inset(100% 0 0 0)', offset: 1 },
           ],
-          { duration: 6100, easing: 'ease-out' },
+          { duration: 9100, easing: 'ease-out' },
         )
         paragraph.finished.then(() => { if (!cleaned) body.style.visibility = 'hidden' }, done)
       }
 
       const move = play(stage,
         [{ transform: 'scale(1)' }, { transform: `translate(${dx}px, ${dy}px) scale(${heroRect.width / stageRect.width})` }],
-        { duration: 300, delay: hasBody ? 6100 : 600, easing },
+        { duration: 300, delay: hasBody ? 9100 : 600, easing },
       )
       await move.finished
       if (cleaned || skipping) return

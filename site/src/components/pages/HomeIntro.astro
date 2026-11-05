@@ -107,13 +107,14 @@ const { lang, title, body } = Astro.props
 
   .intro__body {
     color: var(--graphite);
-    font-size: 20px;
+    font-size: var(--text-body);
     left: 0;
-    line-height: 1.4;
+    line-height: 1.5;
     margin: 0;
-    max-width: min(480px, calc(100vw - var(--pad-sm) * 2));
+    max-width: min(30em, calc(100vw - var(--pad-sm) * 2));
     position: absolute;
-    top: 100%;
+    text-align: left;
+    top: calc(100% + clamp(16px, 3vw, 24px));
     width: max-content;
   }
 

@@ -142,3 +142,9 @@
 - Verified: 120 unit tests, 0 Astro errors, 102 e2e passed / 1 skipped, build clean. Theme tests cover system default, toggle persistence and the inverted mark.
 
 - Fixed the dark theme resetting on client-side navigation: Astro's page swap replaces the document and drops the runtime `data-theme`, so the theme script now restores the stored/system theme on `astro:after-swap` before paint and re-syncs the switch on `astro:page-load`. Covered by an e2e test that toggles, navigates to Members and asserts the theme and `aria-pressed` survive.
+
+## Home intro text pass (2026-11-05)
+
+- The transient paragraph was cramped and centre-aligned on phones: it inherited centred text and sat directly against the wordmark. It now uses `--text-body` (17 px on a phone), is left-aligned, and has a 16-24 px gap below the lockup.
+- Kept the paragraph fully visible for 4.5 s instead of 1.5 s by extending the intro timeline from 6.1 s to 9.1 s (visible 2.6-7.1 s); the stage hand-off follows at 9.1 s, still inside the 15 s watchdog.
+- Verified: 19 hero e2e tests pass, full suite 120 unit / 103 e2e passed / 1 skipped, build clean. Mobile measurement at 390 px: paragraph 27-369 px wide, 16 px below the tail, inside the viewport.
