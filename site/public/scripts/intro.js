@@ -136,7 +136,15 @@
       const startTop = anchorY() - mark.offsetTop - mark.offsetHeight / 2
       stage.style.left = `${startLeft}px`
       stage.style.top = `${startTop}px`
-      stage.style.cssText += `--intro-body-x:${tail.offsetLeft}px;--intro-body-y:${tail.offsetTop + tail.offsetHeight + 24}px;--intro-body-width:${innerWidth - startLeft - tail.offsetLeft - 24}px`
+
+      if (isEl(body)) {
+        const gutter = 24
+        const tailRect = tail.getBoundingClientRect()
+        body.style.left = `${innerWidth < 900 ? gutter : tailRect.left}px`
+        body.style.top = `${innerWidth < 900 ? startTop + stage.offsetHeight + 16 : tailRect.bottom + 24}px`
+        body.style.width = 'max-content'
+        body.style.maxWidth = `${innerWidth - (innerWidth < 900 ? gutter * 2 : tailRect.left + gutter)}px`
+      }
 
       ghost.style.left = `${mark.offsetLeft}px`
       ghost.style.top = `${mark.offsetTop}px`

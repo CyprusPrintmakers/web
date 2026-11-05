@@ -52,15 +52,16 @@ const { lang, title, body } = Astro.props
         height="152"
         decoding="async"
       />
-      {
-        body && (
-          <p class="intro__body" data-hero-intro-body aria-hidden="true">
-            {body}
-          </p>
-        )
-      }
     </span>
   </button>
+
+  {
+    body && (
+      <p class="intro__body" data-hero-intro-body aria-hidden="true">
+        {body}
+      </p>
+    )
+  }
 </div>
 
 <script is:inline src="/scripts/intro.js" defer></script>
@@ -191,22 +192,15 @@ const { lang, title, body } = Astro.props
   .intro__body {
     color: var(--graphite);
     font-size: var(--text-body);
-    left: 0;
+    left: var(--pad-sm);
     line-height: 1.5;
     margin: 0;
-    max-width: min(30em, calc(100vw - var(--pad-sm) * 2));
+    max-width: calc(100vw - var(--pad-sm) * 2);
+    pointer-events: none;
     position: absolute;
     text-align: left;
-    top: calc(100% + clamp(16px, 3vw, 24px));
+    top: 50%;
     width: max-content;
-  }
-
-  @media (min-width: 900px) {
-    .intro__body {
-      left: var(--intro-body-x, 50%);
-      max-width: min(480px, var(--intro-body-width, calc(44vw - 48px)));
-      top: var(--intro-body-y, 100%);
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {

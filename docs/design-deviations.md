@@ -67,3 +67,6 @@ Each departure needs a one-line reason and a status so the committee can review 
 
 | Member bios recover the archive's paragraph breaks | The old members page separated paragraphs with `<br>`; the CSV import flattened them. The parser now keeps quoted newlines, the CSV carries the recovered breaks and the member page renders them as portable-text blocks. No wording was changed. | In this build (2026-11-05) |
 | About and Contact reveal their sections on entry | Both pages were static. Blocks fade and rise 14 px over 600 ms as they enter the viewport; Contact's three columns stagger by 80 ms. The About photo keeps its horizontal slide. Reduced motion renders everything in place. | In this build (2026-11-05) |
+
+| The intro paragraph is independent of the lockup width | The Greek hero is only 120 px wide, so keeping the paragraph inside the stage made it start at 135 px and clip off the right edge. It now sits outside the stage, full width with the page gutters on phones and under the tail on desktop. | In this build (2026-11-05) |
+| The About photo is clipped to the article while it slides | The horizontal entrance starts off the right edge and created 24 px of page overflow until it settled. `overflow-x: clip` on the article keeps the motion without the scrollbar. | In this build (2026-11-05) |

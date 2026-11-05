@@ -51,6 +51,19 @@ test('every full load shows the cover, but a client arrival does not', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 })
 
+test('the greek intro paragraph stays inside the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/el')
+  await page.locator('[data-home-intro]').getByRole('button').click()
+  await page.waitForTimeout(3200)
+
+  const box = await page.locator('[data-hero-intro-body]').boundingBox()
+  expect(box).not.toBeNull()
+  expect(box!.x).toBeGreaterThanOrEqual(0)
+  expect(box!.x + box!.width).toBeLessThanOrEqual(390)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
+})
+
 test('the cover mark assembles from its three layers', async ({ page }) => {
   await page.goto('/')
 

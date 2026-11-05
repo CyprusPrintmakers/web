@@ -168,3 +168,8 @@
 - Member bios are paragraphs again. The original Wix page used `<br>` between paragraphs; the CSV had flattened them. The member CSV now stores the recovered breaks, the CSV parser handles quoted newlines, and `buildMemberSeeds` maps each paragraph to a portable-text block. Re-imported all 18 members (Nicolas has no bio; Savvas and Evgenia each had one paragraph).
 - Added a small shared reveal: `page-motion.js` fades About and Contact blocks in as they enter, with an 80 ms stagger on Contact's three columns. The About photo's horizontal slide moved into the same script so it also runs after client-side navigation. Reduced motion shows the final state; axe is run after the 600 ms transition settles.
 - Verified: 120 unit / 110 e2e passed / 1 skipped, build clean.
+
+- Greek intro fix: the intro paragraph used to live inside the lockup stage, whose width is the hero wordmark. English is 336 px but Greek is 120 px, so the Greek paragraph started at 135 px and clipped 87 px off the right. It now sits outside the stage, uses the 24 px page gutters on phones and sits under the tail on desktop. The paragraph now fits at 390 px on both languages; a new e2e test pins it.
+- The About photo's slide-in started off the right edge and caused 24 px of horizontal overflow until it settled. The article now uses `overflow-x: clip`.
+- Greek overflow tests now cover `/el/about`, `/el/contact` and `/el/privacy` as well as the earlier pages.
+- Verified: 120 unit / 114 e2e passed / 1 skipped, build clean.
