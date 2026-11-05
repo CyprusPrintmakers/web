@@ -78,6 +78,14 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
     padding-top: clamp(24px, 4vw, 64px);
   }
 
+  @media (max-width: 899px) {
+    .home-cover__current {
+      font-size: var(--text-note);
+      line-height: 1.35;
+      padding-top: 24px;
+    }
+  }
+
   .home-cover__current a {
     color: inherit;
     text-decoration: none;

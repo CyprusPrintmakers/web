@@ -160,3 +160,7 @@
 - The privacy table stacks into labelled blocks below 700 px; long email links wrap, so the page has no horizontal overflow at 390 px.
 - Cover logo: no vector file exists, so the PNG was split into three flat-tone layers (`mark-black.png`, `mark-mid.png`, `mark-light.png`). They animate into the mark over 760 ms when the cover first appears, then hold. The static mark is unchanged in the header and hero; the intro swap aligns within a pixel.
 - Verified: full suite 120 unit / 110 e2e passed / 1 skipped, build clean. Privacy page axe/overflow checked; hero tests cover centring, layers and the stationary hand-off.
+
+- Mobile home vertical pass: the nav now gets a full-width row below the language/theme (two rows instead of three), the lockup sits at 32% of the viewport on phones 640 px or taller, and CURRENT drops from 24 px to the note size. At 390x844 the header is 137 px, the lockup 239-367, CURRENT 668-736 and the footer 736-844, with no scroll or horizontal overflow.
+- The line under the menu was the `main` focus ring painted after the intro hands focus to the landmark; `main:focus` now has no outline. The remaining rule is the footer border.
+- Verified: 120 unit / 110 e2e passed / 1 skipped, build clean.

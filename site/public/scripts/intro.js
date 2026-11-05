@@ -87,6 +87,9 @@
     } catch { done() }
   }
 
+  const anchorY = () =>
+    innerWidth < 900 && innerHeight >= 640 ? innerHeight * 0.32 : innerHeight / 2
+
   const centredLeft = desired => {
     const width = stage.offsetWidth
     const margin = 16
@@ -100,7 +103,7 @@
     if (!isEl(mark)) return
     stage.style.transform = 'none'
     stage.style.left = `${centredLeft(innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2)}px`
-    stage.style.top = `${innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2}px`
+    stage.style.top = `${anchorY() - mark.offsetTop - mark.offsetHeight / 2}px`
   }
 
   const skip = () => {
@@ -130,7 +133,7 @@
       const mark = stage.querySelector('.hero-brand__mark')
       if (!stageRect.width || !isEl(mark)) return done()
       const startLeft = centredLeft(innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2)
-      const startTop = innerHeight / 2 - mark.offsetTop - mark.offsetHeight / 2
+      const startTop = anchorY() - mark.offsetTop - mark.offsetHeight / 2
       stage.style.left = `${startLeft}px`
       stage.style.top = `${startTop}px`
       stage.style.cssText += `--intro-body-x:${tail.offsetLeft}px;--intro-body-y:${tail.offsetTop + tail.offsetHeight + 24}px;--intro-body-width:${innerWidth - startLeft - tail.offsetLeft - 24}px`

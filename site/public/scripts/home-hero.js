@@ -15,8 +15,12 @@
 
     const rect = hero.getBoundingClientRect()
     const markRect = mark.getBoundingClientRect()
+    const anchorY =
+      window.innerWidth < 900 && window.innerHeight >= 640
+        ? window.innerHeight * 0.32
+        : window.innerHeight / 2
     const dx = window.innerWidth / 2 - (markRect.left + markRect.width / 2)
-    const dy = window.innerHeight / 2 - (markRect.top + markRect.height / 2)
+    const dy = anchorY - (markRect.top + markRect.height / 2)
     const margin = 16
     const clampedDx = Math.max(margin - rect.left, Math.min(dx, window.innerWidth - margin - rect.right))
 

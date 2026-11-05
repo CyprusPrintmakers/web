@@ -153,6 +153,12 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     flex: 1;
   }
 
+  /* Main is focused after navigation; the landmark should not paint a ring. */
+  .page main:focus,
+  .page main:focus-visible {
+    outline: none;
+  }
+
   .page main:not(.main--home) {
     padding-block-start: clamp(24px, 5vw, 56px);
   }
