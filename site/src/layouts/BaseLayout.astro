@@ -105,6 +105,9 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
               window.__cpIntroTimeout = setTimeout(() => {
                 if (document.documentElement.dataset.intro === 'pending') {
                   delete document.documentElement.dataset.intro
+                  try {
+                    window.dispatchEvent(new CustomEvent('cp:intro-done'))
+                  } catch {}
                 }
               }, 4000)
             } catch {}

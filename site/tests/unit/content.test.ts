@@ -74,10 +74,10 @@ describe('content loader', () => {
     ).not.toBe('Individual')
     expect(
       content.membership.privacyNote.find(entry => entry.language === 'en')?.value,
-    ).toContain('Privacy notice to be confirmed')
+    ).toContain('Read the full privacy policy')
     expect(
       content.membership.privacyNote.find(entry => entry.language === 'el')?.value,
-    ).toContain('δήλωση απορρήτου')
+    ).toContain('πολιτική απορρήτου')
 
     for (const page of [
       content.settings,

@@ -110,7 +110,7 @@ test('the cover mark stays centred when the paragraph arrives', async ({ page })
 test('the hero stays put while the chrome fades in', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
-  await page.waitForFunction(() => document.documentElement.dataset.intro === 'handoff')
+  await page.waitForFunction(() => document.documentElement.dataset.intro === 'revealing')
 
   const before = await page.locator('[data-hero-lockup]').boundingBox()
   await page.waitForFunction(() => !document.documentElement.dataset.intro, null, { timeout: 5000 })
@@ -386,7 +386,7 @@ test('the 320px Greek hand-off matches the hero lockup', async ({ page }) => {
   await page.goto('/el')
   // Scoped to the cover: the Astro dev toolbar also renders buttons in dev.
   await page.locator('[data-home-intro]').getByRole('button').click()
-  await page.waitForFunction(() => document.documentElement.dataset.intro === 'handoff')
+  await page.waitForFunction(() => document.documentElement.dataset.intro === 'revealing')
 
   const diff = await page.evaluate(() => {
     const overlay = document.querySelector('[data-hero-overlay]')

@@ -14,7 +14,7 @@
   const isEl = element => element instanceof HTMLElement
 
   let effects = [], started = false, skipping = false, cleaned = false
-  let hold, focusTimer
+  let focusTimer
 
   const focus = () => {
     try {
@@ -27,7 +27,6 @@
     if (cleaned) return
     cleaned = true
     clearTimeout(watchdog)
-    clearTimeout(hold)
     clearTimeout(focusTimer)
     reduce.removeEventListener('change', onReduce)
     document.removeEventListener('keydown', onKey)
@@ -167,15 +166,18 @@
       const hasBody = isEl(body) && body.textContent.trim().length > 0
       let paragraph
       if (hasBody) {
+        // Keep the effect timeline linear so the offsets below are real
+        // milliseconds; ease the individual segments instead.
         paragraph = play(body,
           [
             { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 0 },
-            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 9100 },
-            { opacity: 1, clipPath: 'inset(0)', offset: 2600 / 9100 },
-            { opacity: 1, clipPath: 'inset(0)', offset: 7100 / 9100 },
+            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 7550, easing: 'ease-out' },
+            { opacity: 1, clipPath: 'inset(0)', offset: 2600 / 7550 },
+            { opacity: 1, clipPath: 'inset(0)', offset: 7100 / 7550, easing: 'ease-out' },
+            { opacity: 1, clipPath: 'inset(100% 0 0 0)', offset: 7450 / 7550, easing: 'ease-out' },
             { opacity: 0, clipPath: 'inset(100% 0 0 0)', offset: 1 },
           ],
-          { duration: 9100, easing: 'ease-out' },
+          { duration: 7550 },
         )
         paragraph.finished.then(() => { if (!cleaned) body.style.visibility = 'hidden' }, done)
       }
@@ -183,8 +185,8 @@
       if (hasBody && paragraph) await paragraph.finished
       if (cleaned || skipping) return
       html.dataset.intro = 'handoff'
-      await new Promise(resolve => { hold = setTimeout(resolve, 120) })
-      if (!cleaned && !skipping) reveal()
+      // Straight from the paragraph wipe into the home page.
+      reveal()
     } catch { done() }
   }
 

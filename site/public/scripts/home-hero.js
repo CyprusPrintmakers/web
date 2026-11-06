@@ -3,8 +3,7 @@
   window.__cpHomeHero = true
 
   function align() {
-    const wrapper = document.querySelector('[data-home-hero]')
-    const hero = wrapper?.querySelector('.hero-brand')
+    const hero = document.querySelector('[data-ink-hero]')
     const mark = hero?.querySelector('.hero-brand__mark')
     if (!(hero instanceof HTMLElement) || !(mark instanceof HTMLElement)) return
 

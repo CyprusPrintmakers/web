@@ -2,7 +2,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import HomeIntro from './HomeIntro.astro'
 import HeroBrand from '../layout/HeroBrand.astro'
-import InkMark from '../ui/InkMark.astro'
 import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
@@ -53,10 +52,11 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
   homeHero={true}
 >
   <section class="home-hero">
-    <div class="home-hero__center" data-home-hero>
-      <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback}>
-        <InkMark slot="mark" />
-      </HeroBrand>
+    <div class="home-hero__center">
+      <div class="home-hero__brand" data-ink-hero>
+        <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
+        <canvas class="ink-hero__canvas" data-ink-canvas aria-hidden="true"></canvas>
+      </div>
     </div>
 
     <div class="home-cover__links">
@@ -94,12 +94,43 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     display: flex;
     flex: 1;
     flex-direction: column;
+    /* The ink canvas is 120% of the lockup; keep its edge overhang from
+       adding a horizontal scrollbar on narrow screens. */
+    overflow: clip;
   }
 
   .home-hero__center {
     display: grid;
     flex: 1;
     place-items: center;
+  }
+
+  .home-hero__brand {
+    display: inline-block;
+    position: relative;
+  }
+
+  .ink-hero__canvas {
+    cursor: crosshair;
+    height: 120%;
+    left: -10%;
+    opacity: 0;
+    pointer-events: auto;
+    position: absolute;
+    top: -10%;
+    touch-action: pan-y;
+    width: 120%;
+    z-index: 2;
+  }
+
+  :global(html[data-theme='dark']) .ink-hero__canvas {
+    filter: invert(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ink-hero__canvas {
+      display: none;
+    }
   }
 
   .home-cover__links {
