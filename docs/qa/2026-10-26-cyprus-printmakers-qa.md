@@ -175,3 +175,5 @@
 - Verified: 120 unit / 114 e2e passed / 1 skipped, build clean.
 
 - Fixed the projects index on phones: the year was rendering under the title while the YEAR header sat on the right. Rows now use the same three-column grid at every width (`number title year`), with the year right-aligned against the header. Verified at 320, 390 and 1440 px with no overflow; added an e2e assertion that every year's right edge matches the header.
+
+- Responsive alignment audit after the projects year fix. Same failure mode found on the About committee list at 320-390 px: the role wrapped under the name because the row was a wrapping flex row. About committee rows now use a two-column grid (name, role) with body/note sizes, so roles stay right-aligned at 320 px in both languages. The sponsorship tier head and level rows had the same wrap risk when prices are confirmed; both now use `1fr auto` grids. Members committee roles, contact, privacy tables, project detail metadata, forms and the footer were checked and already behave correctly. Added an e2e assertion for the About committee rows.

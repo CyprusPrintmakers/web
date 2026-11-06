@@ -72,10 +72,13 @@ const { tiers, confirmed, lang } = Astro.props
 
   .tier-list__head {
     align-items: baseline;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 24px;
-    justify-content: space-between;
+    display: grid;
+    gap: 4px 24px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .tier-list__price {
+    text-align: right;
   }
 
   .tier-list__name,
@@ -93,10 +96,13 @@ const { tiers, confirmed, lang } = Astro.props
 
   .tier-list__level {
     align-items: baseline;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 24px;
-    justify-content: space-between;
+    display: grid;
+    gap: 4px 24px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .tier-list__level > :last-child {
+    text-align: right;
   }
 
   .tier-list__gated {

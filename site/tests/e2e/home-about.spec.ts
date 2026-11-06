@@ -34,6 +34,29 @@ test.describe('home', () => {
 })
 
 test.describe('about', () => {
+  test('committee roles stay in a right column on a phone', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto('/about')
+
+    const rows = await page.locator('.about__committee-member').evaluateAll(elements =>
+      elements.map(row => {
+        const role = row.querySelector('.about__committee-role')!
+        const rowRect = row.getBoundingClientRect()
+        const roleRect = role.getBoundingClientRect()
+        return {
+          aligned: Math.abs(roleRect.right - rowRect.right) <= 1,
+          inline: Math.abs(roleRect.top - row.firstElementChild!.getBoundingClientRect().top) <= 6,
+        }
+      }),
+    )
+
+    expect(rows.length).toBeGreaterThan(0)
+    for (const row of rows) {
+      expect(row.aligned).toBe(true)
+      expect(row.inline).toBe(true)
+    }
+  })
+
   test('english about renders the committee heading', async ({ page }) => {
     await page.goto('/about')
 
