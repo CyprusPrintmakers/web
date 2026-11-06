@@ -2103,6 +2103,12 @@
         "type": "number"
       },
       {
+        "initialValue": false,
+        "description": "Show this project in the home page CURRENT line when it is the latest featured project.",
+        "name": "featured",
+        "type": "boolean"
+      },
+      {
         "options": {
           "hotspot": true
         },
@@ -2286,6 +2292,7 @@
       },
       {
         "initialValue": false,
+        "description": "Show this post in the home page NEWS line when it is the latest featured post.",
         "name": "featured",
         "type": "boolean"
       },

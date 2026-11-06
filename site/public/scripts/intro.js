@@ -68,7 +68,7 @@
 
       const chrome = [
         document.querySelector('.header'),
-        document.querySelector('.home-cover__current'),
+        document.querySelector('.home-cover__links'),
         document.querySelector('.page footer'),
       ].filter(isEl)
 

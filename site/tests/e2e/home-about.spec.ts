@@ -10,6 +10,7 @@ test.describe('home', () => {
       page.getByRole('heading', { level: 1 }),
     ).toHaveText('CYPRUS PRINTMAKERS ASSOCIATION')
     await expect(page.getByText('CURRENT:')).toBeVisible()
+    await expect(page.getByText('NEWS:')).toBeVisible()
   })
 
   test('the current line pins to the bottom of the viewport-height cover', async ({ page }) => {

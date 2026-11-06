@@ -13,15 +13,35 @@ interface Props {
 }
 
 const { lang } = Astro.props
-const { home } = await getContent()
+const { home, projects, news } = await getContent()
 
 const title = pickLocalized(home.title, lang)
 const heroBody = pickLocalized(home.heroBody, lang).text
 
+const projectDate = (project: (typeof projects)[number]) =>
+  project.dates?.start ?? String(project.year)
+const featuredProject = [...projects]
+  .filter(project => project.featured)
+  .sort((a, b) => projectDate(b).localeCompare(projectDate(a)))[0]
+const featuredNews = [...news]
+  .filter(post => post.featured)
+  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]
+
 const currentLabel = `${t('current', lang)}:`
-const currentTitle = pickLocalized(home.currentTitle, lang).text
+const currentTitle = featuredProject
+  ? pickLocalized(featuredProject.title, lang).text
+  : pickLocalized(home.currentTitle, lang).text
 const currentText = `${currentLabel} ${currentTitle} →`
-const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang) : undefined
+const currentHref = featuredProject
+  ? localePath(`/projects/${featuredProject.slug}`, lang)
+  : home.currentHref?.trim()
+    ? localePath(home.currentHref, lang)
+    : undefined
+
+const newsText = featuredNews
+  ? `${t('home.newsLabel', lang)}: ${pickLocalized(featuredNews.title, lang).text} →`
+  : ''
+const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) : undefined
 ---
 
 <BaseLayout
@@ -36,15 +56,24 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
       <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
     </div>
 
-    <p class="home-cover__current">
+    <div class="home-cover__links">
+      <p class="home-cover__current">
+        {
+          currentHref ? (
+            <a href={currentHref}>{currentText}</a>
+          ) : (
+            <span>{currentText}</span>
+          )
+        }
+      </p>
       {
-        currentHref ? (
-          <a href={currentHref}>{currentText}</a>
-        ) : (
-          <span>{currentText}</span>
+        newsHref && (
+          <p class="home-cover__news">
+            <a href={newsHref}>{newsText}</a>
+          </p>
         )
       }
-    </p>
+    </div>
   </section>
 
   <HomeIntro slot="overlay" lang={lang} title={title.text} body={heroBody} />
@@ -70,30 +99,43 @@ const currentHref = home.currentHref?.trim() ? localePath(home.currentHref, lang
     place-items: center;
   }
 
-  .home-cover__current {
-    color: var(--graphite);
-    font-size: 24px;
-    line-height: 1.4;
+  .home-cover__links {
+    display: grid;
+    gap: 8px;
     margin-top: auto;
     padding-bottom: 16px;
     padding-top: clamp(24px, 4vw, 64px);
   }
 
-  @media (max-width: 899px) {
-    .home-cover__current {
-      font-size: var(--text-note);
-      line-height: 1.35;
-      padding-top: 24px;
-    }
+  .home-cover__current,
+  .home-cover__news {
+    color: var(--graphite);
+    font-size: 24px;
+    line-height: 1.4;
+    margin: 0;
   }
 
-  .home-cover__current a {
+  .home-cover__current a,
+  .home-cover__news a {
     color: inherit;
     text-decoration: none;
   }
 
-  .home-cover__current a:hover {
+  .home-cover__current a:hover,
+  .home-cover__news a:hover {
     text-decoration: underline;
+  }
+
+  @media (max-width: 899px) {
+    .home-cover__links {
+      padding-top: 24px;
+    }
+
+    .home-cover__current,
+    .home-cover__news {
+      font-size: var(--text-note);
+      line-height: 1.35;
+    }
   }
 </style>
 

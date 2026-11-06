@@ -162,6 +162,7 @@ export type Project = Entity & {
   participants: string[]
   dates: DateRange
   links: Link[]
+  featured: boolean
 }
 
 export type NewsPost = Entity & {

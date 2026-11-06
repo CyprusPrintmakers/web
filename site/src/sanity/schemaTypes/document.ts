@@ -519,6 +519,14 @@ export default [
         validation: Rule => Rule.integer().required().min(1990).max(2100),
       }),
       defineField({
+        name: 'featured',
+        title: 'Featured',
+        type: 'boolean',
+        initialValue: false,
+        description:
+          'Show this project in the home page CURRENT line when it is the latest featured project.',
+      }),
+      defineField({
         name: 'coverImage',
         title: 'Cover image',
         type: 'altImage',
@@ -598,6 +606,8 @@ export default [
         title: 'Featured',
         type: 'boolean',
         initialValue: false,
+        description:
+          'Show this post in the home page NEWS line when it is the latest featured post.',
       }),
       defineField({
         name: 'author',

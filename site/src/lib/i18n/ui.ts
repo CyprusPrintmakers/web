@@ -9,6 +9,7 @@ const en = {
   'nav.contact': 'CONTACT',
 
   current: 'CURRENT',
+  'home.newsLabel': 'NEWS',
 
   'home.enter': 'Enter the Cyprus Printmakers Association website',
 
@@ -109,6 +110,7 @@ const el: Record<UIKey, string> = {
   'nav.contact': 'ΕΠΙΚΟΙΝΩΝΙΑ',
 
   current: 'ΤΩΡΑ',
+  'home.newsLabel': 'ΝΕΑ',
 
   'home.enter': 'Είσοδος στον ιστότοπο του Συλλόγου Χαρακτών Κύπρου',
 
