@@ -198,10 +198,30 @@
         vy = new Float32Array(W * H)
         window[STATE_KEY] = { w: W, h: H, title: titleKey, height, vx, vy }
       }
-      // Fade displaced ink out before it reaches the canvas edge. Target
-      // pixels keep their full alpha so the lockup itself is never clipped.
+      // Fade displaced ink out as it leaves the lockup and before it reaches
+      // the canvas edge. Target pixels keep their full alpha, so the title and
+      // mark are never clipped; the spill blends into the paper instead.
+      let minX = W
+      let maxX = 0
+      let minY = H
+      let maxY = 0
+      for (let y = 0; y < H; y += 1) {
+        for (let x = 0; x < W; x += 1) {
+          if (target[y * W + x] <= 0.02) continue
+          if (x < minX) minX = x
+          if (x > maxX) maxX = x
+          if (y < minY) minY = y
+          if (y > maxY) maxY = y
+        }
+      }
+      if (minX > maxX || minY > maxY) return
+
       const mask = new Float32Array(W * H)
-      const feather = Math.max(8, Math.round(Math.min(W, H) * 0.15))
+      const spread = Math.max(
+        8,
+        Math.round(Math.min(maxX - minX + 1, maxY - minY + 1) * 0.5),
+      )
+      const edgeFeather = Math.max(8, Math.round(Math.min(W, H) * 0.15))
       for (let y = 0; y < H; y += 1) {
         for (let x = 0; x < W; x += 1) {
           const i = y * W + x
@@ -209,9 +229,14 @@
             mask[i] = 1
             continue
           }
+          const dx = Math.max(minX - x, 0, x - maxX)
+          const dy = Math.max(minY - y, 0, y - maxY)
+          const out = clamp(1 - Math.hypot(dx, dy) / spread, 0, 1)
+          const spill = out * out * (3 - 2 * out)
           const edge = Math.min(x, W - 1 - x, y, H - 1 - y)
-          const t = clamp(edge / feather, 0, 1)
-          mask[i] = t * t * (3 - 2 * t)
+          const inside = clamp(edge / edgeFeather, 0, 1)
+          const rim = inside * inside * (3 - 2 * inside)
+          mask[i] = Math.min(spill, rim)
         }
       }
       let next = new Float32Array(W * H)
