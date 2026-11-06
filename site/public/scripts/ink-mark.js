@@ -85,13 +85,14 @@
       if (!hostRect.width || !hostRect.height) return
       if (!canvasRect.width || !canvasRect.height) return
 
-      // Roughly one grid cell per rendered pixel so the thin title strokes
-      // survive the ink render, with a cell budget for slower machines. The
-      // grid follows the canvas box, so the visible overhang is controlled
-      // entirely by the CSS around `.ink-hero__canvas`.
-      const MAX_CELLS = 240000
-      let W = Math.round(canvasRect.width)
-      let H = Math.round(canvasRect.height)
+      // Match the device pixel grid on high-DPI screens (capped at 2x) so the
+      // thin title strokes and the mark's grey layers stay crisp, with a cell
+      // budget for slower machines. The grid follows the canvas box, so the
+      // visible overhang is controlled entirely by the CSS around it.
+      const MAX_CELLS = 1000000
+      const resolution = clamp(window.devicePixelRatio || 1, 1, 2)
+      let W = Math.round(canvasRect.width * resolution)
+      let H = Math.round(canvasRect.height * resolution)
       const shrink = Math.sqrt(MAX_CELLS / (W * H))
       if (shrink < 1) {
         W = Math.round(W * shrink)
@@ -105,6 +106,7 @@
       const cellScale = 1 / cellW
 
       const target = new Float32Array(W * H)
+      const tone = new Uint8ClampedArray(W * H)
 
       function readTarget() {
         const scale = 2
@@ -172,6 +174,7 @@
         const data = flat.getImageData(0, 0, W, H).data
         for (let i = 0; i < target.length; i += 1) {
           target[i] = data[i * 4 + 3] / 255
+          tone[i] = data[i * 4]
         }
         return true
       }
@@ -263,7 +266,9 @@
             // Only displaced ink catches the light; at rest the field must
             // match the black lockup exactly, or thin strokes turn grey.
             const excited = clamp(Math.abs(h - target[i]) * 4, 0, 1)
-            const value = clamp(8 + slope * 190 * excited, 6, 235)
+            // The logo is multi-tone; keep its greys at rest and only add
+            // the wet highlight where the ink has actually moved.
+            const value = clamp(tone[i] + slope * 170 * excited, 0, 255)
             pixels[p] = value
             pixels[p + 1] = value
             pixels[p + 2] = value

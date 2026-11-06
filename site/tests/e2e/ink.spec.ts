@@ -80,3 +80,21 @@ test.describe('home ink hero', () => {
     await expect(page.locator('[data-ink-hero] canvas')).toHaveCSS('opacity', '0')
   })
 })
+
+test.describe('home ink hero on retina', () => {
+  test.use({ deviceScaleFactor: 2 })
+
+  test('renders the ink canvas at device resolution', async ({ page }) => {
+    const baseURL = String(test.info().project.use.baseURL)
+    await page.goto('/about')
+    await page.locator('header .header__brand').click()
+    await expect(page).toHaveURL(`${baseURL}/`)
+
+    const canvas = page.locator('[data-ink-hero] canvas')
+    await expect(canvas).toHaveAttribute('data-ready', '1')
+    const ratio = await canvas.evaluate(
+      element => element.width / element.getBoundingClientRect().width,
+    )
+    expect(ratio).toBeGreaterThan(1.9)
+  })
+})
