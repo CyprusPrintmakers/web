@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import HomeIntro from './HomeIntro.astro'
 import HeroBrand from '../layout/HeroBrand.astro'
+import InkMark from '../ui/InkMark.astro'
 import { getContent } from '../../lib/content/source'
 import type { Locale } from '../../lib/i18n/locales'
 import { localePath } from '../../lib/i18n/locales'
@@ -53,7 +54,9 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
 >
   <section class="home-hero">
     <div class="home-hero__center" data-home-hero>
-      <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
+      <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback}>
+        <InkMark slot="mark" />
+      </HeroBrand>
     </div>
 
     <div class="home-cover__links">

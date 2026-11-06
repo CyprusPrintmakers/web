@@ -41,6 +41,9 @@
     delete html.dataset.intro
     root.remove()
     focus()
+    try {
+      window.dispatchEvent(new CustomEvent('cp:intro-done'))
+    } catch {}
   }
 
   const play = (element, frames, options) => {

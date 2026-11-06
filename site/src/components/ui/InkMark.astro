@@ -1,0 +1,66 @@
+---
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<span class:list={['ink-mark', 'hero-brand__mark', className]} data-ink-mark>
+  <img
+    class="ink-mark__image"
+    src="/mark.png"
+    alt=""
+    width="158"
+    height="152"
+    decoding="async"
+  />
+  <canvas class="ink-mark__canvas" width="220" height="212" data-ink-canvas aria-hidden="true"></canvas>
+</span>
+
+<style>
+  .ink-mark {
+    aspect-ratio: 581 / 560;
+    display: block;
+    flex-shrink: 0;
+    height: auto;
+    order: -1;
+    position: relative;
+    width: clamp(64px, 12vw, 158px);
+  }
+
+  .ink-mark__image,
+  .ink-mark__canvas {
+    display: block;
+    height: 100%;
+    inset: 0;
+    object-fit: contain;
+    position: absolute;
+    transition: opacity 220ms var(--ease-out-expo);
+    width: 100%;
+  }
+
+  .ink-mark__image {
+    pointer-events: none;
+    position: relative;
+    z-index: 0;
+  }
+
+  .ink-mark__canvas {
+    cursor: crosshair;
+    height: 150%;
+    left: -25%;
+    opacity: 0;
+    pointer-events: auto;
+    top: -25%;
+    touch-action: none;
+    width: 150%;
+    z-index: 1;
+  }
+
+  @media (min-width: 900px) {
+    .ink-mark {
+      order: initial;
+    }
+  }
+</style>
