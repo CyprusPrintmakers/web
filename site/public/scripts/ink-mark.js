@@ -64,6 +64,38 @@
     if (!ctx) return
     canvas.dataset.inkInit = '1'
 
+    // A brayer follows the pointer on desktop. The native cursor is only
+    // suppressed after the first successful placement, so a script failure
+    // leaves the crosshair in place.
+    const roller = document.querySelector('[data-ink-roller]')
+    if (roller instanceof HTMLElement && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let cursorOn = false
+      const place = event => {
+        if (event.pointerType === 'touch') return
+        const rect = canvas.getBoundingClientRect()
+        const inside =
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom
+        roller.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`
+        roller.dataset.visible = inside ? '1' : '0'
+        if (inside && !cursorOn) {
+          cursorOn = true
+          canvas.dataset.inkCustomCursor = '1'
+        }
+      }
+      canvas.addEventListener('pointerenter', place)
+      canvas.addEventListener('pointermove', place)
+      canvas.addEventListener('pointerleave', () => {
+        roller.dataset.visible = '0'
+        delete roller.dataset.pressing
+      })
+      canvas.addEventListener('pointerdown', () => { roller.dataset.pressing = '1' })
+      canvas.addEventListener('pointerup', () => { delete roller.dataset.pressing })
+      canvas.addEventListener('pointercancel', () => { delete roller.dataset.pressing })
+    }
+
     const ready = () => {
       if (!canvas.isConnected) return
       const fonts = document.fonts?.ready ?? Promise.resolve()

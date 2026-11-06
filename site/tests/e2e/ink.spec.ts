@@ -51,6 +51,33 @@ test.describe('home ink hero', () => {
       .toBeGreaterThan(0.01)
   })
 
+  test('shows the ink roller on desktop hover', async ({ page }) => {
+    const baseURL = String(test.info().project.use.baseURL)
+    await page.goto('/about')
+    await page.locator('header .header__brand').click()
+    await expect(page).toHaveURL(`${baseURL}/`)
+
+    const canvas = page.locator('[data-ink-hero] canvas')
+    const roller = page.locator('[data-ink-roller]')
+    await expect(canvas).toHaveAttribute('data-ready', '1')
+    await expect(roller).toHaveCSS('display', 'block')
+
+    const box = await canvas.boundingBox()
+    expect(box).not.toBeNull()
+    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2)
+    await expect(roller).toHaveAttribute('data-visible', '1')
+    await expect(canvas).toHaveCSS('cursor', 'none')
+    await expect(roller).not.toHaveCSS('transform', 'none')
+
+    await page.mouse.down()
+    await expect(roller).toHaveAttribute('data-pressing', '1')
+    await page.mouse.up()
+    await expect(roller).not.toHaveAttribute('data-pressing', '1')
+
+    await page.mouse.move(4, 4)
+    await expect(roller).toHaveAttribute('data-visible', '0')
+  })
+
   test('fades the ink out at the canvas edge', async ({ page }) => {
     const baseURL = String(test.info().project.use.baseURL)
     await page.goto('/about')

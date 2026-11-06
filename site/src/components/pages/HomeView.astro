@@ -65,6 +65,20 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
       </div>
     </div>
 
+    {
+      inkEnabled && (
+        <div class="ink-roller" data-ink-roller aria-hidden="true">
+          <svg viewBox="0 0 44 44" fill="none">
+            <rect class="ink-roller__grip" x="14" y="2" width="16" height="8" rx="4" />
+            <rect class="ink-roller__stem" x="20.8" y="10" width="2.4" height="15" rx="1.2" />
+            <rect class="ink-roller__barrel" x="5" y="24" width="34" height="9" rx="4.5" />
+            <rect class="ink-roller__shine" x="8" y="26.2" width="28" height="1.8" rx=".9" />
+            <ellipse class="ink-roller__smudge" cx="22" cy="35.6" rx="15" ry="1.8" />
+          </svg>
+        </div>
+      )
+    }
+
     <div class="home-cover__links">
       <p class="home-cover__current">
         {
@@ -130,9 +144,74 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     filter: invert(1);
   }
 
+  /* Desktop cursor: the native pointer is hidden only once the roller is
+     ready, so a failed script still leaves a usable crosshair. */
+  .ink-roller {
+    color: var(--ink);
+    display: none;
+    height: 44px;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    transition: opacity 120ms var(--ease-out-expo);
+    width: 44px;
+    will-change: transform;
+    z-index: 40;
+  }
+
+  .ink-roller svg {
+    display: block;
+    height: 44px;
+    transform: translate(-22px, -33px);
+    transition: transform 90ms var(--ease-out-expo);
+    width: 44px;
+    will-change: transform;
+  }
+
+  .ink-roller__grip,
+  .ink-roller__stem,
+  .ink-roller__barrel {
+    fill: currentColor;
+  }
+
+  .ink-roller__shine {
+    fill: var(--paper);
+    opacity: 0.6;
+  }
+
+  .ink-roller__smudge {
+    fill: currentColor;
+    opacity: 0.12;
+  }
+
+  .ink-roller[data-visible='1'] {
+    opacity: 1;
+  }
+
+  .ink-roller[data-pressing='1'] svg {
+    transform: translate(-22px, -30px) scale(0.96);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .ink-roller {
+      display: block;
+    }
+
+    .ink-hero__canvas[data-ink-custom-cursor='1'] {
+      cursor: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .ink-hero__canvas {
       display: none;
+    }
+
+    .ink-roller,
+    .ink-roller svg {
+      transition: none;
     }
   }
 
