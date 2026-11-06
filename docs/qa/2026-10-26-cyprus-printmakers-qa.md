@@ -173,3 +173,5 @@
 - The About photo's slide-in started off the right edge and caused 24 px of horizontal overflow until it settled. The article now uses `overflow-x: clip`.
 - Greek overflow tests now cover `/el/about`, `/el/contact` and `/el/privacy` as well as the earlier pages.
 - Verified: 120 unit / 114 e2e passed / 1 skipped, build clean.
+
+- Fixed the projects index on phones: the year was rendering under the title while the YEAR header sat on the right. Rows now use the same three-column grid at every width (`number title year`), with the year right-aligned against the header. Verified at 320, 390 and 1440 px with no overflow; added an e2e assertion that every year's right edge matches the header.

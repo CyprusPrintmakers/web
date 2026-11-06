@@ -108,16 +108,12 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
   .projects__row {
     align-items: baseline;
     display: grid;
-    gap: 4px 24px;
-    grid-template-areas:
-      'number title'
-      'number year';
-    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 4px 16px;
+    grid-template-areas: 'number title year';
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
   }
 
   .projects__head {
-    grid-template-areas: 'number title year';
-    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
     margin-bottom: 8px;
   }
 
@@ -161,9 +157,9 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
   .projects__year {
     color: var(--muted-text);
     font-size: var(--text-small);
-    grid-area: year;
-    justify-self: start;
     font-variant-numeric: tabular-nums;
+    grid-area: year;
+    justify-self: end;
   }
 
   .projects__row:hover .projects__title {
@@ -223,14 +219,5 @@ const newestFirst = [...projects].sort((a, b) => b.year - a.year)
     }
   }
 
-  @media (min-width: 700px) {
-    .projects__row {
-      grid-template-areas: 'number title year';
-      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-    }
 
-    .projects__year {
-      justify-self: end;
-    }
-  }
 </style>

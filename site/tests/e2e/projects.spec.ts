@@ -25,6 +25,24 @@ test.describe('projects index', () => {
     )
   })
 
+  test('keeps the year in the right column on a phone', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/projects')
+
+    const headerRight = await page
+      .locator('.projects__head span:last-child')
+      .evaluate(el => el.getBoundingClientRect().right)
+    const rows = await page
+      .locator('[data-project] .projects__year')
+      .evaluateAll(elements =>
+        elements.map(element => element.getBoundingClientRect().right),
+      )
+
+    expect(rows.length).toBe(3)
+    for (const right of rows) expect(Math.abs(right - headerRight)).toBeLessThanOrEqual(1)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
+  })
+
   test('shows a cover preview while hovering a row', async ({ page }) => {
     await page.goto('/projects')
 
