@@ -79,6 +79,7 @@ export type SiteSettings = Entity & {
   socialLinks: SocialLink[]
   defaultSeo: Seo
   footerNote: string
+  inkEffect?: boolean
 }
 
 export type HomePage = Entity & {

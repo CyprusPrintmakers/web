@@ -52,6 +52,11 @@
     const mark = host.querySelector('.hero-brand__mark')
     if (!(canvas instanceof HTMLCanvasElement)) return
     if (!(brand instanceof HTMLElement) || !(mark instanceof HTMLImageElement)) return
+    if (new URLSearchParams(location.search).get('ink') === 'off') {
+      canvas.dataset.inkDisabled = '1'
+      canvas.style.display = 'none'
+      return
+    }
     if (reduce.matches) return
     if (canvas.dataset.inkInit) return
 
@@ -76,22 +81,28 @@
 
     function begin() {
       const hostRect = host.getBoundingClientRect()
+      const canvasRect = canvas.getBoundingClientRect()
       if (!hostRect.width || !hostRect.height) return
+      if (!canvasRect.width || !canvasRect.height) return
 
       // Roughly one grid cell per rendered pixel so the thin title strokes
       // survive the ink render, with a cell budget for slower machines. The
-      // canvas covers 120% of the lockup, so the title lives in the middle
-      // 1/12 margin on each side.
-      const MAX_CELLS = 180000
-      let W = Math.round(hostRect.width * 1.2)
-      let H = Math.round(W * (hostRect.height / hostRect.width))
+      // grid follows the canvas box, so the visible overhang is controlled
+      // entirely by the CSS around `.ink-hero__canvas`.
+      const MAX_CELLS = 240000
+      let W = Math.round(canvasRect.width)
+      let H = Math.round(canvasRect.height)
       const shrink = Math.sqrt(MAX_CELLS / (W * H))
-      if (shrink < 1) W = Math.round(W * shrink)
-      W = clamp(W, 160, 960)
-      H = Math.max(48, Math.round(W * (hostRect.height / hostRect.width)))
+      if (shrink < 1) {
+        W = Math.round(W * shrink)
+        H = Math.round(H * shrink)
+      }
+      if (W < 2 || H < 2) return
       canvas.width = W
       canvas.height = H
-      const cellScale = ((W * 5) / 6) / hostRect.width
+      const cellW = canvasRect.width / W
+      const cellH = canvasRect.height / H
+      const cellScale = 1 / cellW
 
       const target = new Float32Array(W * H)
 
@@ -104,10 +115,11 @@
         if (!paint) return false
         paint.scale(scale, scale)
 
-        const content = (W * 5) / 6
-        const s = content / hostRect.width
-        paint.translate(W / 12, H / 12)
-        paint.scale(s, s)
+        paint.translate(
+          (hostRect.left - canvasRect.left) / cellW,
+          (hostRect.top - canvasRect.top) / cellH,
+        )
+        paint.scale(1 / cellW, 1 / cellH)
 
         // The logo is drawn as-is. Text is always black here; the canvas is
         // inverted by CSS in dark mode, exactly like the static lockup.

@@ -13,7 +13,10 @@ test.describe('home ink hero', () => {
     await expect(canvas).toHaveAttribute('data-ready', '1')
 
     const box = await canvas.boundingBox()
+    const lockup = await page.locator('[data-ink-hero]').boundingBox()
     expect(box).not.toBeNull()
+    expect(lockup).not.toBeNull()
+    expect(box!.height).toBeGreaterThan(lockup!.height * 1.5)
     const x = box!.x + box!.width / 2
     const y = box!.y + box!.height / 2
 
@@ -46,6 +49,16 @@ test.describe('home ink hero', () => {
         ),
       )
       .toBeGreaterThan(0.01)
+  })
+
+  test('can be switched off with the preview override', async ({ page }) => {
+    await page.goto('/?ink=off')
+    await page.keyboard.press('Escape')
+    await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 2000 })
+    const canvas = page.locator('[data-ink-hero] canvas')
+    await expect(canvas).toBeHidden()
+    await expect(canvas).toHaveAttribute('data-ink-disabled', '1')
+    await expect(page.locator('[data-ink-hero] .hero-brand')).toHaveCSS('opacity', '1')
   })
 
   test('initialises if the cover script fails', async ({ page }) => {

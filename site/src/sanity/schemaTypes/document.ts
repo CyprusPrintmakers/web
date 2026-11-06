@@ -143,6 +143,14 @@ export default [
         title: 'Footer note',
         type: 'string',
       }),
+      defineField({
+        name: 'inkEffect',
+        title: 'Home ink effect',
+        type: 'boolean',
+        description:
+          'Show the interactive ink layer over the home title. Turn it off to show the plain lockup.',
+        initialValue: true,
+      }),
     ],
     preview: {
       select: PREVIEW_SELECT.siteSettings,

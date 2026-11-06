@@ -13,9 +13,11 @@ interface Props {
 }
 
 const { lang } = Astro.props
-const { home, projects, news } = await getContent()
+const { home, projects, news, settings } = await getContent()
 
 const title = pickLocalized(home.title, lang)
+// Site settings can switch the effect off without a code change.
+const inkEnabled = settings.inkEffect !== false
 const heroBody = pickLocalized(home.heroBody, lang).text
 
 const projectDate = (project: (typeof projects)[number]) =>
@@ -55,7 +57,11 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     <div class="home-hero__center">
       <div class="home-hero__brand" data-ink-hero>
         <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
-        <canvas class="ink-hero__canvas" data-ink-canvas aria-hidden="true"></canvas>
+        {
+          inkEnabled && (
+            <canvas class="ink-hero__canvas" data-ink-canvas aria-hidden="true" />
+          )
+        }
       </div>
     </div>
 
@@ -94,7 +100,7 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     display: flex;
     flex: 1;
     flex-direction: column;
-    /* The ink canvas is 120% of the lockup; keep its edge overhang from
+    /* The ink canvas extends past the lockup; keep that overhang from
        adding a horizontal scrollbar on narrow screens. */
     overflow: clip;
   }
@@ -112,12 +118,12 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
 
   .ink-hero__canvas {
     cursor: crosshair;
-    height: 120%;
+    height: 160%;
     left: -10%;
     opacity: 0;
     pointer-events: auto;
     position: absolute;
-    top: -10%;
+    top: -30%;
     touch-action: pan-y;
     width: 120%;
     z-index: 2;

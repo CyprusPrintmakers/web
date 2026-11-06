@@ -24,5 +24,6 @@
     "title": "Cyprus Printmakers Association",
     "description": "The association for printmakers in Cyprus: members, projects, news and membership."
   },
-  "footerNote": "© Cyprus Printmakers Association"
+  "footerNote": "© Cyprus Printmakers Association",
+  "inkEffect": true
 }

@@ -50,6 +50,7 @@ describe('content loader', () => {
     expect(content.settings.contact.email).toBe('cyprintmakers@gmail.com')
     expect(content.settings.contact.phone).toBe('0035799351153')
     expect(content.settings.contact.phoneHref).toBe('tel:+35799351153')
+    expect(content.settings.inkEffect).toBe(true)
 
     expect(content.home.title.find(entry => entry.language === 'en')?.value).toBe(
       'CYPRUS PRINTMAKERS ASSOCIATION',
