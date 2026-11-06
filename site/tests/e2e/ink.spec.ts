@@ -51,6 +51,59 @@ test.describe('home ink hero', () => {
       .toBeGreaterThan(0.01)
   })
 
+  test('fades the ink out at the canvas edge', async ({ page }) => {
+    const baseURL = String(test.info().project.use.baseURL)
+    await page.goto('/about')
+    await page.locator('header .header__brand').click()
+    await expect(page).toHaveURL(`${baseURL}/`)
+
+    const canvas = page.locator('[data-ink-hero] canvas')
+    await expect(canvas).toHaveAttribute('data-ready', '1')
+    const box = await canvas.boundingBox()
+    expect(box).not.toBeNull()
+
+    await canvas.dispatchEvent('pointerdown', {
+      pointerId: 1,
+      clientX: box!.x + box!.width * 0.2,
+      clientY: box!.y + box!.height * 0.7,
+      bubbles: true,
+    })
+    for (let step = 1; step <= 20; step += 1) {
+      await canvas.dispatchEvent('pointermove', {
+        pointerId: 1,
+        clientX: box!.x + box!.width * (0.2 + step * 0.03),
+        clientY: box!.y + box!.height * (0.7 - step * 0.025),
+        bubbles: true,
+      })
+    }
+    await expect
+      .poll(async () => Number(await canvas.evaluate(el => getComputedStyle(el).opacity)))
+      .toBeGreaterThan(0.5)
+
+    const edge = await canvas.evaluate(element => {
+      const surface = element as HTMLCanvasElement
+      const context = surface.getContext('2d')
+      if (!context) return -1
+      const data = context.getImageData(0, 0, surface.width, surface.height).data
+      let max = 0
+      const check = (x: number, y: number) => {
+        max = Math.max(max, data[(y * surface.width + x) * 4 + 3])
+      }
+      for (let x = 0; x < surface.width; x += 4) {
+        check(x, 0)
+        check(x, surface.height - 1)
+      }
+      for (let y = 0; y < surface.height; y += 4) {
+        check(0, y)
+        check(surface.width - 1, y)
+      }
+      return max
+    })
+    expect(edge).toBe(0)
+
+    await canvas.dispatchEvent('pointerup', { pointerId: 1, bubbles: true })
+  })
+
   test('can be switched off with the preview override', async ({ page }) => {
     await page.goto('/?ink=off')
     await page.keyboard.press('Escape')

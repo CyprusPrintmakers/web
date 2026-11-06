@@ -198,6 +198,22 @@
         vy = new Float32Array(W * H)
         window[STATE_KEY] = { w: W, h: H, title: titleKey, height, vx, vy }
       }
+      // Fade displaced ink out before it reaches the canvas edge. Target
+      // pixels keep their full alpha so the lockup itself is never clipped.
+      const mask = new Float32Array(W * H)
+      const feather = Math.max(8, Math.round(Math.min(W, H) * 0.15))
+      for (let y = 0; y < H; y += 1) {
+        for (let x = 0; x < W; x += 1) {
+          const i = y * W + x
+          if (target[i] > 0.02) {
+            mask[i] = 1
+            continue
+          }
+          const edge = Math.min(x, W - 1 - x, y, H - 1 - y)
+          const t = clamp(edge / feather, 0, 1)
+          mask[i] = t * t * (3 - 2 * t)
+        }
+      }
       let next = new Float32Array(W * H)
       let raf = 0
       let stirring = false
@@ -230,7 +246,9 @@
           for (let x = 0; x < W; x += 1) {
             const i = y * W + x
             const h = sample(height, x - vx[i] * 0.55, y - vy[i] * 0.55)
-            next[i] = h + (target[i] - h) * 0.007
+            // While the pointer is down the ink is free to move; the lockup
+            // only starts pulling itself back together on release.
+            next[i] = h + (target[i] - h) * (stirring ? 0 : 0.007)
             vx[i] *= 0.93
             vy[i] *= 0.93
           }
@@ -264,15 +282,17 @@
             const down = height[Math.min(H - 1, y + 1) * W + x]
             const slope = Math.abs(right - left) + Math.abs(down - up)
             // Only displaced ink catches the light; at rest the field must
-            // match the black lockup exactly, or thin strokes turn grey.
+            // match the lockup exactly, or thin strokes turn grey.
             const excited = clamp(Math.abs(h - target[i]) * 4, 0, 1)
-            // The logo is multi-tone; keep its greys at rest and only add
-            // the wet highlight where the ink has actually moved.
-            const value = clamp(tone[i] + slope * 170 * excited, 0, 255)
+            // The logo is multi-tone; keep its greys at rest. Displaced ink
+            // stays dark and only catches a little light, so the smear reads
+            // as ink on the paper rather than a white embossed band.
+            const base = target[i] > 0.02 ? tone[i] : 14
+            const value = clamp(base + slope * 70 * excited, 0, 225)
             pixels[p] = value
             pixels[p + 1] = value
             pixels[p + 2] = value
-            pixels[p + 3] = Math.round(clamp(h, 0, 1) * 255)
+            pixels[p + 3] = Math.round(clamp(h, 0, 1) * mask[i] * 255)
           }
         }
         ctx.putImageData(imageData, 0, 0)

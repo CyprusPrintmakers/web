@@ -100,9 +100,6 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     display: flex;
     flex: 1;
     flex-direction: column;
-    /* The ink canvas extends past the lockup; keep that overhang from
-       adding a horizontal scrollbar on narrow screens. */
-    overflow: clip;
   }
 
   .home-hero__center {
@@ -185,6 +182,9 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
   main:has(.home-hero) {
     display: flex;
     flex-direction: column;
+    /* Clip the ink at the viewport edge, not at the shell's content edge, so
+       the effect doesn't end in a visible rectangle around the title. */
+    overflow-x: clip;
   }
 
   main:has(.home-hero) .grid-12 {
