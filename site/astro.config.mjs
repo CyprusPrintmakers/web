@@ -20,9 +20,13 @@ const dataset = process.env.SANITY_DATASET ?? env.SANITY_DATASET ?? 'production'
 const siteUrl =
   process.env.PUBLIC_SITE_URL ?? env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.densetheory.cc'
 
-// The Sanity integration and its React runtime are only loaded once a project
-// exists, so every fixture build (and this repo today) works with no env at all.
-const sanityIntegrations = projectId
+// Keep the embedded Studio for local HMR. Production serves the static
+// Studio built by `scripts/build-studio.mjs`, which is what allows Sanity's
+// auto-updates to load the Studio core from the CDN.
+const dev =
+  process.env.npm_lifecycle_event === 'dev' ||
+  process.env.NODE_ENV === 'development'
+const studioIntegrations = dev && projectId
   ? [
       react(),
       sanity({
@@ -64,6 +68,6 @@ export default defineConfig({
       i18n: { defaultLocale: 'en', locales: { en: 'en-GB', el: 'el-CY' } },
       filter: page => !page.includes('404') && !page.includes('/preview'),
     }),
-    ...sanityIntegrations,
+    ...studioIntegrations,
   ],
 })

@@ -7,20 +7,22 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run build:studio && astro build",
     "build:fixtures": "CONTENT_SOURCE=fixtures astro build",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "seed": "node --disable-warning=ExperimentalWarning scripts/seed.ts",
-    "manifest": "sanity manifest extract --path public/admin/static && mkdir -p public/static && cp public/admin/static/* public/static/",
+    "manifest": "sanity manifest extract --path public/static",
     "import:projects": "tsx scripts/import-projects.ts --dry-run",
     "import:members": "tsx scripts/import-members.ts --dry-run",
     "import:content": "tsx scripts/import-content.ts",
     "import:content:dry": "tsx scripts/import-content.ts --dry-run",
     "import:pages": "tsx scripts/import-pages.ts",
-    "import:pages:dry": "tsx scripts/import-pages.ts --dry-run"
+    "import:pages:dry": "tsx scripts/import-pages.ts --dry-run",
+    "predev": "rm -rf public/admin",
+    "build:studio": "node scripts/build-studio.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.1",

@@ -6,4 +6,7 @@ export default defineCliConfig({
     dataset: process.env.SANITY_DATASET ?? 'production',
   },
   project: { basePath: '/admin' },
+  deployment: {
+    autoUpdates: true,
+  },
 })

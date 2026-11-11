@@ -5,9 +5,10 @@ import { internationalizedArray } from 'sanity-plugin-internationalized-array'
 import { schemaTypes } from './src/sanity/schemaTypes'
 import { structure } from './src/sanity/structure'
 
-// Evaluated for `astro check` even when no project exists; the Studio is
-// only built when @sanity/astro is active with a real SANITY_PROJECT_ID.
-const projectId = process.env.SANITY_PROJECT_ID ?? 'project-not-configured'
+// Default to the production project so a plain `sanity build` (which powers
+// the auto-updating Studio) works without a local .env. The embedded Astro
+// Studio is only active in development.
+const projectId = process.env.SANITY_PROJECT_ID ?? 'hyel0os7'
 
 type PreviewDocument = { _type?: string; slug?: { current?: string } }
 
@@ -45,7 +46,7 @@ const plugins = [
 // Presentation is only registered once the draft preview surface is enabled;
 // until then it would open a 503 iframe and fail to connect to visual editing.
 if (
-  process.env.SANITY_PROJECT_ID &&
+  projectId &&
   process.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true'
 ) {
   plugins.push(

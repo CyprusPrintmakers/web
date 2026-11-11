@@ -65,6 +65,15 @@ PUBLIC_STAGING=true PUBLIC_SITE_URL=https://cyprintmakers.densetheory.cc npx ast
 npx vercel deploy --prebuilt --prod
 ```
 
+## Studio and auto-updates
+
+- Production Studio: `/admin`, built as a static Sanity Studio with `sanity build` and served from `public/admin`. The embedded `@sanity/astro` Studio is local-dev only, because Sanity's auto-updates feature does not support embedded Studios.
+- `npm run build` runs `scripts/build-studio.mjs` before Astro. It builds the Studio, rewrites its `/static` references to `/admin/static`, copies the `static`/`vendor` bundles into `public/admin`, and leaves the folder gitignored.
+- `sanity.cli.ts` has `deployment.autoUpdates: true`. The custom schema and plugins ship with the site build; the Studio core updates itself from Sanity's CDN (currently 6.23.0 while the local package is 6.20.0 — update locally with `npm i sanity@latest` when convenient).
+- `vercel.json` rewrites `/admin` and `/admin/*` to the Studio shell so browser-history deep links survive a refresh; the filesystem takes precedence, so `/admin/static` and `/admin/vendor` are served normally.
+- CORS origins in Sanity Manage include `https://cyprintmakers.densetheory.cc`, the Vercel production URL, and `http://localhost:4324`. Add any new preview origin there.
+- `npm run dev` removes `public/admin` and uses the embedded Studio for HMR. `npm run manifest` writes the schema manifest to `public/static`.
+
 ## Licence
 
 Geologica is used under the SIL Open Font License 1.1 (`public/fonts/OFL.txt`), fetched from Google Fonts (fonts.google.com/specimen/Geologica). The upstream OFL header names "Geologisk" — Google's own file; the licence text is committed unmodified.
