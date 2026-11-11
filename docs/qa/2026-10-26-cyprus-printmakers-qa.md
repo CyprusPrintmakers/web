@@ -211,3 +211,5 @@
 
 - The brayer cursor now uses the supplied photograph rather than a drawing. The white background was flood-cut to transparency, the original shadow removed, the image flipped so the roller sits on the pointer and the handle rises, and it was fitted to a 128px PNG displayed at 64px (`public/images/cursor-brayer.png`; source kept at `scripts/assets/brayer-source.jpg`). The red handle and beige roller supply the colour. No CSS shadow is used, so the design guard stays clean.
 - Runtime toggle verified end-to-end on production: the published value was changed from false to true while the prerendered HTML still had `data-ink-default="off"`; `/api/ink` returned true and the ink and cursor initialised on the next home load. The webhook then rebuilt and the default attribute became `on`. Current published state is on.
+
+- The photographed brayer is rotated 180° in the cursor: the roller sits on the pointer, the red handle hangs below, and the press moves the whole brayer down 2px. The source PNG still has the handle-up cutout, so the flip is a single CSS transform.

@@ -168,8 +168,8 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     max-width: none;
     position: absolute;
     top: 0;
-    transform: translate(-50%, -100%);
-    transform-origin: 50% 100%;
+    transform: translate(-50%, 0) rotate(180deg);
+    transform-origin: 50% 50%;
     transition: transform 90ms var(--ease-out-expo);
     width: 64px;
     will-change: transform;
@@ -180,7 +180,7 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
   }
 
   .ink-roller[data-pressing='1'] .ink-roller__image {
-    transform: translate(-50%, calc(-100% + 2px)) scale(0.97);
+    transform: translate(-50%, 2px) rotate(180deg);
   }
 
   @media (hover: hover) and (pointer: fine) {
