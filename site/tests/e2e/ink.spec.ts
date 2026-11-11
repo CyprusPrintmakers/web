@@ -51,6 +51,32 @@ test.describe('home ink hero', () => {
       .toBeGreaterThan(0.01)
   })
 
+  test('applies the published setting on the next home load', async ({ page }) => {
+    const baseURL = String(test.info().project.use.baseURL)
+    let enabled = true
+    await page.route('**/api/ink', route =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ enabled }),
+      }),
+    )
+
+    await page.goto('/about')
+    await page.locator('header .header__brand').click()
+    await expect(page).toHaveURL(`${baseURL}/`)
+    await expect(page.locator('[data-ink-hero]')).toHaveAttribute('data-ink-enabled', '1')
+    await expect(page.locator('[data-ink-hero] canvas')).toHaveAttribute('data-ready', '1')
+
+    enabled = false
+    await page.getByRole('navigation').getByRole('link', { name: 'ABOUT' }).click()
+    await expect(page).toHaveURL(/\/about$/)
+    await page.locator('header .header__brand').click()
+    await expect(page).toHaveURL(`${baseURL}/`)
+    await expect(page.locator('[data-ink-hero]')).toHaveAttribute('data-ink-enabled', '0')
+    await expect(page.locator('[data-ink-hero] canvas')).toHaveCSS('display', 'none')
+  })
+
   test('shows the ink roller on desktop hover', async ({ page }) => {
     const baseURL = String(test.info().project.use.baseURL)
     await page.goto('/about')
@@ -172,9 +198,10 @@ test.describe('home ink hero on retina', () => {
 
     const canvas = page.locator('[data-ink-hero] canvas')
     await expect(canvas).toHaveAttribute('data-ready', '1')
-    const ratio = await canvas.evaluate(
-      element => element.width / element.getBoundingClientRect().width,
-    )
+    const ratio = await canvas.evaluate(element => {
+      const surface = element as HTMLCanvasElement
+      return surface.width / surface.getBoundingClientRect().width
+    })
     expect(ratio).toBeGreaterThan(1.9)
   })
 })

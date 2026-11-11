@@ -16,8 +16,8 @@ const { lang } = Astro.props
 const { home, projects, news, settings } = await getContent()
 
 const title = pickLocalized(home.title, lang)
-// Site settings can switch the effect off without a code change.
-const inkEnabled = settings.inkEffect !== false
+// Build-time value is the fallback if the runtime setting request fails.
+const inkDefault = settings.inkEffect !== false
 const heroBody = pickLocalized(home.heroBody, lang).text
 
 const projectDate = (project: (typeof projects)[number]) =>
@@ -55,29 +55,28 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
 >
   <section class="home-hero">
     <div class="home-hero__center">
-      <div class="home-hero__brand" data-ink-hero>
+      <div
+        class="home-hero__brand"
+        data-ink-hero
+        data-ink-default={inkDefault ? 'on' : 'off'}
+      >
         <HeroBrand as="h1" title={title.text} lang={lang} fallback={title.isFallback} />
-        {
-          inkEnabled && (
-            <canvas class="ink-hero__canvas" data-ink-canvas aria-hidden="true" />
-          )
-        }
+        <canvas class="ink-hero__canvas" data-ink-canvas aria-hidden="true" />
       </div>
     </div>
 
-    {
-      inkEnabled && (
-        <div class="ink-roller" data-ink-roller aria-hidden="true">
-          <svg viewBox="0 0 44 44" fill="none">
-            <rect class="ink-roller__grip" x="14" y="2" width="16" height="8" rx="4" />
-            <rect class="ink-roller__stem" x="20.8" y="10" width="2.4" height="15" rx="1.2" />
-            <rect class="ink-roller__barrel" x="5" y="24" width="34" height="9" rx="4.5" />
-            <rect class="ink-roller__shine" x="8" y="26.2" width="28" height="1.8" rx=".9" />
-            <ellipse class="ink-roller__smudge" cx="22" cy="35.6" rx="15" ry="1.8" />
-          </svg>
-        </div>
-      )
-    }
+    <div class="ink-roller" data-ink-roller aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none">
+        <ellipse class="ink-roller__smudge" cx="24" cy="39" rx="18" ry="2.4" />
+        <path class="ink-roller__metal" d="M10 27v-4h6v4M32 27v-4h6v4" />
+        <rect class="ink-roller__metal" x="19" y="20" width="10" height="4" rx="2" />
+        <rect class="ink-roller__barrel" x="4" y="27" width="40" height="10" rx="5" />
+        <rect class="ink-roller__shine" x="8" y="29.2" width="32" height="2" rx="1" />
+        <rect class="ink-roller__stem" x="22.5" y="9" width="3" height="12" rx="1.5" />
+        <rect class="ink-roller__grip" x="16" y="2" width="16" height="8" rx="4" />
+        <path class="ink-roller__shine-grip" d="M20 4.5h8" />
+      </svg>
+    </div>
 
     <div class="home-cover__links">
       <p class="home-cover__current">
@@ -132,12 +131,16 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     height: 160%;
     left: -10%;
     opacity: 0;
-    pointer-events: auto;
+    pointer-events: none;
     position: absolute;
     top: -30%;
     touch-action: pan-y;
     width: 120%;
     z-index: 2;
+  }
+
+  .ink-hero__canvas[data-ink-active='1'] {
+    pointer-events: auto;
   }
 
   :global(html[data-theme='dark']) .ink-hero__canvas {
@@ -147,43 +150,63 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
   /* Desktop cursor: the native pointer is hidden only once the roller is
      ready, so a failed script still leaves a usable crosshair. */
   .ink-roller {
-    color: var(--ink);
+    --roller-barrel: #356f7f;
+    --roller-wood: #c18b5b;
+    --roller-metal: #9b9b9b;
     display: none;
-    height: 44px;
+    height: 48px;
     left: 0;
     opacity: 0;
     pointer-events: none;
     position: fixed;
     top: 0;
     transition: opacity 120ms var(--ease-out-expo);
-    width: 44px;
+    width: 48px;
     will-change: transform;
     z-index: 40;
   }
 
   .ink-roller svg {
     display: block;
-    height: 44px;
-    transform: translate(-22px, -33px);
+    height: 48px;
+    overflow: visible;
+    transform: translate(-24px, -37px);
     transition: transform 90ms var(--ease-out-expo);
-    width: 44px;
+    width: 48px;
     will-change: transform;
   }
 
-  .ink-roller__grip,
-  .ink-roller__stem,
   .ink-roller__barrel {
-    fill: currentColor;
+    fill: var(--roller-barrel);
+  }
+
+  .ink-roller__grip,
+  .ink-roller__stem {
+    fill: var(--roller-wood);
+  }
+
+  .ink-roller__metal {
+    fill: var(--roller-metal);
+    stroke: var(--roller-metal);
+    stroke-linejoin: round;
+    stroke-width: 2;
   }
 
   .ink-roller__shine {
-    fill: var(--paper);
-    opacity: 0.6;
+    fill: #fff;
+    opacity: 0.38;
+  }
+
+  .ink-roller__shine-grip {
+    stroke: #fff;
+    stroke-linecap: round;
+    stroke-width: 1.2;
+    opacity: 0.28;
   }
 
   .ink-roller__smudge {
-    fill: currentColor;
-    opacity: 0.12;
+    fill: var(--roller-barrel);
+    opacity: 0.16;
   }
 
   .ink-roller[data-visible='1'] {
@@ -191,7 +214,7 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
   }
 
   .ink-roller[data-pressing='1'] svg {
-    transform: translate(-22px, -30px) scale(0.96);
+    transform: translate(-24px, -34px) scale(0.96);
   }
 
   @media (hover: hover) and (pointer: fine) {

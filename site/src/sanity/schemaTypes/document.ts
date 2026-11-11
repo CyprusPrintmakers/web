@@ -148,7 +148,7 @@ export default [
         title: 'Home ink effect',
         type: 'boolean',
         description:
-          'Show the interactive ink layer over the home title. Turn it off to show the plain lockup.',
+          'Show the interactive ink layer over the home title. Publish this document — the site reads the value on the next home-page load, so no rebuild is needed.',
         initialValue: true,
       }),
     ],

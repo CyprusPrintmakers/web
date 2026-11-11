@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   createContentLoader,
   getContent,
+  getInkEffect,
   loadFixtures,
   resolveContentSource,
 } from '../../src/lib/content/source'
@@ -24,6 +25,10 @@ describe('content loader', () => {
 
     expect(content.projects.length).toBeGreaterThan(0)
     expect(content.members[0].name[0].language).toBe('en')
+  })
+
+  it('reads the home ink switch from fixtures', async () => {
+    await expect(getInkEffect({ CONTENT_SOURCE: 'fixtures' })).resolves.toBe(true)
   })
 
   it('has the fixture inventory later tasks depend on', async () => {

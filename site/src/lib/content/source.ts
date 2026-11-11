@@ -129,28 +129,31 @@ const SINGLETON_KEYS = [
  * lazily so fixture paths never load it; a read token disables the CDN so
  * draft-visible datasets stay current.
  */
+async function createSanityClient(env: Record<string, string | undefined>) {
+  const projectId = env.SANITY_PROJECT_ID?.trim()
+
+  if (!projectId) {
+    throw new Error('SANITY_PROJECT_ID is required for the Sanity content source')
+  }
+
+  const { createClient } = await import('@sanity/client')
+  const token = env.SANITY_API_READ_TOKEN?.trim() || undefined
+  return createClient({
+    projectId,
+    dataset: env.SANITY_DATASET?.trim() || 'production',
+    apiVersion: SANITY_API_VERSION,
+    token,
+    useCdn: !token,
+    // Builds read published content only, even when a token can see drafts.
+    perspective: 'published',
+  })
+}
+
 export function createSanityReader(
   env: Record<string, string | undefined> = process.env,
 ): ContentReader {
   return async () => {
-    const projectId = env.SANITY_PROJECT_ID?.trim()
-
-    if (!projectId) {
-      throw new Error('SANITY_PROJECT_ID is required for the Sanity content source')
-    }
-
-    const { createClient } = await import('@sanity/client')
-    const token = env.SANITY_API_READ_TOKEN?.trim() || undefined
-    const client = createClient({
-      projectId,
-      dataset: env.SANITY_DATASET?.trim() || 'production',
-      apiVersion: SANITY_API_VERSION,
-      token,
-      useCdn: !token,
-      // Builds read published content only, even when a token can see drafts.
-      perspective: 'published',
-    })
-
+    const client = await createSanityClient(env)
     const result = await client.fetch<RawContent>(CONTENT_QUERY)
 
     for (const key of SINGLETON_KEYS) {
@@ -186,6 +189,25 @@ export function resolveContentSource(
   }
 
   return env.SANITY_PROJECT_ID?.trim() ? 'sanity' : 'fixtures'
+}
+
+/**
+ * The home ink switch is read at request time so publishing it does not wait
+ * for the next prerendered rebuild. A missing value means on.
+ */
+export async function getInkEffect(
+  env: Record<string, string | undefined> = process.env,
+): Promise<boolean> {
+  if (resolveContentSource(env) === 'fixtures') {
+    const raw = await loadFixtures()
+    return raw.settings.inkEffect !== false
+  }
+
+  const client = await createSanityClient(env)
+  const value = await client.fetch<boolean | null>(
+    '*[_type == "siteSettings"][0].inkEffect',
+  )
+  return value !== false
 }
 
 function prepare<T extends object>(

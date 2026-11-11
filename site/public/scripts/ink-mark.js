@@ -52,9 +52,13 @@
     const mark = host.querySelector('.hero-brand__mark')
     if (!(canvas instanceof HTMLCanvasElement)) return
     if (!(brand instanceof HTMLElement) || !(mark instanceof HTMLImageElement)) return
+
+    const roller = document.querySelector('[data-ink-roller]')
     if (new URLSearchParams(location.search).get('ink') === 'off') {
+      host.dataset.inkEnabled = '0'
       canvas.dataset.inkDisabled = '1'
       canvas.style.display = 'none'
+      if (roller instanceof HTMLElement) roller.style.display = 'none'
       return
     }
     if (reduce.matches) return
@@ -63,11 +67,11 @@
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
     if (!ctx) return
     canvas.dataset.inkInit = '1'
+    host.dataset.inkEnabled = '1'
 
     // A brayer follows the pointer on desktop. The native cursor is only
     // suppressed after the first successful placement, so a script failure
     // leaves the crosshair in place.
-    const roller = document.querySelector('[data-ink-roller]')
     if (roller instanceof HTMLElement && matchMedia('(hover: hover) and (pointer: fine)').matches) {
       let cursorOn = false
       const place = event => {
@@ -452,17 +456,56 @@
       canvas.style.opacity = visible ? '1' : '0'
       ready = true
       canvas.dataset.ready = '1'
+      canvas.dataset.inkActive = '1'
       if (visible) start()
     }
 
     ready()
   }
 
+  const hideInk = () => {
+    const host = document.querySelector(HOST)
+    if (!(host instanceof HTMLElement)) return
+    host.dataset.inkEnabled = '0'
+    const canvas = host.querySelector('[data-ink-canvas]')
+    if (canvas instanceof HTMLCanvasElement) {
+      canvas.dataset.inkDisabled = '1'
+      canvas.style.display = 'none'
+    }
+    const roller = document.querySelector('[data-ink-roller]')
+    if (roller instanceof HTMLElement) roller.style.display = 'none'
+  }
+
+  const settingEnabled = async () => {
+    const host = document.querySelector(HOST)
+    const fallback = host instanceof HTMLElement && host.dataset.inkDefault !== 'off'
+    try {
+      const response = await fetch('/api/ink', { cache: 'no-store' })
+      if (!response.ok) return fallback
+      const body = await response.json()
+      return body.enabled !== false
+    } catch {
+      return fallback
+    }
+  }
+
+  const start = () => {
+    if (!document.querySelector(HOST)) return
+    if (new URLSearchParams(location.search).get('ink') === 'off') {
+      hideInk()
+      return
+    }
+    settingEnabled().then(enabled => {
+      if (enabled) init()
+      else hideInk()
+    })
+  }
+
   const startWhenReady = () => {
     if (document.documentElement.dataset.intro) {
-      window.addEventListener('cp:intro-done', init, { once: true })
+      window.addEventListener('cp:intro-done', start, { once: true })
     } else {
-      init()
+      start()
     }
   }
 
