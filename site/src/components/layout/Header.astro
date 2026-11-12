@@ -10,14 +10,14 @@ interface Props {
   lang: Locale
   alternates: Record<Locale, string>
   showBrand?: boolean
+  homeHero?: boolean
 }
 
-const { lang, alternates, showBrand = true } = Astro.props
+const { lang, alternates, showBrand = true, homeHero = false } = Astro.props
 
 const items: Array<{ key: UIKey; path: string }> = [
   { key: 'nav.members', path: '/members' },
   { key: 'nav.projects', path: '/projects' },
-  { key: 'nav.support', path: '/support' },
   { key: 'nav.news', path: '/news' },
   { key: 'nav.about', path: '/about' },
   { key: 'nav.contact', path: '/contact' },
@@ -25,75 +25,131 @@ const items: Array<{ key: UIKey; path: string }> = [
 
 const currentPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '')
 const wordmark = brandWordmark(lang)
+const menuLabel = t('nav.menu', lang)
 ---
 
 <header class="header shell">
-  <div class:list={['header__top', { 'header__top--nobrand': !showBrand }]}>
-    {
-      showBrand && (
-        <a
-          class="header__brand"
-          href={localePath('/', lang)}
-          aria-label={`ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ — ${wordmark.join(' ')}`}
+  {
+    homeHero ? (
+      <div class="header__top header__top--home">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="home-menu"
+          data-menu-toggle
         >
-          <img
-            class="header__mark"
-            src="/mark.png"
-            alt=""
-            width="158"
-            height="152"
-            decoding="async"
-          />
-          <span class="header__caption" lang="el">ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ</span>
-        </a>
-      )
-    }
+          <span class="menu-toggle__lines" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
+          <span class="sr-only">{menuLabel}</span>
+        </button>
 
-    <nav class="nav">
-      <ul class="nav__list">
-        {
-          items.map(item => {
-            const href = localePath(item.path, lang)
-            const active = currentPath === href
-            return (
-              <li class="nav__item">
-                <a
-                  class={`nav__link${active ? ' nav__link--active' : ''}`}
-                  href={href}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {t(item.key, lang)}
-                </a>
-              </li>
-            )
-          })
-        }
-      </ul>
-    </nav>
+        <div class="header__menu" id="home-menu" data-menu-panel hidden>
+          <nav class="header__menu-nav" aria-label={menuLabel}>
+            <ul class="nav__list nav__list--panel">
+              {items.map(item => {
+                const href = localePath(item.path, lang)
+                const active = currentPath === href
+                return (
+                  <li class="nav__item">
+                    <a
+                      class={`nav__link${active ? ' nav__link--active' : ''}`}
+                      href={href}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {t(item.key, lang)}
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
+          <div class="header__menu-actions">
+            <LanguageSwitcher lang={lang} alternates={alternates} />
+            <ThemeToggle lang={lang} />
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div class:list={['header__top', { 'header__top--nobrand': !showBrand }]}>
+        {showBrand && (
+          <a
+            class="header__brand"
+            href={localePath('/', lang)}
+            aria-label={`ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ — ${wordmark.join(' ')}`}
+          >
+            <img
+              class="header__mark"
+              src="/mark.png"
+              alt=""
+              width="158"
+              height="152"
+              decoding="async"
+            />
+            <span class="header__caption" lang="el">ΚΥΠΡΙΟΙ ΧΑΡΑΚΤΕΣ</span>
+          </a>
+        )}
 
-    <div class="header__actions">
-      <LanguageSwitcher lang={lang} alternates={alternates} />
-      <ThemeToggle lang={lang} />
-    </div>
-  </div>
+        <nav class="nav">
+          <ul class="nav__list">
+            {items.map(item => {
+              const href = localePath(item.path, lang)
+              const active = currentPath === href
+              return (
+                <li class="nav__item">
+                  <a
+                    class={`nav__link${active ? ' nav__link--active' : ''}`}
+                    href={href}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {t(item.key, lang)}
+                  </a>
+                </li>
+              )
+            })}
+            <li class="nav__item nav__item--lang">
+              <LanguageSwitcher lang={lang} alternates={alternates} />
+            </li>
+          </ul>
+        </nav>
+
+        <div class="header__actions">
+          <ThemeToggle lang={lang} />
+        </div>
+      </div>
+    )
+  }
 </header>
+
+<script is:inline src="/scripts/header-menu.js" defer></script>
 
 <style>
   .header {
     padding-block-start: var(--pad-sm);
+    position: relative;
   }
 
   .header__top {
     align-items: start;
     display: grid;
     gap: 12px 32px;
-    grid-template-areas: 'brand nav lang';
+    grid-template-areas: 'brand nav actions';
     grid-template-columns: auto 1fr auto;
   }
 
   .header__top--nobrand {
-    grid-template-areas: 'nav lang';
+    grid-template-areas: 'nav actions';
     grid-template-columns: 1fr auto;
+  }
+
+  .header__top--home {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
   }
 
   .header__brand {
@@ -128,7 +184,7 @@ const wordmark = brandWordmark(lang)
     align-items: center;
     display: flex;
     gap: 12px;
-    grid-area: lang;
+    grid-area: actions;
   }
 
   .nav {
@@ -138,6 +194,7 @@ const wordmark = brandWordmark(lang)
   }
 
   .nav__list {
+    align-items: center;
     column-gap: clamp(12px, 3.3vw, 50px);
     display: flex;
     flex-wrap: wrap;
@@ -145,6 +202,11 @@ const wordmark = brandWordmark(lang)
     margin: 0;
     padding: 0;
     row-gap: 6px;
+  }
+
+  .nav__item--lang {
+    align-items: center;
+    display: inline-flex;
   }
 
   .nav__link {
@@ -159,17 +221,83 @@ const wordmark = brandWordmark(lang)
     text-decoration: underline;
   }
 
+  .menu-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    padding: 0;
+    width: 44px;
+  }
+
+  .menu-toggle__lines {
+    display: grid;
+    gap: 5px;
+    width: 22px;
+  }
+
+  .menu-toggle__lines span {
+    background: currentColor;
+    display: block;
+    height: 1.5px;
+    width: 100%;
+  }
+
+  .menu-toggle:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .header__menu {
+    background: var(--paper);
+    border: var(--rule);
+    min-width: 280px;
+    padding: 20px;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 30;
+  }
+
+  .header__menu[hidden] {
+    display: none;
+  }
+
+  .nav__list--panel {
+    align-items: start;
+    display: grid;
+    gap: 10px;
+  }
+
+  .nav__list--panel .nav__link {
+    font-size: var(--text-body);
+  }
+
+  .header__menu-actions {
+    align-items: center;
+    border-top: var(--rule);
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 14px;
+  }
+
   @media (max-width: 899px) {
     .header__top {
       grid-template-areas:
-        'brand . lang'
+        'brand . actions'
         'nav nav nav';
       grid-template-columns: auto 1fr auto;
     }
 
     .header__top--nobrand {
       grid-template-areas:
-        'lang'
+        'actions'
         'nav';
       grid-template-columns: 1fr;
     }
@@ -180,6 +308,12 @@ const wordmark = brandWordmark(lang)
 
     .nav {
       justify-self: start;
+    }
+
+    .header__menu {
+      left: 0;
+      min-width: 0;
+      right: 0;
     }
   }
 

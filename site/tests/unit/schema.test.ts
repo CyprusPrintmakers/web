@@ -45,7 +45,6 @@ describe('sanity schema', () => {
         'aboutPage',
         'contactPage',
         'membershipPage',
-        'supportPage',
         'member',
         'committeeMember',
         'project',
@@ -96,8 +95,22 @@ describe('sanity schema', () => {
       'aboutPage',
       'contactPage',
       'membershipPage',
-      'supportPage',
     ])
+  })
+
+  it('exposes membership fee, bank details and donation copy', () => {
+    const membership = byName('membershipPage')!
+    expect(fieldNames(membership)).toEqual(
+      expect.arrayContaining(['fee', 'bankDetails', 'donation']),
+    )
+    expect(fieldType(membership, 'bankDetails')).toBe('internationalizedArrayText')
+    expect(fieldType(membership, 'donation')).toBe('internationalizedArrayText')
+  })
+
+  it('exposes the featured member toggle', () => {
+    const member = byName('member')!
+    expect(fieldNames(member)).toContain('featured')
+    expect(fieldType(member, 'featured')).toBe('boolean')
   })
 
   it('gates tier price on tiersConfirmed', () => {

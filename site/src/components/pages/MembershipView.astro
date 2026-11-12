@@ -14,9 +14,16 @@ interface Props {
 }
 
 const { lang } = Astro.props
-const { membership } = await getContent()
+const { membership, settings } = await getContent()
 const noindex = lang === 'el' && !isFullyTranslated(membership, 'membershipPage', 'el')
 const intro = pickLocalized(membership.intro, lang)
+const bankDetails = pickLocalized(membership.bankDetails, lang)
+const donation = pickLocalized(membership.donation, lang)
+const fee = membership.fee?.trim() || '€60'
+const email = settings.contact.email
+const donationHref = `mailto:${email}?subject=${encodeURIComponent(
+  lang === 'en' ? 'One-off donation' : 'Εφάπαξ δωρεά',
+)}`
 ---
 
 <BaseLayout
@@ -41,7 +48,32 @@ const intro = pickLocalized(membership.intro, lang)
       )
     }
 
-    <section class="membership__form" aria-label={t('membership.form', lang)}>
+    <section class="membership__details" aria-labelledby="membership-details-heading">
+      <h2 id="membership-details-heading" class="membership__label t-label">
+        {t('membership.heading', lang)}
+      </h2>
+      <p class="membership__fee">
+        <span class="t-label">{t('membership.annualFee', lang)}</span>
+        <strong>{fee}</strong>
+        <span class="t-note">{t('membership.perYear', lang)}</span>
+      </p>
+      {
+        bankDetails.text !== '' && (
+          <p class="membership__bank t-body" lang={bankDetails.isFallback ? 'en' : lang}>
+            {bankDetails.text}
+          </p>
+        )
+      }
+      <a class="membership__email t-small" href={`mailto:${email}`}>
+        {email} <span aria-hidden="true">→</span>
+      </a>
+    </section>
+
+    <section
+      class="membership__form"
+      id="application"
+      aria-label={t('membership.form', lang)}
+    >
       <MembershipForm lang={lang} />
     </section>
 
@@ -54,6 +86,20 @@ const intro = pickLocalized(membership.intro, lang)
       </p>
       <a class="membership__privacy-link t-small" href={localePath('/privacy', lang)}>
         {t('footer.privacy', lang)}
+      </a>
+    </section>
+
+    <section class="membership__donation" id="donate" aria-labelledby="donation-heading">
+      <h2 id="donation-heading" class="t-title">{t('membership.support', lang)}</h2>
+      {
+        donation.text !== '' && (
+          <p class="membership__donation-text t-body" lang={donation.isFallback ? 'en' : lang}>
+            {donation.text}
+          </p>
+        )
+      }
+      <a class="membership__donation-link t-small" href={donationHref}>
+        {t('membership.donationCta', lang)} <span aria-hidden="true">→</span>
       </a>
     </section>
   </article>
@@ -82,9 +128,58 @@ const intro = pickLocalized(membership.intro, lang)
     max-width: var(--measure);
   }
 
+  .membership__details {
+    border-top: var(--rule);
+    margin-bottom: clamp(48px, 7vw, 80px);
+    max-width: var(--measure);
+    padding-top: clamp(20px, 3vw, 32px);
+  }
+
+  .membership__fee {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin: 0 0 16px;
+  }
+
+  .membership__fee strong {
+    font-size: var(--text-title);
+    font-weight: var(--fw-regular);
+    line-height: 1;
+  }
+
+  .membership__bank {
+    margin: 0 0 12px;
+  }
+
+  .membership__email {
+    display: inline-block;
+  }
+
   .membership__form {
     margin-bottom: clamp(48px, 7vw, 80px);
     max-width: var(--measure);
+  }
+
+  .membership__donation {
+    border-top: var(--rule);
+    margin-bottom: clamp(48px, 6vw, 96px);
+    max-width: var(--measure);
+    padding-top: clamp(20px, 3vw, 32px);
+  }
+
+  .membership__donation h2 {
+    margin-bottom: clamp(12px, 2vw, 20px);
+  }
+
+  .membership__donation-text {
+    margin: 0 0 16px;
+  }
+
+  .membership__donation-link {
+    display: inline-block;
+    text-underline-offset: 0.15em;
   }
 
   .membership__privacy {

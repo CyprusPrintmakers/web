@@ -59,27 +59,17 @@ const Tag = as
     flex-shrink: 0;
     height: auto;
     order: -1;
-    width: clamp(64px, 12vw, 158px);
+    width: var(--hero-mark);
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 700px) {
     .hero-brand {
-      flex-direction: row;
-      gap: clamp(12px, 1.6vw, 24px);
-      text-align: left;
+      gap: 10px;
     }
 
     .hero-brand__lead,
     .hero-brand__tail {
-      font-size: 32px;
-    }
-
-    .hero-brand__lead {
-      text-align: right;
-    }
-
-    .hero-brand__mark {
-      order: initial;
+      font-size: 36px;
     }
   }
 </style>

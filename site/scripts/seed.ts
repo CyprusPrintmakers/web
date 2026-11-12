@@ -3,7 +3,6 @@ import home from '../src/lib/content/fixtures/home.json' with { type: 'json' }
 import about from '../src/lib/content/fixtures/about.json' with { type: 'json' }
 import contact from '../src/lib/content/fixtures/contact.json' with { type: 'json' }
 import membership from '../src/lib/content/fixtures/membership.json' with { type: 'json' }
-import support from '../src/lib/content/fixtures/support.json' with { type: 'json' }
 import people from '../src/lib/content/fixtures/members.json' with { type: 'json' }
 import projects from '../src/lib/content/fixtures/projects.json' with { type: 'json' }
 import news from '../src/lib/content/fixtures/news.json' with { type: 'json' }
@@ -44,7 +43,6 @@ const SINGLETON_SPECS: SingletonSpec[] = [
   { kind: 'aboutPage', doc: about as unknown as RawDoc },
   { kind: 'contactPage', doc: contact as unknown as RawDoc },
   { kind: 'membershipPage', doc: membership as unknown as RawDoc },
-  { kind: 'supportPage', doc: support as unknown as RawDoc },
 ]
 
 const COLLECTION_SPECS: CollectionSpec[] = [

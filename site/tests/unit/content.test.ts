@@ -84,6 +84,13 @@ describe('content loader', () => {
     expect(
       content.membership.privacyNote.find(entry => entry.language === 'el')?.value,
     ).toContain('πολιτική απορρήτου')
+    expect(content.membership.fee).toBe('€60')
+    expect(
+      content.membership.bankDetails.find(entry => entry.language === 'en')?.value,
+    ).toContain('Bank transfer details')
+    expect(
+      content.membership.donation.find(entry => entry.language === 'en')?.value,
+    ).toContain('one-off donation')
 
     for (const page of [
       content.settings,
@@ -91,7 +98,6 @@ describe('content loader', () => {
       content.about,
       content.contact,
       content.membership,
-      content.support,
     ]) {
       expect(page.translations).toEqual({ en: true, el: true })
     }

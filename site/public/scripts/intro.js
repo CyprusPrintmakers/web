@@ -75,7 +75,7 @@
       ].filter(isEl)
 
       const fade = play(root, [{ opacity: 1 }, { opacity: 0 }], {
-        duration: 300, easing: 'ease-out',
+        duration: 500, easing: 'ease-out',
       })
       const chromeFade = Promise.all(
         chrome.map(element =>
@@ -89,8 +89,13 @@
     } catch { done() }
   }
 
-  const anchorY = () =>
-    innerWidth < 900 && innerHeight >= 640 ? innerHeight * 0.32 : innerHeight / 2
+  const anchorY = () => {
+    if (innerWidth < 1200 && innerHeight >= 640) return innerHeight * 0.32
+    if (innerWidth >= 1200 && innerHeight < 900) return innerHeight * 0.42
+    return innerHeight / 2
+  }
+  const pendingAnchorY = () =>
+    innerWidth < 1200 && innerHeight >= 640 ? innerHeight * 0.32 : innerHeight / 2
 
   const centredLeft = desired => {
     const width = stage.offsetWidth
@@ -105,7 +110,9 @@
     if (!isEl(mark)) return
     stage.style.transform = 'none'
     stage.style.left = `${centredLeft(innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2)}px`
-    stage.style.top = `${anchorY() - mark.offsetTop - mark.offsetHeight / 2}px`
+    // The cover itself is always centred; only the moving stage uses the
+    // short-screen anchor so it can hand off to the home hero.
+    stage.style.top = `${pendingAnchorY() - mark.offsetTop - mark.offsetHeight / 2}px`
   }
 
   const skip = () => {
@@ -142,10 +149,10 @@
       if (isEl(body)) {
         const gutter = 24
         const tailRect = tail.getBoundingClientRect()
-        body.style.left = `${innerWidth < 900 ? gutter : tailRect.left}px`
+        body.style.left = `${innerWidth < 1200 ? gutter : tailRect.left}px`
         body.style.top = `${innerWidth < 900 ? startTop + stage.offsetHeight + 16 : tailRect.bottom + 24}px`
         body.style.width = 'max-content'
-        body.style.maxWidth = `${innerWidth - (innerWidth < 900 ? gutter * 2 : tailRect.left + gutter)}px`
+        body.style.maxWidth = `${innerWidth - (innerWidth < 1200 ? gutter * 2 : tailRect.left + gutter)}px`
       }
 
       ghost.style.left = `${mark.offsetLeft}px`

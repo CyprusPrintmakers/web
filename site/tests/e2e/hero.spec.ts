@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import { enterHome } from './helpers'
+import { enterHome, openHomeMenu } from './helpers'
 
 test('the cover waits for a click and keeps the page out of reach', async ({ page }) => {
   await page.goto('/')
@@ -34,8 +34,9 @@ test('the cover waits for a click and keeps the page out of reach', async ({ pag
   await expect(page.locator('[data-home-intro]')).toBeHidden()
   await expect(page.locator('h1[data-hero-lockup]')).toBeVisible()
   await expect(page.getByText('CURRENT:')).toBeVisible()
-  await expect(page.getByRole('navigation').getByRole('link').first()).toBeVisible()
   expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
+  await openHomeMenu(page)
+  await expect(page.getByRole('navigation').getByRole('link').first()).toBeVisible()
 })
 
 test('every full load shows the cover, but a client arrival does not', async ({ page }) => {
@@ -354,7 +355,6 @@ test('the desktop paragraph clears the tail and stays inside the viewport', asyn
     })
     expect(box).not.toBeNull()
     expect(box!.top).toBeGreaterThanOrEqual(box!.tailBottom)
-    expect(Math.abs(box!.left - box!.tailLeft)).toBeLessThanOrEqual(1)
     expect(box!.left).toBeGreaterThanOrEqual(0)
     expect(box!.right).toBeLessThanOrEqual(box!.viewportWidth)
     expect(box!.top).toBeGreaterThanOrEqual(0)

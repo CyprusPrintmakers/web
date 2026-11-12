@@ -6,8 +6,7 @@ const REQUIRED_FIELDS: Record<ContentKind, readonly string[]> = {
   homePage: ['title', 'currentLabel', 'currentTitle'],
   aboutPage: ['headline', 'body', 'history'],
   contactPage: ['openingNote', 'officeHours'],
-  membershipPage: ['intro', 'formIntro', 'privacyNote'],
-  supportPage: ['intro', 'notes'],
+  membershipPage: ['intro', 'formIntro', 'privacyNote', 'bankDetails', 'donation'],
   member: ['name', 'discipline', 'bio'],
   committeeMember: ['name', 'role'],
   project: ['title', 'summary', 'body', 'venue'],
@@ -35,7 +34,7 @@ function nestedLocalized(
 ): { field: string; values: unknown }[] {
   const fields: { field: string; values: unknown }[] = []
 
-  if (kind === 'membershipPage' || kind === 'supportPage') {
+  if (kind === 'membershipPage') {
     const tiers = Array.isArray(doc.tiers) ? doc.tiers : []
     tiers.forEach((tier, index) => {
       if (tier === null || typeof tier !== 'object') return

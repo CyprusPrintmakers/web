@@ -113,15 +113,10 @@ export type MembershipPage = Entity & {
   processSteps: ProcessStep[]
   formIntro: IntlValue[]
   privacyNote: IntlValue[]
+  fee: string
+  bankDetails: IntlValue[]
+  donation: IntlValue[]
   ctaHref: string
-  tiersConfirmed: boolean
-  seo: Seo
-}
-
-export type SupportPage = Entity & {
-  intro: IntlValue[]
-  tiers: Tier[]
-  notes: IntlValue[]
   tiersConfirmed: boolean
   seo: Seo
 }
@@ -183,7 +178,6 @@ export type Content = {
   about: AboutPage
   contact: ContactPage
   membership: MembershipPage
-  support: SupportPage
   members: Member[]
   committee: CommitteeMember[]
   projects: Project[]
@@ -201,7 +195,6 @@ export type RawContent = {
   about: RawOf<AboutPage>
   contact: RawOf<ContactPage>
   membership: RawOf<MembershipPage>
-  support: RawOf<SupportPage>
   members: RawOf<Member>[]
   committee: RawOf<CommitteeMember>[]
   projects: RawOf<Project>[]
@@ -214,7 +207,6 @@ export type ContentKind =
   | 'aboutPage'
   | 'contactPage'
   | 'membershipPage'
-  | 'supportPage'
   | 'member'
   | 'committeeMember'
   | 'project'
@@ -226,7 +218,6 @@ export type ContentEntity =
   | AboutPage
   | ContactPage
   | MembershipPage
-  | SupportPage
   | Member
   | CommitteeMember
   | Project
@@ -238,7 +229,6 @@ export type RawContentEntity =
   | RawOf<AboutPage>
   | RawOf<ContactPage>
   | RawOf<MembershipPage>
-  | RawOf<SupportPage>
   | RawOf<Member>
   | RawOf<CommitteeMember>
   | RawOf<Project>

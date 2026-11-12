@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test'
-import { enterHome } from './helpers'
+import { enterHome, openHomeMenu } from './helpers'
 
 test('internal navigation is client-side and updates content', async ({ page }) => {
   await page.goto('/')
   await enterHome(page)
+  await openHomeMenu(page)
   await page.evaluate(() => {
     ;(window as unknown as { __sameDocument: boolean }).__sameDocument = true
   })
@@ -119,6 +120,7 @@ test.describe('reduced motion', () => {
 
   test('navigation still swaps content', async ({ page }) => {
     await page.goto('/')
+    await openHomeMenu(page)
     await page.getByRole('navigation').getByRole('link', { name: 'NEWS' }).click()
     await expect(page).toHaveURL(/\/news$/)
     await expect(page.locator('main h1')).toBeVisible()

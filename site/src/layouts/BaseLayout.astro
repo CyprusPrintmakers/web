@@ -120,7 +120,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
   <body>
     <div class="page">
       <a class="skip-link" href="#main">{t('a11y.skipToContent', lang)}</a>
-      <Header lang={lang} alternates={alternates} showBrand={!homeHero} />
+      <Header lang={lang} alternates={alternates} showBrand={!homeHero} homeHero={homeHero} />
       <main id="main" class:list={['shell', { 'main--home': homeHero }]} tabindex="-1">
         <div class="grid-12">
           <slot />
@@ -131,6 +131,7 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     <slot name="overlay" />
     <script is:inline src="/scripts/page-motion.js" defer></script>
     <script is:inline src="/scripts/ink-mark.js" defer></script>
+    <script is:inline src="/scripts/header-menu.js" defer></script>
     <script is:inline>
       document.addEventListener('astro:after-swap', () => {
         const main = document.querySelector('main#main')

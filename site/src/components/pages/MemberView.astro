@@ -22,7 +22,6 @@ const noindex = lang === 'el' && !isFullyTranslated(member, 'member', 'el')
 
 const portrait = imageAttrs(member.portrait, { urlFor: sanityImageUrl })
 const bio = pickRich(member.bio, lang)
-const email = member.email?.trim() || undefined
 const website = member.website?.trim() || undefined
 const instagram = member.instagram?.trim()
   ? `https://www.instagram.com/${member.instagram.trim().replace(/^@/, '')}`
@@ -61,15 +60,10 @@ const joined =
         </div>
 
         {
-          (email || website || instagram || joined) && (
+          (website || instagram || joined) && (
             <footer class="member__details">
-              {(email || website || instagram) && (
+              {(website || instagram) && (
                 <ul class="member__links t-small">
-                  {email && (
-                    <li>
-                      <a href={`mailto:${email}`}>{t('members.email', lang)}</a>
-                    </li>
-                  )}
                   {website && (
                     <li>
                       <a href={website} rel="noopener">

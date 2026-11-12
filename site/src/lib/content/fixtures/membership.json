@@ -13,6 +13,31 @@
       "value": "Η συνδρομή στηρίζει τις εκθέσεις, τα εργαστήρια και το αρχείο του συλλόγου. Πείτε μας για την πρακτική σας και στείλτε το βιογραφικό σας· η επιτροπή εξετάζει τις αιτήσεις καθώς φτάνουν."
     }
   ],
+  "fee": "€60",
+  "bankDetails": [
+    {
+      "_key": "en",
+      "language": "en",
+      "value": "Annual membership is €60. Bank transfer details are being finalised and will be published here shortly. In the meantime, contact us to arrange payment."
+    },
+    {
+      "_key": "el",
+      "language": "el",
+      "value": "Η ετήσια συνδρομή είναι 60 €. Τα στοιχεία του τραπεζικού λογαριασμού οριστικοποιούνται και θα ανακοινωθούν εδώ σύντομα. Στο μεταξύ, επικοινωνήστε μαζί μας για να κανονίσετε την πληρωμή."
+    }
+  ],
+  "donation": [
+    {
+      "_key": "en",
+      "language": "en",
+      "value": "Support the association with a one-off donation. Every contribution helps fund exhibitions, workshops and the archive. Contact us to arrange a donation."
+    },
+    {
+      "_key": "el",
+      "language": "el",
+      "value": "Στηρίξτε τον σύλλογο με μια εφάπαξ δωρεά. Κάθε συνεισφορά βοηθά τις εκθέσεις, τα εργαστήρια και το αρχείο. Επικοινωνήστε μαζί μας για να κανονίσετε μια δωρεά."
+    }
+  ],
   "tiers": [
     {
       "name": [

@@ -13,7 +13,6 @@ import type {
   Project,
   RawContent,
   SiteSettings,
-  SupportPage,
   Translations,
 } from './types'
 
@@ -82,12 +81,6 @@ const CONTENT_QUERY = `{
     "processSteps": processSteps[]{ ..., "body": body ${PORTABLE_TEXT_PROJECTION} },
     "seo": seo ${SEO_PROJECTION}
   },
-  "support": *[_type == "supportPage"][0]{
-    ...,
-    "slug": slug.current,
-    "tiers": tiers[]{ ..., "benefits": benefits ${PORTABLE_TEXT_PROJECTION} },
-    "seo": seo ${SEO_PROJECTION}
-  },
   "members": *[_type == "member"] | order(order asc){
     ...,
     "slug": slug.current,
@@ -121,7 +114,6 @@ const SINGLETON_KEYS = [
   'about',
   'contact',
   'membership',
-  'support',
 ] as const
 
 /**
@@ -242,7 +234,6 @@ export function createContentLoader(
       about: prepare(raw.about, 'aboutPage') as AboutPage,
       contact: prepare(raw.contact, 'contactPage') as ContactPage,
       membership: prepare(raw.membership, 'membershipPage') as MembershipPage,
-      support: prepare(raw.support, 'supportPage') as SupportPage,
       members: prepareMany(raw.members, 'member')
         .sort((a, b) => a.order - b.order) as Member[],
       committee: prepareMany(raw.committee, 'committeeMember')

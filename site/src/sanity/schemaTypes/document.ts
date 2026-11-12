@@ -23,10 +23,11 @@ const PREVIEW_SELECT: Record<ContentKind, Record<string, string>> = {
     intro: 'intro',
     formIntro: 'formIntro',
     privacyNote: 'privacyNote',
+    bankDetails: 'bankDetails',
+    donation: 'donation',
     tiers: 'tiers',
     processSteps: 'processSteps',
   },
-  supportPage: { intro: 'intro', notes: 'notes', tiers: 'tiers' },
   member: { name: 'name', discipline: 'discipline', bio: 'bio' },
   committeeMember: { name: 'name', role: 'role', bio: 'bio' },
   project: { title: 'title', summary: 'summary', body: 'body', venue: 'venue' },
@@ -49,7 +50,6 @@ const PREVIEW_FALLBACK: Record<ContentKind, string> = {
   aboutPage: 'About',
   contactPage: 'Contact',
   membershipPage: 'Membership',
-  supportPage: 'Support',
   member: 'Member',
   committeeMember: 'Committee member',
   project: 'Project',
@@ -283,6 +283,26 @@ export default [
         type: 'internationalizedArrayString',
         validation: Rule => Rule.required(),
       }),
+      defineField({
+        name: 'fee',
+        title: 'Annual fee',
+        type: 'string',
+        initialValue: '€60',
+        description: 'Shown on the membership page, for example €60.',
+      }),
+      defineField({
+        name: 'bankDetails',
+        title: 'Bank details',
+        type: 'internationalizedArrayText',
+        description:
+          'Payment instructions for new members. Leave a short note here until the bank account is ready.',
+      }),
+      defineField({
+        name: 'donation',
+        title: 'One-off donation',
+        type: 'internationalizedArrayText',
+        description: 'Copy for the one-off donation section on the membership page.',
+      }),
       tiersField(),
       defineField({
         name: 'processSteps',
@@ -321,40 +341,6 @@ export default [
     preview: {
       select: PREVIEW_SELECT.membershipPage,
       prepare: preview('membershipPage'),
-    },
-  }),
-  defineType({
-    name: 'supportPage',
-    title: 'Support page',
-    type: 'document',
-    fields: [
-      slugField(),
-      defineField({
-        name: 'intro',
-        title: 'Intro',
-        type: 'internationalizedArrayString',
-        validation: Rule => Rule.required(),
-      }),
-      tiersField(),
-      defineField({
-        name: 'notes',
-        title: 'Notes',
-        type: 'internationalizedArrayString',
-        validation: Rule => Rule.required(),
-      }),
-      defineField({
-        name: 'tiersConfirmed',
-        title: 'Fees confirmed',
-        type: 'boolean',
-        description:
-          'When false, tier prices stay hidden on the site and remain optional here.',
-        initialValue: false,
-      }),
-      seoField(),
-    ],
-    preview: {
-      select: PREVIEW_SELECT.supportPage,
-      prepare: preview('supportPage'),
     },
   }),
   defineType({
@@ -430,6 +416,7 @@ export default [
         name: 'featured',
         title: 'Featured',
         type: 'boolean',
+        description: 'Show this member in the featured members section on the members page.',
         initialValue: false,
       }),
       defineField({

@@ -35,7 +35,7 @@ test.describe('home', () => {
 })
 
 test.describe('about', () => {
-  test('committee roles stay in a right column on a phone', async ({ page }) => {
+  test('committee roles sit below the name on a phone', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
     await page.goto('/about')
 
@@ -45,16 +45,16 @@ test.describe('about', () => {
         const rowRect = row.getBoundingClientRect()
         const roleRect = role.getBoundingClientRect()
         return {
-          aligned: Math.abs(roleRect.right - rowRect.right) <= 1,
-          inline: Math.abs(roleRect.top - row.firstElementChild!.getBoundingClientRect().top) <= 6,
+          below: roleRect.top > rowRect.top + 8,
+          leftAligned: Math.abs(roleRect.left - rowRect.left) <= 1,
         }
       }),
     )
 
     expect(rows.length).toBeGreaterThan(0)
     for (const row of rows) {
-      expect(row.aligned).toBe(true)
-      expect(row.inline).toBe(true)
+      expect(row.below).toBe(true)
+      expect(row.leftAligned).toBe(true)
     }
   })
 

@@ -19,6 +19,8 @@
   --text-title: clamp(1.375rem, 1.1rem + 1.1vw, 2rem);
   --text-display: clamp(2rem, 1.3rem + 2.8vw, 3.5rem);
   --measure: 34em;
+  /* Three times the old mark size, capped by viewport height. */
+  --hero-mark: clamp(192px, min(36vw, 50vh), 474px);
 
   /* Rules */
   --rule: 1px solid var(--ink);

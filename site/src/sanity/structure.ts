@@ -10,7 +10,6 @@ export const SINGLETON_IDS = [
   'aboutPage',
   'contactPage',
   'membershipPage',
-  'supportPage',
 ] as const
 
 const SINGLETON_TITLES: Record<(typeof SINGLETON_IDS)[number], string> = {
@@ -19,7 +18,6 @@ const SINGLETON_TITLES: Record<(typeof SINGLETON_IDS)[number], string> = {
   aboutPage: 'About',
   contactPage: 'Contact',
   membershipPage: 'Membership',
-  supportPage: 'Support',
 }
 
 export const structure: StructureResolver = S =>

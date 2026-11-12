@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { openHomeMenu } from './helpers'
 
 test.describe('home ink hero', () => {
   test('stirs the lockup and keeps its state across client navigation', async ({ page }) => {
@@ -36,6 +37,7 @@ test.describe('home ink hero', () => {
       .poll(async () => Number(await brand.evaluate(el => getComputedStyle(el).opacity)))
       .toBeLessThan(0.99)
 
+    await openHomeMenu(page)
     await page.getByRole('navigation').getByRole('link', { name: 'ABOUT' }).click()
     await expect(page).toHaveURL(/\/about$/)
     await page.locator('header .header__brand').click()
@@ -69,6 +71,7 @@ test.describe('home ink hero', () => {
     await expect(page.locator('[data-ink-hero] canvas')).toHaveAttribute('data-ready', '1')
 
     enabled = false
+    await openHomeMenu(page)
     await page.getByRole('navigation').getByRole('link', { name: 'ABOUT' }).click()
     await expect(page).toHaveURL(/\/about$/)
     await page.locator('header .header__brand').click()

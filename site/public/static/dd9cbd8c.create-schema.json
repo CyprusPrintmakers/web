@@ -876,6 +876,13 @@
         "name": "footerNote",
         "type": "string",
         "title": "Footer note"
+      },
+      {
+        "initialValue": true,
+        "description": "Show the interactive ink layer over the home title. Publish this document — the site reads the value on the next home-page load, so no rebuild is needed.",
+        "name": "inkEffect",
+        "type": "boolean",
+        "title": "Home ink effect"
       }
     ],
     "name": "siteSettings",
@@ -1352,6 +1359,71 @@
         "type": "internationalizedArrayString"
       },
       {
+        "initialValue": "€60",
+        "description": "Shown on the membership page, for example €60.",
+        "name": "fee",
+        "type": "string",
+        "title": "Annual fee"
+      },
+      {
+        "options": {
+          "apiVersion": "2025-10-15",
+          "languages": [
+            {
+              "id": "en",
+              "title": "English"
+            },
+            {
+              "id": "el",
+              "title": "Greek"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "description": "Payment instructions for new members. Leave a short note here until the bank account is ready.",
+        "name": "bankDetails",
+        "type": "internationalizedArrayText",
+        "title": "Bank details"
+      },
+      {
+        "options": {
+          "apiVersion": "2025-10-15",
+          "languages": [
+            {
+              "id": "en",
+              "title": "English"
+            },
+            {
+              "id": "el",
+              "title": "Greek"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "description": "Copy for the one-off donation section on the membership page.",
+        "name": "donation",
+        "type": "internationalizedArrayText",
+        "title": "One-off donation"
+      },
+      {
         "of": [
           {
             "type": "tier"
@@ -1461,112 +1533,6 @@
     "name": "membershipPage",
     "type": "document",
     "title": "Membership page"
-  },
-  {
-    "fields": [
-      {
-        "validation": [
-          {
-            "level": "error",
-            "rules": [
-              {
-                "flag": "custom"
-              },
-              {
-                "flag": "custom"
-              },
-              {
-                "flag": "presence",
-                "constraint": "required"
-              }
-            ]
-          }
-        ],
-        "description": "Used in URLs. Uniqueness is enforced by the seed and import scripts through deterministic document ids.",
-        "name": "slug",
-        "type": "slug"
-      },
-      {
-        "options": {
-          "apiVersion": "2025-10-15",
-          "languages": [
-            {
-              "id": "en",
-              "title": "English"
-            },
-            {
-              "id": "el",
-              "title": "Greek"
-            }
-          ]
-        },
-        "validation": [
-          {
-            "level": "error",
-            "rules": [
-              {
-                "flag": "presence",
-                "constraint": "required"
-              }
-            ]
-          }
-        ],
-        "name": "intro",
-        "type": "internationalizedArrayString"
-      },
-      {
-        "of": [
-          {
-            "type": "tier"
-          }
-        ],
-        "name": "tiers",
-        "type": "array"
-      },
-      {
-        "options": {
-          "apiVersion": "2025-10-15",
-          "languages": [
-            {
-              "id": "en",
-              "title": "English"
-            },
-            {
-              "id": "el",
-              "title": "Greek"
-            }
-          ]
-        },
-        "validation": [
-          {
-            "level": "error",
-            "rules": [
-              {
-                "flag": "presence",
-                "constraint": "required"
-              }
-            ]
-          }
-        ],
-        "name": "notes",
-        "type": "internationalizedArrayString"
-      },
-      {
-        "initialValue": false,
-        "description": "When false, tier prices stay hidden on the site and remain optional here.",
-        "name": "tiersConfirmed",
-        "type": "boolean",
-        "title": "Fees confirmed"
-      },
-      {
-        "name": "seo",
-        "type": "seo",
-        "title": "SEO"
-      }
-    ],
-    "name": "supportPage",
-    "type": "document",
-    "title": "Support page"
   },
   {
     "fields": [
@@ -1779,6 +1745,7 @@
       },
       {
         "initialValue": false,
+        "description": "Show this member in the featured members section on the members page.",
         "name": "featured",
         "type": "boolean"
       },

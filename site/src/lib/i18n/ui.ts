@@ -3,10 +3,10 @@ import type { Locale } from './locales'
 const en = {
   'nav.members': 'MEMBERS',
   'nav.projects': 'PROJECTS',
-  'nav.support': 'SUPPORT',
   'nav.news': 'NEWS',
   'nav.about': 'ABOUT',
   'nav.contact': 'CONTACT',
+  'nav.menu': 'Menu',
 
   current: 'CURRENT',
   'home.newsLabel': 'NEWS',
@@ -31,6 +31,7 @@ const en = {
   'members.countOne': '{n} member',
   'members.countMany': '{n} members',
   'members.directory': 'All members',
+  'members.featured': 'Featured members',
   'members.email': 'Email',
   'members.website': 'Website',
   'members.instagram': 'Instagram',
@@ -54,7 +55,9 @@ const en = {
 
   'membership.heading': 'Membership',
   'membership.support': 'Support us',
-  'membership.gatedNotice': 'Membership terms to be confirmed',
+  'membership.annualFee': 'Annual membership',
+  'membership.perYear': 'per year',
+  'membership.donationCta': 'Email us about a donation',
   'membership.back': 'Become a member',
   'membership.form': 'Apply for membership',
   'membership.formSoon': 'The application form will be available here soon.',
@@ -104,10 +107,10 @@ export type UIKey = keyof typeof en
 const el: Record<UIKey, string> = {
   'nav.members': 'ΜΕΛΗ',
   'nav.projects': 'ΕΡΓΑ',
-  'nav.support': 'ΣΤΗΡΙΞΗ',
   'nav.news': 'ΝΕΑ',
   'nav.about': 'ΣΧΕΤΙΚΑ',
   'nav.contact': 'ΕΠΙΚΟΙΝΩΝΙΑ',
+  'nav.menu': 'Μενού',
 
   current: 'ΤΩΡΑ',
   'home.newsLabel': 'ΝΕΑ',
@@ -132,6 +135,7 @@ const el: Record<UIKey, string> = {
   'members.countOne': '{n} μέλος',
   'members.countMany': '{n} μέλη',
   'members.directory': 'Όλα τα μέλη',
+  'members.featured': 'Επιλεγμένα μέλη',
   'members.email': 'Ηλεκτρονικό ταχυδρομείο',
   'members.website': 'Ιστοσελίδα',
   'members.instagram': 'Instagram',
@@ -155,7 +159,9 @@ const el: Record<UIKey, string> = {
 
   'membership.heading': 'Συνδρομή',
   'membership.support': 'Υποστηρίξτε μας',
-  'membership.gatedNotice': 'Οι όροι μέλους προς επιβεβαίωση',
+  'membership.annualFee': 'Ετήσια συνδρομή',
+  'membership.perYear': 'ετησίως',
+  'membership.donationCta': 'Στείλτε μας email για δωρεά',
   'membership.back': 'Γίνετε μέλος',
   'membership.form': 'Αίτηση για μέλος',
   'membership.formSoon': 'Η φόρμα αίτησης θα είναι σύντομα διαθέσιμη εδώ.',

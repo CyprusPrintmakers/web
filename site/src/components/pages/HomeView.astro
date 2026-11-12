@@ -67,8 +67,16 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
 
     <div class="ink-roller" data-ink-roller aria-hidden="true">
       <img
-        class="ink-roller__image"
-        src="/images/cursor-brayer.png"
+        class="ink-roller__image ink-roller__image--light"
+        src="/images/cursor-brayer-light.png"
+        alt=""
+        width="128"
+        height="128"
+        decoding="async"
+      />
+      <img
+        class="ink-roller__image ink-roller__image--dark"
+        src="/images/cursor-brayer-dark.png"
         alt=""
         width="128"
         height="128"
@@ -173,6 +181,18 @@ const newsHref = featuredNews ? localePath(`/news/${featuredNews.slug}`, lang) :
     transition: transform 90ms var(--ease-out-expo);
     width: 64px;
     will-change: transform;
+  }
+
+  .ink-roller__image--dark {
+    display: none;
+  }
+
+  :global(html[data-theme='dark']) .ink-roller__image--light {
+    display: none;
+  }
+
+  :global(html[data-theme='dark']) .ink-roller__image--dark {
+    display: block;
   }
 
   .ink-roller[data-visible='1'] {

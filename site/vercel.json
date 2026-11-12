@@ -1,7 +1,25 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/(.*)", "destination": "/admin/index.html" }
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/admin/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/support",
+      "destination": "/membership",
+      "permanent": true
+    },
+    {
+      "source": "/el/support",
+      "destination": "/el/membership",
+      "permanent": true
+    }
   ]
 }

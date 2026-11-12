@@ -58,6 +58,10 @@ export default defineConfig({
     },
   },
   prefetch: { defaultStrategy: 'hover' },
+  redirects: {
+    '/support': '/membership',
+    '/el/support': '/el/membership',
+  },
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'el'],

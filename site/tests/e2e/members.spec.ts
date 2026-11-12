@@ -9,6 +9,15 @@ test.describe('members index', () => {
     await expect(page.locator('[data-member-count]')).toHaveText('3 members')
   })
 
+  test('surfaces featured members and links websites without exposing emails', async ({ page }) => {
+    await page.goto('/members')
+
+    await expect(page.getByRole('heading', { name: 'Featured members' })).toBeVisible()
+    await expect(page.locator('.members__featured-list a')).toHaveCount(2)
+    await expect(page.locator('.members__website').first()).toHaveAttribute('href', /^https?:/)
+    await expect(page.locator('main a[href^="mailto:"]')).toHaveCount(0)
+  })
+
   test('filters by first-name letter and updates the count', async ({ page }) => {
     await page.goto('/members')
 
@@ -76,6 +85,7 @@ test.describe('member detail', () => {
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Maria Georgiou')
     await expect(page.locator('img').first()).toHaveAttribute('width')
+    await expect(page.locator('main a[href^="mailto:"]')).toHaveCount(0)
   })
 
   test('committee entries link to member detail pages', async ({ page }) => {

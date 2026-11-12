@@ -125,7 +125,7 @@
       // thin title strokes and the mark's grey layers stay crisp, with a cell
       // budget for slower machines. The grid follows the canvas box, so the
       // visible overhang is controlled entirely by the CSS around it.
-      const MAX_CELLS = 1000000
+      const MAX_CELLS = 1600000
       const resolution = clamp(window.devicePixelRatio || 1, 1, 2)
       let W = Math.round(canvasRect.width * resolution)
       let H = Math.round(canvasRect.height * resolution)

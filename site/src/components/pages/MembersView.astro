@@ -19,6 +19,7 @@ const { members, committee } = await getContent()
 
 const noindex = lang === 'el' && members.some(item => !isFullyTranslated(item, 'member', 'el'))
 const sorted = sortByFirstName(members, lang)
+const featured = sorted.filter(member => member.featured)
 const letters = [...groupByLetter(sorted, lang).keys()]
 ---
 
@@ -35,6 +36,30 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     <a class="members__become t-body" href={localePath('/membership', lang)}>
       {t('membership.back', lang)} <span aria-hidden="true">→</span>
     </a>
+
+    {
+      featured.length > 0 && (
+        <section class="members__featured" aria-labelledby="featured-heading">
+          <h2 id="featured-heading" class="members__label t-label">
+            {t('members.featured', lang)}
+          </h2>
+          <ul class="members__featured-list">
+            {featured.map(person => (
+              <li>
+                <a href={localePath(`/members/${person.slug}`, lang)}>
+                  <span class="members__featured-name">
+                    <LocalizedText value={person.name} lang={lang} />
+                  </span>
+                  <span class="members__featured-discipline t-note">
+                    <LocalizedText value={person.discipline} lang={lang} />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <section class="members__committee" aria-labelledby="committee-heading" data-committee>
       <h2 id="committee-heading" class="members__label t-label">
@@ -81,11 +106,21 @@ const letters = [...groupByLetter(sorted, lang).keys()]
             const name = pickLocalized(member.name, lang).text
             const letter = name.trim().charAt(0).toLocaleUpperCase(lang)
             const bio = pickRich(member.bio, lang)
-            const email = member.email?.trim()
+            const website = member.website?.trim()
             const slug = member.slug
 
             return (
               <li class="members__item" data-member data-letter={letter}>
+                {website && (
+                  <a
+                    class="members__website"
+                    href={website}
+                    rel="noopener"
+                    aria-label={`${name} — ${t('members.website', lang)}`}
+                  >
+                    →
+                  </a>
+                )}
                 <details class="members__entry" id={`member-${slug}`} name="member">
                   <summary class="members__row">
                     <span class="members__number" aria-hidden="true">
@@ -94,7 +129,6 @@ const letters = [...groupByLetter(sorted, lang).keys()]
                     <span class="members__name">
                       <LocalizedText value={member.name} lang={lang} />
                     </span>
-                    {email && <span class="members__email">{email}</span>}
                   </summary>
                   <div class="members__bio">
                     <Prose value={bio} lang={lang} />
@@ -102,11 +136,6 @@ const letters = [...groupByLetter(sorted, lang).keys()]
                       <a href={localePath(`/members/${slug}`, lang)}>
                         {t('members.profile', lang)} <span aria-hidden="true">→</span>
                       </a>
-                      {email && (
-                        <a href={`mailto:${email}`}>
-                          {t('members.email', lang)} <span aria-hidden="true">→</span>
-                        </a>
-                      )}
                     </p>
                   </div>
                 </details>
@@ -140,6 +169,42 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     text-decoration: underline;
   }
 
+  .members__featured {
+    margin-bottom: clamp(48px, 7vw, 96px);
+  }
+
+  .members__featured-list {
+    display: grid;
+    gap: 0 32px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .members__featured-list a {
+    border-top: var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 0;
+    text-decoration: none;
+  }
+
+  .members__featured-list a:hover .members__featured-name {
+    text-decoration: underline;
+  }
+
+  .members__featured-name {
+    font-size: var(--text-body);
+    line-height: 1.3;
+  }
+
+  .members__featured-discipline {
+    color: var(--muted-text);
+    line-height: 1.35;
+  }
+
   .members__committee {
     margin-bottom: clamp(48px, 7vw, 96px);
   }
@@ -161,11 +226,10 @@ const letters = [...groupByLetter(sorted, lang).keys()]
   }
 
   .members__committee-member {
-    align-items: baseline;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 24px;
-    justify-content: space-between;
+    align-items: start;
+    display: grid;
+    gap: 2px;
+    justify-items: start;
   }
 
   .members__committee-name {
@@ -194,6 +258,10 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     padding: 0;
   }
 
+  .members__item {
+    position: relative;
+  }
+
   .members__item[hidden] {
     display: none;
   }
@@ -211,12 +279,10 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     column-gap: 24px;
     cursor: pointer;
     display: grid;
-    grid-template-areas:
-      'number name'
-      'number email';
+    grid-template-areas: 'number name';
     grid-template-columns: 2.5rem minmax(0, 1fr);
     min-height: 44px;
-    padding: 10px 0;
+    padding: 10px 40px 10px 0;
   }
 
   .members__number {
@@ -232,12 +298,23 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     line-height: 1.3;
   }
 
-  .members__email {
-    color: var(--muted-text);
+  .members__website {
+    align-items: center;
+    display: inline-flex;
     font-size: var(--text-small);
-    grid-area: email;
-    justify-self: start;
-    overflow-wrap: anywhere;
+    height: 32px;
+    justify-content: center;
+    line-height: 1;
+    position: absolute;
+    right: 0;
+    text-decoration: none;
+    top: 6px;
+    width: 32px;
+    z-index: 1;
+  }
+
+  .members__website:hover {
+    text-decoration: underline;
   }
 
   .members__row:hover .members__name {
@@ -266,15 +343,6 @@ const letters = [...groupByLetter(sorted, lang).keys()]
   }
 
   @media (min-width: 700px) {
-    .members__row {
-      grid-template-areas: 'number name email';
-      grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-    }
-
-    .members__email {
-      justify-self: end;
-    }
-
     .members__bio {
       max-width: var(--measure);
     }

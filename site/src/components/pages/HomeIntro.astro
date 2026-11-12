@@ -118,7 +118,7 @@ const { lang, title, body } = Astro.props
   html[data-intro='pending'] .intro .hero-brand__tail,
   html[data-intro='pending'] .intro__ghost,
   html[data-intro='pending'] .intro__body {
-    visibility: hidden;
+    display: none;
   }
 
   .intro-mark {
@@ -128,7 +128,7 @@ const { lang, title, body } = Astro.props
     height: auto;
     order: -1;
     position: relative;
-    width: clamp(64px, 12vw, 158px);
+    width: var(--hero-mark);
   }
 
   .intro-mark__layer {
@@ -139,21 +139,15 @@ const { lang, title, body } = Astro.props
     width: 100%;
   }
 
-  @media (min-width: 900px) {
-    .intro-mark {
-      order: initial;
-    }
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     .intro-mark__layer {
-      animation: intro-mark-in 760ms var(--ease-out-expo) both;
+      animation: intro-mark-in 1260ms var(--ease-out-expo) both;
     }
 
     .intro-mark__layer--light {
       --intro-from-x: 10%;
       --intro-from-y: -4%;
-      animation-delay: 60ms;
+      animation-delay: 80ms;
     }
 
     .intro-mark__layer--mid {
@@ -164,7 +158,7 @@ const { lang, title, body } = Astro.props
     .intro-mark__layer--black {
       --intro-from-scale: 0.9;
       --intro-from-y: 10%;
-      animation-delay: 200ms;
+      animation-delay: 300ms;
     }
   }
 
