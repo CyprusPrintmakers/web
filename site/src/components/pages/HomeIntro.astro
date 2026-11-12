@@ -139,6 +139,12 @@ const { lang, title, body } = Astro.props
     width: 100%;
   }
 
+  @media (min-width: 1240px) {
+    .intro-mark {
+      order: initial;
+    }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .intro-mark__layer {
       animation: intro-mark-in 1260ms var(--ease-out-expo) both;

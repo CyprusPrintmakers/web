@@ -32,9 +32,9 @@ Working notes for the first feedback round. Source: `meeting-with-commitee-11-11
 
 ## 6. Opening hero / ink playground
 - [x] Slow the opening reveal to 500ms.
-- [x] Scale the hero mark to 300% (responsive clamp).
+- [x] Size the hero mark (300% request, then scaled down by one-third to 2×) with the desktop row typography preserved.
 - [x] Scale the intro mark to match; grow the ink playground with the lockup.
-- [x] Raise the row/stack breakpoint so the larger lockup never overflows.
+- [x] Set the row breakpoint to 1240px so the 2× mark and the `Cyprus [logo] Printmakers Association` row fit.
 
 ## 7. Verification
 - [x] Update unit/e2e tests, add coverage for the new menu, membership copy and featured members.

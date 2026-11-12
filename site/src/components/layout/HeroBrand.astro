@@ -66,10 +66,26 @@ const Tag = as
     .hero-brand {
       gap: 10px;
     }
+  }
+
+  @media (min-width: 1240px) {
+    .hero-brand {
+      flex-direction: row;
+      gap: clamp(12px, 1.6vw, 24px);
+      text-align: left;
+    }
 
     .hero-brand__lead,
     .hero-brand__tail {
-      font-size: 36px;
+      font-size: 32px;
+    }
+
+    .hero-brand__lead {
+      text-align: right;
+    }
+
+    .hero-brand__mark {
+      order: initial;
     }
   }
 </style>
