@@ -108,6 +108,53 @@ test('the cover mark stays centred when the paragraph arrives', async ({ page })
   expect(Math.abs(paragraph!.y - before!.y)).toBeLessThanOrEqual(1)
 })
 
+test('the cover keeps a single mark and never nudges it on click', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 1280, height: 720 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/')
+
+    const rect = () =>
+      page.evaluate(() => {
+        const marks = document.querySelectorAll('[data-home-intro] .hero-brand__mark')
+        const mark = marks[0]
+        if (!(mark instanceof HTMLElement)) return null
+        const box = mark.getBoundingClientRect()
+        return {
+          count: marks.length,
+          ghosts: document.querySelectorAll('[data-intro-ghost]').length,
+          x: Math.round(box.left),
+          y: Math.round(box.top),
+        }
+      })
+
+    await expect
+      .poll(async () => {
+        const value = await rect()
+        return value === null ? 999 : value.x
+      })
+      .toBeGreaterThan(0)
+
+    const before = await rect()
+    expect(before).not.toBeNull()
+    expect(before!.count).toBe(1)
+    expect(before!.ghosts).toBe(0)
+
+    await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+    await page.waitForTimeout(500)
+    const moving = await rect()
+    await page.waitForTimeout(2400)
+    const after = await rect()
+
+    expect(moving!.x).toBe(before!.x)
+    expect(moving!.y).toBe(before!.y)
+    expect(after!.x).toBe(before!.x)
+    expect(after!.y).toBe(before!.y)
+  }
+})
+
 test('the hero stays put while the chrome fades in', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: /Enter the Cyprus/ }).click()

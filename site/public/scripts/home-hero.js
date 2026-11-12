@@ -17,9 +17,7 @@
     const anchorY =
       window.innerWidth < 1200 && window.innerHeight >= 640
         ? window.innerHeight * 0.32
-        : window.innerWidth >= 1200 && window.innerHeight < 900
-          ? window.innerHeight * 0.42
-          : window.innerHeight / 2
+        : window.innerHeight / 2
     const dx = window.innerWidth / 2 - (markRect.left + markRect.width / 2)
     const dy = anchorY - (markRect.top + markRect.height / 2)
     const margin = 16

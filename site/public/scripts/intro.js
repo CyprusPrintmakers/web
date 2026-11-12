@@ -4,8 +4,8 @@
   if (window.__cpIntroTimeout) clearTimeout(window.__cpIntroTimeout)
   if (!root || html.dataset.intro !== 'pending' || root.dataset.introRan) return
 
-  const [button, stage, ghost, lead, tail, body] = [
-    '.intro__enter', '.intro__stage', '[data-intro-ghost]',
+  const [button, stage, lead, tail, body] = [
+    '.intro__enter', '.intro__stage',
     '.hero-brand__lead', '.hero-brand__tail', '[data-hero-intro-body]',
   ].map(selector => root.querySelector(selector))
   const hero = document.querySelector('[data-hero-lockup]')
@@ -89,12 +89,7 @@
     } catch { done() }
   }
 
-  const anchorY = () => {
-    if (innerWidth < 1200 && innerHeight >= 640) return innerHeight * 0.32
-    if (innerWidth >= 1200 && innerHeight < 900) return innerHeight * 0.42
-    return innerHeight / 2
-  }
-  const pendingAnchorY = () =>
+  const anchorY = () =>
     innerWidth < 1200 && innerHeight >= 640 ? innerHeight * 0.32 : innerHeight / 2
 
   const centredLeft = desired => {
@@ -112,7 +107,7 @@
     stage.style.left = `${centredLeft(innerWidth / 2 - mark.offsetLeft - mark.offsetWidth / 2)}px`
     // The cover itself is always centred; only the moving stage uses the
     // short-screen anchor so it can hand off to the home hero.
-    stage.style.top = `${pendingAnchorY() - mark.offsetTop - mark.offsetHeight / 2}px`
+    stage.style.top = `${anchorY() - mark.offsetTop - mark.offsetHeight / 2}px`
   }
 
   const skip = () => {
@@ -131,7 +126,7 @@
     started = true
     watchdog = setTimeout(done, 15000)
     try {
-      if (![stage, ghost, lead, tail, hero].every(isEl)) return done()
+      if (![stage, lead, tail, hero].every(isEl)) return done()
       html.dataset.intro = 'moving'
       stage.style.cssText += ';position:fixed;left:0;top:0;transform:none'
       const heroRect = hero.getBoundingClientRect()
@@ -155,16 +150,7 @@
         body.style.maxWidth = `${innerWidth - (innerWidth < 1200 ? gutter * 2 : tailRect.left + gutter)}px`
       }
 
-      ghost.style.left = `${mark.offsetLeft}px`
-      ghost.style.top = `${mark.offsetTop}px`
-      ghost.style.width = `${mark.offsetWidth}px`
-      ghost.style.height = `${mark.offsetHeight}px`
-
       const easing = getComputedStyle(html).getPropertyValue('--ease-out-expo').trim() || 'ease-out'
-      play(ghost,
-        [{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(120px)', opacity: 0 }],
-        { duration: 300, easing: 'ease-out' },
-      )
       for (const [index, line] of [lead, tail].entries()) play(line,
         [{ opacity: 0, transform: `translateX(${index ? 24 : -24}px)` }, { opacity: 1, transform: 'none' }],
         { duration: 500, easing },

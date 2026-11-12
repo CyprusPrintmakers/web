@@ -43,15 +43,6 @@ const { lang, title, body } = Astro.props
           />
         </span>
       </HeroBrand>
-      <img
-        class="intro__ghost"
-        data-intro-ghost
-        src="/mark.svg"
-        alt=""
-        width="158"
-        height="152"
-        decoding="async"
-      />
     </span>
   </button>
 
@@ -116,7 +107,6 @@ const { lang, title, body } = Astro.props
 
   html[data-intro='pending'] .intro .hero-brand__lead,
   html[data-intro='pending'] .intro .hero-brand__tail,
-  html[data-intro='pending'] .intro__ghost,
   html[data-intro='pending'] .intro__body {
     display: none;
   }
@@ -179,14 +169,6 @@ const { lang, title, body } = Astro.props
       opacity: 1;
       transform: none;
     }
-  }
-
-  .intro__ghost {
-    left: 0;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    will-change: transform, opacity;
   }
 
   .intro__body {
