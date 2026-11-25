@@ -18,7 +18,7 @@ for (const [key, value] of Object.entries(env)) {
 const projectId = process.env.SANITY_PROJECT_ID ?? env.SANITY_PROJECT_ID
 const dataset = process.env.SANITY_DATASET ?? env.SANITY_DATASET ?? 'production'
 const siteUrl =
-  process.env.PUBLIC_SITE_URL ?? env.PUBLIC_SITE_URL ?? 'https://www.cyprintmakers.com'
+  process.env.PUBLIC_SITE_URL ?? env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.com'
 
 // Keep the embedded Studio for local HMR. Production serves the static
 // Studio built by `scripts/build-studio.mjs`, which is what allows Sanity's

@@ -36,7 +36,7 @@ const { settings } = await getContent()
 const siteName = pickLocalized(settings.siteName, lang).text || 'Cyprus Printmakers Association'
 const fullTitle = pageTitle(title, siteName)
 
-const site = Astro.site ?? new URL('https://cyprintmakers.densetheory.cc')
+const site = Astro.site ?? new URL('https://cyprintmakers.com')
 const absolute = (path: string) => new URL(path, site).href
 const pathname =
   Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '')

@@ -17,7 +17,7 @@ optional external website, and prepare the `cyprintmakers.com` cutover.
 - Members: no individual member pages. Each directory row is the member's name
   plus a diagonal up-right arrow linking to their website, if they have one.
 - Old member URLs redirect to the members directory.
-- Prepare the domain cutover to `https://www.cyprintmakers.com`.
+- Prepare the domain cutover to `https://cyprintmakers.com`.
 
 ## Non-goals
 
@@ -74,8 +74,9 @@ the panel across the header stays.
 
 ### Domain
 
-- Canonical origin becomes `https://www.cyprintmakers.com`; apex
-  `https://cyprintmakers.com` redirects to `www` at the edge.
+- Canonical origin becomes `https://cyprintmakers.com`. Vercel makes the
+  apex primary and redirects `www` to it, so no host redirect lives in
+  `vercel.json`.
 - Code moves first: `PUBLIC_SITE_URL` docs, Playwright pin, SEO expectations and
   Resend sender docs.
 - Dashboard/account steps are recorded for the deploy owner: add the domain to

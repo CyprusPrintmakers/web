@@ -50,7 +50,7 @@ export function visualArtworkJsonLd(project: Project, lang: Locale): object {
 }
 
 export function site(): string {
-  const url = process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.densetheory.cc'
+  const url = process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.com'
   return url.replace(/\/$/, '')
 }
 

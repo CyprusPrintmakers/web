@@ -52,7 +52,7 @@ if (
   plugins.push(
     presentationTool({
       previewUrl: {
-        origin: process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.densetheory.cc',
+        origin: process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.com',
         preview: '/preview',
       },
     }),
@@ -67,7 +67,7 @@ export default defineConfig({
   plugins,
   document: {
     productionUrl: async (_prev: string | undefined, context) => {
-      const origin = process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.densetheory.cc'
+      const origin = process.env.PUBLIC_SITE_URL ?? 'https://cyprintmakers.com'
       return `${origin}/preview${resolvePreviewHref({ document: context.document })}`
     },
   },

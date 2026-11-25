@@ -27,7 +27,7 @@ export default defineConfig({
       // Test-only: site/.env points PUBLIC_SITE_URL at the deployment origin,
       // which makes the canonical assertions depend on local env. Pin the
       // production origin for e2e runs; do not change production env.
-      PUBLIC_SITE_URL: 'https://www.cyprintmakers.com',
+      PUBLIC_SITE_URL: 'https://cyprintmakers.com',
     },
   },
   projects: [

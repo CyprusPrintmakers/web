@@ -7,7 +7,7 @@ test.describe('seo surface', () => {
 
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      'https://www.cyprintmakers.com/about',
+      'https://cyprintmakers.com/about',
     )
     await expect(page.locator('link[hreflang="el"]')).toHaveCount(1)
     await expect(page.locator('link[hreflang="x-default"]')).toHaveAttribute(

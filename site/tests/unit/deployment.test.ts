@@ -22,17 +22,4 @@ describe('vercel redirects', () => {
       ]),
     )
   })
-
-  it('redirects the apex domain to www', () => {
-    expect(config.redirects).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          source: '/:path*',
-          has: [{ type: 'host', value: 'cyprintmakers.com' }],
-          destination: 'https://www.cyprintmakers.com/:path*',
-          permanent: true,
-        }),
-      ]),
-    )
-  })
 })

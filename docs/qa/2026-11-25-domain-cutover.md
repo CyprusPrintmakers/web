@@ -1,28 +1,40 @@
 # cyprintmakers.com cutover
 
-DNS nameservers for cyprintmakers.com are already `ns1.vercel-dns.com` and
-`ns2.vercel-dns.com`. Because the domain is not attached to a Vercel project,
-Vercel's nameservers currently answer `REFUSED` and the domain does not resolve.
+## Done
 
-Code-side changes are in place (`PUBLIC_SITE_URL`, apex redirect, tests).
+- DNS: `cyprintmakers.com` resolves through Vercel DNS. `www.cyprintmakers.com`
+  307s to the apex, so the Vercel project's primary domain is the apex.
+- Vercel: the domain was added by the account owner on 2026-11-25.
+- Resend: `cyprintmakers.com` was added by the account owner.
+- Sanity CORS: added `https://cyprintmakers.com` and
+  `https://www.cyprintmakers.com` with credentials allowed. The existing
+  `cyprus-printmakers-web.vercel.app`, `cyprintmakers.densetheory.cc` and
+  localhost origins remain.
 
-Remaining, in the association's Vercel project (the one serving
-`cyprus-printmakers-web.vercel.app`):
+## Code
 
-1. Domains → add `cyprintmakers.com` and `www.cyprintmakers.com`.
-2. Set the apex domain to redirect to `www`.
-3. Production env: `PUBLIC_SITE_URL=https://www.cyprintmakers.com`,
-   `PUBLIC_STAGING=false`; redeploy.
-4. Sanity Manage → API → CORS origins: add `https://www.cyprintmakers.com`
-   and `https://cyprintmakers.com` (credentials allowed), keep the Vercel and
-   localhost origins.
-5. Sanity webhook `Vercel rebuild`: point at
-   `https://www.cyprintmakers.com/api/sanity-webhook`.
-6. Resend → Domains: verify `cyprintmakers.com`, add the SPF/DKIM records in
-   Vercel DNS, then set `RESEND_FROM_EMAIL` and the committee recipients.
-7. Verify: `/robots.txt` allows crawlers, no staging badge, canonical and
-   sitemap use `https://www.cyprintmakers.com`, `/members/old-slug` 308s to
-   `/members`.
+The canonical origin is `https://cyprintmakers.com` in `astro.config.mjs`,
+`playwright.config.ts`, `.env.example` and the SEO tests. `vercel.json` owns
+the retired member redirects; Vercel owns the `www` → apex redirect.
 
-The local Sanity CLI is not logged in and the association Vercel project is not
-under the accessible team, so steps 1-6 cannot be run from this checkout.
+## Remaining
+
+1. In the association's Vercel project (the one serving
+   `cyprus-printmakers-web.vercel.app`), set Production env:
+   - `PUBLIC_SITE_URL=https://cyprintmakers.com`
+   - `PUBLIC_STAGING=false`
+   Then redeploy. The current deployment still emits the staging badge,
+   `noindex`, and the old `cyprus-printmakers-web.vercel.app` canonical.
+2. Sanity webhook `Vercel rebuild`: point at
+   `https://cyprintmakers.com/api/sanity-webhook`.
+3. Resend: confirm the domain is verified and set `RESEND_FROM_EMAIL` and the
+   committee recipients in Vercel.
+4. Verify after deploy:
+   - `https://cyprintmakers.com/robots.txt` allows crawlers.
+   - No staging badge and no `noindex`.
+   - Canonical and sitemap use `https://cyprintmakers.com`.
+   - `https://www.cyprintmakers.com/about` 307s to the apex.
+   - `/members/old-slug` 308s to `/members`.
+
+The association Vercel project is not under the CLI account, so steps 1-3
+cannot be run from this checkout.
