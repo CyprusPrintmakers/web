@@ -33,4 +33,15 @@ test.describe('privacy policy', () => {
     await expect(page.locator('label a[href="/privacy"]')).toBeVisible()
     await expect(page.locator('#privacy a[href="/privacy"]')).toBeVisible()
   })
+
+  test('describes member listings as a name and optional website', async ({ page }) => {
+    await page.goto('/privacy')
+
+    const main = page.locator('main')
+    await expect(main).toContainText('their name')
+    await expect(main).toContainText('link to their website')
+    await expect(main).not.toContainText('portrait')
+    await expect(main).not.toContainText('Instagram')
+    await expect(main).not.toContainText('biography')
+  })
 })
