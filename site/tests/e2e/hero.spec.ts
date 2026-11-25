@@ -294,6 +294,27 @@ test('the header brand is only hidden on home', async ({ page }) => {
   await expect(page.locator('header .header__brand')).toHaveCount(1)
 })
 
+test('the 4s fail-safe waits for slow fonts', async ({ page }) => {
+  await page.addInitScript(() => {
+    const ready = document.fonts.ready
+    let release: () => void = () => {}
+    const gate = new Promise<void>(resolve => {
+      release = resolve
+    })
+    Object.defineProperty(document.fonts, 'ready', {
+      configurable: true,
+      get: () => gate,
+    })
+    ready.then(() => setTimeout(release, 5000))
+  })
+
+  await page.goto('/')
+  await page.waitForTimeout(4100)
+
+  expect(await page.evaluate(() => document.documentElement.dataset.intro)).toBe('pending')
+  await expect(page.locator('[data-home-intro]')).toBeVisible()
+})
+
 test('a failed intro module reveals the hero', async ({ page }) => {
   await page.route('**/scripts/intro.js', route => route.abort())
   await page.goto('/')
@@ -412,7 +433,9 @@ test('the desktop paragraph clears the tail and stays inside the viewport', asyn
     await page.goto('/')
     await page.waitForFunction(() => {
       const el = document.querySelector('[data-hero-intro-body]')
-      return el instanceof HTMLElement && getComputedStyle(el).opacity !== '0'
+      if (!(el instanceof HTMLElement)) return false
+      const style = getComputedStyle(el)
+      return style.display !== 'none' && Number(style.opacity) > 0.5
     })
     const box = await page.evaluate(() => {
       const el = document.querySelector('[data-hero-intro-body]')
@@ -425,6 +448,8 @@ test('the desktop paragraph clears the tail and stays inside the viewport', asyn
         right: b.right,
         top: b.top,
         bottom: b.bottom,
+        width: b.width,
+        height: b.height,
         tailLeft: t.left,
         tailBottom: t.bottom,
         viewportWidth: window.innerWidth,
@@ -432,6 +457,8 @@ test('the desktop paragraph clears the tail and stays inside the viewport', asyn
       }
     })
     expect(box).not.toBeNull()
+    expect(box!.width).toBeGreaterThan(0)
+    expect(box!.height).toBeGreaterThan(0)
     expect(box!.top).toBeGreaterThanOrEqual(box!.tailBottom)
     expect(box!.left).toBeGreaterThanOrEqual(0)
     expect(box!.right).toBeLessThanOrEqual(box!.viewportWidth)
