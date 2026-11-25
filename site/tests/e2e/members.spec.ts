@@ -21,6 +21,11 @@ test.describe('members index', () => {
     await expect(link).toHaveAttribute('href', 'https://mariageorgiou.example')
     await expect(link.locator('svg')).toHaveCount(1)
 
+    const box = await link.boundingBox()
+    expect(box).not.toBeNull()
+    expect(box!.width).toBeGreaterThanOrEqual(24)
+    expect(box!.height).toBeGreaterThanOrEqual(24)
+
     const noSite = page.locator('[data-member]').filter({ hasText: 'Andreas Petrou' })
     await expect(noSite.getByRole('link')).toHaveCount(0)
   })
