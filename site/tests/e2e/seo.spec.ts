@@ -55,7 +55,19 @@ test.describe('seo surface', () => {
 
   test('the english members directory is indexable', async ({ page }) => {
     await page.goto('/members')
-    await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      'index, follow',
+    )
+  })
+
+  test('indexable pages declare index and follow', async ({ page }) => {
+    await page.goto('/about')
+
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      'index, follow',
+    )
   })
 
   test('serves a declared favicon', async ({ page, request }) => {

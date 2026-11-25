@@ -89,7 +89,13 @@ const jsonLdBlocks = [organizationJsonLd(settings, lang), ...jsonLd]
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     {image && <meta property="og:image" content={absolute(image)} />}
-    {blocked && <meta name="robots" content="noindex,nofollow" />}
+    {
+      blocked ? (
+        <meta name="robots" content="noindex,nofollow" />
+      ) : (
+        <meta name="robots" content="index, follow" />
+      )
+    }
     {jsonLdBlocks.map(block => (
       <script type="application/ld+json" set:html={JSON.stringify(block)} />
     ))}

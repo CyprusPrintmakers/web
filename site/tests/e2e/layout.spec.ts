@@ -50,7 +50,10 @@ test.describe('layout', () => {
     await page.goto('/')
     await enterHome(page)
 
-    await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      'index, follow',
+    )
     await expect(page.getByText('STAGING — not the public site')).toHaveCount(0)
   })
 })
