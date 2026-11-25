@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { enterHome, openHomeMenu } from './helpers'
 
-const englishNav = ['MEMBERS', 'PROJECTS', 'NEWS', 'ABOUT', 'CONTACT']
+const englishNav = ['ABOUT', 'MEMBERS', 'PROJECTS', 'NEWS', 'CONTACT']
 
 test.describe('layout', () => {
   test('serves the English frame with the primary navigation', async ({ page }) => {
@@ -20,7 +20,7 @@ test.describe('layout', () => {
     await openHomeMenu(page)
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'el')
-    await expect(page.getByRole('navigation').getByRole('link').first()).toHaveText('ΜΕΛΗ')
+    await expect(page.getByRole('navigation').getByRole('link').first()).toHaveText('ΣΧΕΤΙΚΑ')
     await expect(page.locator('link[rel="alternate"][hreflang="el"]')).toHaveAttribute('href', /\/el/)
   })
 

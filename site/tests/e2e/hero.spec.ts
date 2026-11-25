@@ -287,6 +287,17 @@ test('the home burger and its panel sit on the left', async ({ page }) => {
   expect(panelBox!.x).toBeLessThan(200)
 })
 
+test('the menu starts with About', async ({ page }) => {
+  await page.goto('/')
+  await enterHome(page)
+  await openHomeMenu(page)
+
+  const hrefs = await page
+    .locator('#home-menu .nav__link')
+    .evaluateAll(links => links.map(link => link.getAttribute('href')))
+  expect(hrefs).toEqual(['/about', '/members', '/projects', '/news', '/contact'])
+})
+
 test('the header brand is only hidden on home', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('header .header__brand')).toHaveCount(0)

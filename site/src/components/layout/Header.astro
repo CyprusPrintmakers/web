@@ -16,10 +16,10 @@ interface Props {
 const { lang, alternates, showBrand = true, homeHero = false } = Astro.props
 
 const items: Array<{ key: UIKey; path: string }> = [
+  { key: 'nav.about', path: '/about' },
   { key: 'nav.members', path: '/members' },
   { key: 'nav.projects', path: '/projects' },
   { key: 'nav.news', path: '/news' },
-  { key: 'nav.about', path: '/about' },
   { key: 'nav.contact', path: '/contact' },
 ]
 
