@@ -242,6 +242,22 @@ test('the skip link is hidden and tab cannot leave the cover button', async ({ p
   }
 })
 
+test('the home burger and its panel sit on the left', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  await enterHome(page)
+
+  const toggle = page.locator('[data-menu-toggle]')
+  const toggleBox = await toggle.boundingBox()
+  expect(toggleBox).not.toBeNull()
+  expect(toggleBox!.x).toBeLessThan(200)
+
+  await toggle.click()
+  const panelBox = await page.locator('#home-menu').boundingBox()
+  expect(panelBox).not.toBeNull()
+  expect(panelBox!.x).toBeLessThan(200)
+})
+
 test('the header brand is only hidden on home', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('header .header__brand')).toHaveCount(0)

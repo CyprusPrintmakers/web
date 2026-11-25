@@ -147,7 +147,7 @@ const menuLabel = t('nav.menu', lang)
   .header__top--home {
     align-items: center;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     position: relative;
   }
 
@@ -243,10 +243,11 @@ const menuLabel = t('nav.menu', lang)
   .header__menu {
     background: var(--paper);
     border: var(--rule);
+    left: 0;
     min-width: 280px;
     padding: 20px;
     position: absolute;
-    right: 0;
+    right: auto;
     top: calc(100% + 8px);
     z-index: 30;
   }
