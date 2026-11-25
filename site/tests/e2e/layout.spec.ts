@@ -34,16 +34,14 @@ test.describe('layout', () => {
     await expect(switcher.getByRole('link', { name: 'ΕΛ' })).toHaveAttribute('href', '/el')
   })
 
-  test('staging adds noindex and the footer badge', async ({ page }) => {
+  test('staging adds noindex but no footer badge', async ({ page }) => {
     test.skip(process.env.PUBLIC_STAGING !== 'true')
 
     await page.goto('/')
     await enterHome(page)
 
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
-    await expect(
-      page.locator('footer').getByText('STAGING — not the public site'),
-    ).toBeVisible()
+    await expect(page.getByText('STAGING — not the public site')).toHaveCount(0)
   })
 
   test('a public build has no staging marker', async ({ page }) => {

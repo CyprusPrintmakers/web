@@ -25,7 +25,7 @@ Copy `.env.example` to `.env`. Every variable:
 | `SANITY_API_READ_TOKEN` | Draft preview (`/preview`), `useCdn: false` reads | Preview only |
 | `PUBLIC_SANITY_VISUAL_EDITING_ENABLED` | Turns the `/preview` surface on (needs the token too) | Preview only |
 | `CONTENT_SOURCE` | Force `fixtures`; otherwise `sanity` when a project id exists, else fixtures | Offline work |
-| `PUBLIC_STAGING` | `true` → `noindex` everywhere, `Disallow: /` robots, footer badge | Staging deploys |
+| `PUBLIC_STAGING` | `true` → `noindex` everywhere and `Disallow: /` robots | Staging deploys |
 | `PUBLIC_SITE_URL` | Canonical origin for sitemap/absolute URLs | Deploys |
 | `RESEND_API_KEY` | Sends the membership/contact form emails | Form endpoints |
 | `RESEND_FROM_EMAIL` | Verified sender address; defaults to Resend's test sender (account owner only) | Form endpoints |

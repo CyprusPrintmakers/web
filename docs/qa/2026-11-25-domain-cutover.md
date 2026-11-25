@@ -23,15 +23,15 @@ the retired member redirects; Vercel owns the `www` → apex redirect.
    `cyprus-printmakers-web.vercel.app`), set Production env:
    - `PUBLIC_SITE_URL=https://cyprintmakers.com`
    - `PUBLIC_STAGING=false`
-   Then redeploy. The current deployment still emits the staging badge,
-   `noindex`, and the old `cyprus-printmakers-web.vercel.app` canonical.
+   Then redeploy. The current deployment still emits `noindex` and the old
+   `cyprus-printmakers-web.vercel.app` canonical.
 2. Sanity webhook `Vercel rebuild`: point at
    `https://cyprintmakers.com/api/sanity-webhook`.
 3. Resend: confirm the domain is verified and set `RESEND_FROM_EMAIL` and the
    committee recipients in Vercel.
 4. Verify after deploy:
    - `https://cyprintmakers.com/robots.txt` allows crawlers.
-   - No staging badge and no `noindex`.
+   - No `noindex`.
    - Canonical and sitemap use `https://cyprintmakers.com`.
    - `https://www.cyprintmakers.com/about` 307s to the apex.
    - `/members/old-slug` 308s to `/members`.

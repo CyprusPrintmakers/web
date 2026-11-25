@@ -21,7 +21,6 @@ const en = {
   'a11y.skipToContent': 'Skip to content',
   'footer.privacy': 'Privacy policy',
 
-  'staging.label': 'STAGING — not the public site',
 
   'members.heading': 'Members',
   'members.committee': 'Committee',
@@ -121,7 +120,6 @@ const el: Record<UIKey, string> = {
   'a11y.skipToContent': 'Μετάβαση στο περιεχόμενο',
   'footer.privacy': 'Πολιτική απορρήτου',
 
-  'staging.label': 'ΣΕ ΔΟΚΙΜΗ — όχι η δημόσια ιστοσελίδα',
 
   'members.heading': 'Μέλη',
   'members.committee': 'Επιτροπή',
