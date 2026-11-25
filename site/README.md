@@ -52,7 +52,11 @@ Weekly: `npx sanity dataset export production backup-$(date +%F).tar.gz` — kee
 
 ## Deploy
 
-Vercel project root is this `site/` directory, framework Astro, Node 22.x. Production (which currently *is* the staging host) runs with `PUBLIC_STAGING=true` and `PUBLIC_SITE_URL=https://cyprintmakers.densetheory.cc`. Moving to `www.cyprintmakers.com` is an env change only: flip `PUBLIC_STAGING=false`, change `PUBLIC_SITE_URL`, verify the domain in Resend, redeploy.
+Vercel project root is this `site/` directory, framework Astro, Node 22.x.
+Production canonical origin is `https://www.cyprintmakers.com`; the apex
+redirects to `www`. The cutover steps still owned by the deploy account
+(domain attach, production env, Sanity CORS, webhook, Resend) are tracked in
+`../docs/qa/2026-11-25-domain-cutover.md`.
 
 There are two Vercel projects:
 
@@ -61,7 +65,7 @@ There are two Vercel projects:
 
 ```sh
 cd site
-PUBLIC_STAGING=true PUBLIC_SITE_URL=https://cyprintmakers.densetheory.cc npx astro build
+PUBLIC_STAGING=false PUBLIC_SITE_URL=https://www.cyprintmakers.com npx astro build
 npx vercel deploy --prebuilt --prod
 ```
 

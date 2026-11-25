@@ -12,6 +12,17 @@
   ],
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "cyprintmakers.com"
+        }
+      ],
+      "destination": "https://www.cyprintmakers.com/:path*",
+      "permanent": true
+    },
+    {
       "source": "/members/:slug",
       "destination": "/members",
       "permanent": true
