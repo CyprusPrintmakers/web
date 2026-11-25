@@ -9,8 +9,17 @@ const REQUIRED_FIELDS: Record<ContentKind, readonly string[]> = {
   membershipPage: ['intro', 'formIntro', 'privacyNote', 'bankDetails', 'donation'],
   member: ['name'],
   committeeMember: ['name', 'role'],
-  project: ['title', 'summary', 'body'],
+  project: ['title', 'summary', 'body', 'venue'],
   newsPost: ['title', 'excerpt', 'body'],
+}
+
+/**
+ * Fields allowed to be absent without failing the build, but still counted by
+ * `computeTranslations`/`isFullyTranslated` so the page stays honest about
+ * incomplete Greek copy.
+ */
+const BUILD_TOLERATED_MISSING: Partial<Record<ContentKind, readonly string[]>> = {
+  project: ['venue'],
 }
 
 type Localized = IntlValue[] | IntlRich[] | undefined
@@ -86,6 +95,7 @@ export function assertRequiredFields(
   const record = doc as Record<string, unknown>
 
   for (const { field, values } of requiredValues(record, kind)) {
+    if (BUILD_TOLERATED_MISSING[kind]?.includes(field)) continue
     if (!hasLocalized(values, lang)) {
       throw new Error(
         `${kind} ${String(record._id)} missing required field ${field} for ${lang}`,

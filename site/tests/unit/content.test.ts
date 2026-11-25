@@ -145,6 +145,23 @@ describe('content loader', () => {
     expect(content.projects[0].dates).toEqual({})
   })
 
+  it('treats a missing Greek venue as untranslated', async () => {
+    const raw = await loadFixtures()
+    const [project] = raw.projects
+    const englishVenue = {
+      ...project,
+      venue: [{ _key: 'venue-en', language: 'en' as const, value: 'Nicosia' }],
+    }
+
+    const content = await createContentLoader(async () => ({
+      ...raw,
+      projects: [englishVenue],
+    }))()
+
+    expect(content.projects[0].translations).toEqual({ en: true, el: false })
+    expect(isFullyTranslated(content.projects[0], 'project', 'el')).toBe(false)
+  })
+
   it('loads a project whose venue is empty', async () => {
     const raw = await loadFixtures()
     const [project] = raw.projects
