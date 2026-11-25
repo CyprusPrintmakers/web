@@ -4,10 +4,11 @@
   if (window.__cpIntroTimeout) clearTimeout(window.__cpIntroTimeout)
   if (!root || html.dataset.intro !== 'pending' || root.dataset.introRan) return
 
-  const [button, stage, lead, tail, body] = [
-    '.intro__enter', '.intro__stage',
+  const [stage, lead, tail, body] = [
+    '.intro__stage',
     '.hero-brand__lead', '.hero-brand__tail', '[data-hero-intro-body]',
   ].map(selector => root.querySelector(selector))
+  const skipButton = root.querySelector('[data-intro-skip]')
   const hero = document.querySelector('[data-hero-lockup]')
   const main = document.querySelector('main#main')
   const reduce = matchMedia('(prefers-reduced-motion: reduce)')
@@ -15,6 +16,8 @@
 
   let effects = [], started = false, skipping = false, cleaned = false
   let focusTimer
+  let startTimer
+  let userSkipped = false
 
   const focus = () => {
     try {
@@ -28,6 +31,7 @@
     cleaned = true
     clearTimeout(watchdog)
     clearTimeout(focusTimer)
+    clearTimeout(startTimer)
     reduce.removeEventListener('change', onReduce)
     document.removeEventListener('keydown', onKey)
     window.removeEventListener('resize', onResize)
@@ -39,7 +43,7 @@
     }
     delete html.dataset.intro
     root.remove()
-    focus()
+    if (userSkipped) focus()
     try {
       window.dispatchEvent(new CustomEvent('cp:intro-done'))
     } catch {}
@@ -112,6 +116,7 @@
 
   const skip = () => {
     if (cleaned) return
+    userSkipped = true
     if (!started) return done()
     if (skipping) return
     skipping = true
@@ -124,7 +129,7 @@
   const start = async () => {
     if (started || cleaned) return
     started = true
-    watchdog = setTimeout(done, 15000)
+    watchdog = setTimeout(done, 12000)
     try {
       if (![stage, lead, tail, hero].every(isEl)) return done()
       html.dataset.intro = 'moving'
@@ -164,13 +169,13 @@
         paragraph = play(body,
           [
             { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 0 },
-            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 600 / 7550, easing: 'ease-out' },
-            { opacity: 1, clipPath: 'inset(0)', offset: 2600 / 7550 },
-            { opacity: 1, clipPath: 'inset(0)', offset: 7100 / 7550, easing: 'ease-out' },
-            { opacity: 1, clipPath: 'inset(100% 0 0 0)', offset: 7450 / 7550, easing: 'ease-out' },
+            { opacity: 0, clipPath: 'inset(0 0 100% 0)', offset: 250 / 3900, easing: 'ease-out' },
+            { opacity: 1, clipPath: 'inset(0)', offset: 1000 / 3900 },
+            { opacity: 1, clipPath: 'inset(0)', offset: 3300 / 3900, easing: 'ease-out' },
+            { opacity: 1, clipPath: 'inset(100% 0 0 0)', offset: 3750 / 3900, easing: 'ease-out' },
             { opacity: 0, clipPath: 'inset(100% 0 0 0)', offset: 1 },
           ],
-          { duration: 7550 },
+          { duration: 3900 },
         )
         paragraph.finished.then(() => { if (!cleaned) body.style.visibility = 'hidden' }, done)
       }
@@ -183,8 +188,12 @@
     } catch { done() }
   }
 
-  if (!isEl(button)) return done()
-  button.addEventListener('click', () => started ? skip() : start())
+  if (!isEl(stage)) return done()
+  root.addEventListener('click', skip)
+  skipButton?.addEventListener('click', event => {
+    event.stopPropagation()
+    skip()
+  })
   document.addEventListener('keydown', onKey)
   window.addEventListener('resize', onResize)
   root.dataset.introRan = '1'
@@ -197,5 +206,12 @@
       layout.observe(stage)
     }
   } catch { done() }
-  document.fonts?.ready.then(onResize).catch(done)
+
+  const autoStart = async () => {
+    try { await document.fonts?.ready } catch {}
+    if (started || cleaned) return
+    centre()
+    startTimer = setTimeout(() => { if (!started && !cleaned) start() }, 450)
+  }
+  autoStart()
 })()

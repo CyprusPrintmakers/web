@@ -11,7 +11,7 @@ const en = {
   current: 'CURRENT',
   'home.newsLabel': 'NEWS',
 
-  'home.enter': 'Enter the Cyprus Printmakers Association website',
+  'home.skip': 'Skip intro',
 
   'language.en': 'EN',
   'language.el': 'ΕΛ',
@@ -115,7 +115,7 @@ const el: Record<UIKey, string> = {
   current: 'ΤΩΡΑ',
   'home.newsLabel': 'ΝΕΑ',
 
-  'home.enter': 'Είσοδος στον ιστότοπο του Συλλόγου Χαρακτών Κύπρου',
+  'home.skip': 'Παράλειψη',
 
   'language.en': 'EN',
   'language.el': 'ΕΛ',

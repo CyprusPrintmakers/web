@@ -2,20 +2,43 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { enterHome, openHomeMenu } from './helpers'
 
-test('the cover waits for a click and keeps the page out of reach', async ({ page }) => {
+test('the cover plays on its own and finishes quickly', async ({ page }) => {
+  const started = Date.now()
+  await page.goto('/')
+
+  await expect(page.locator('[data-home-intro]')).toBeVisible()
+  await expect(page.getByRole('button', { name: /Skip intro/ })).toBeVisible()
+  await expect(page.locator('h1[data-hero-lockup]')).toBeHidden()
+
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 9000 })
+  expect(Date.now() - started).toBeLessThan(7000)
+  await expect(page.locator('h1[data-hero-lockup]')).toBeVisible()
+  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).not.toBe(
+    'main',
+  )
+})
+
+test('Skip intro ends the sequence and focuses main', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: /Skip intro/ }).click()
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 2000 })
+  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
+})
+
+test('the cover plays without a click and keeps the page out of reach', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('[data-home-intro]')).toBeVisible()
-  await expect(page.getByRole('button', { name: /Enter the Cyprus/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Skip intro/ })).toBeVisible()
   await expect(page.locator('h1[data-hero-lockup]')).toBeHidden()
   await expect(page.locator('.skip-link')).toBeHidden()
   await expect(page.getByRole('navigation').getByRole('link').first()).toBeHidden()
 
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+  await page.waitForFunction(() => document.documentElement.dataset.intro === 'moving')
   const body = page.locator('[data-hero-intro-body]')
 
-  // ~700 ms in, the paragraph must be mid-reveal: soft opacity and a
+  // ~500 ms into the paragraph, it must be mid-reveal: soft opacity and a
   // still-closing downward mask, not instantly fully opaque.
-  await page.waitForTimeout(700)
+  await page.waitForTimeout(500)
   const mid = await body.evaluate(el => {
     const style = getComputedStyle(el)
     return { opacity: Number(style.opacity), clip: style.clipPath }
@@ -34,7 +57,9 @@ test('the cover waits for a click and keeps the page out of reach', async ({ pag
   await expect(page.locator('[data-home-intro]')).toBeHidden()
   await expect(page.locator('h1[data-hero-lockup]')).toBeVisible()
   await expect(page.getByText('CURRENT:')).toBeVisible()
-  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
+  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).not.toBe(
+    'main',
+  )
   await openHomeMenu(page)
   await expect(page.getByRole('navigation').getByRole('link').first()).toBeVisible()
 })
@@ -55,8 +80,12 @@ test('every full load shows the cover, but a client arrival does not', async ({ 
 test('the greek intro paragraph stays inside the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/el')
-  await page.locator('[data-home-intro]').getByRole('button').click()
-  await page.waitForTimeout(3200)
+  await page.waitForFunction(() => {
+    const el = document.querySelector('[data-hero-intro-body]')
+    if (!(el instanceof HTMLElement)) return false
+    const style = getComputedStyle(el)
+    return style.display !== 'none' && Number(style.opacity) > 0.5
+  })
 
   const box = await page.locator('[data-hero-intro-body]').boundingBox()
   expect(box).not.toBeNull()
@@ -95,7 +124,7 @@ test('the cover mark stays centred when the paragraph arrives', async ({ page })
     .toBeLessThanOrEqual(1)
 
   const before = await centre()
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+  await page.waitForFunction(() => document.documentElement.dataset.intro === 'moving')
   await page.waitForTimeout(500)
   const moving = await centre()
   await page.waitForTimeout(2400)
@@ -142,7 +171,7 @@ test('the cover keeps a single mark and never nudges it on click', async ({ page
     expect(before!.count).toBe(1)
     expect(before!.ghosts).toBe(0)
 
-    await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+    await page.waitForFunction(() => document.documentElement.dataset.intro === 'moving')
     await page.waitForTimeout(500)
     const moving = await rect()
     await page.waitForTimeout(2400)
@@ -157,7 +186,6 @@ test('the cover keeps a single mark and never nudges it on click', async ({ page
 
 test('the hero stays put while the chrome fades in', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
   await page.waitForFunction(() => document.documentElement.dataset.intro === 'revealing')
 
   const before = await page.locator('[data-hero-lockup]').boundingBox()
@@ -175,7 +203,6 @@ test('the hero stays put while the chrome fades in', async ({ page }) => {
 
 test('Escape skips the sequence', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
   await page.waitForFunction(() => document.documentElement.dataset.intro === 'moving')
   await page.keyboard.press('Escape')
   await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 2000 })
@@ -196,21 +223,23 @@ test('Escape while the cover waits reveals the hero and lands focus on main', as
 
 test('the cover is keyboard operable', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).focus()
+  await page.locator('[data-intro-skip]').focus()
   await page.keyboard.press('Enter')
-  await expect(page.locator('[data-hero-intro-body]')).toBeVisible({ timeout: 5000 })
+  await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 2000 })
+  await expect(page.locator('h1[data-hero-lockup]')).toBeVisible()
 })
 
-test('the skip link is hidden and tab cannot leave the cover button', async ({ page }) => {
+test("the skip link is hidden and tab cannot leave the cover's skip control", async ({
+  page,
+}) => {
   await page.goto('/')
   await expect(page.locator('[data-home-intro]')).toBeVisible()
   await expect(page.locator('.skip-link')).toBeHidden()
 
   // The Astro dev toolbar appends its own buttons in dev; remove it so the
-  // cover button is the only focusable element, as it is on a built site.
+  // cover's skip control is the only focusable element, as it is on a built site.
   await page.evaluate(() => document.querySelector('astro-dev-toolbar')?.remove())
 
-  // The cover button is the only visible element in the tab order.
   const tabbable = await page.evaluate(() =>
     Array.from(
       document.querySelectorAll(
@@ -225,18 +254,18 @@ test('the skip link is hidden and tab cannot leave the cover button', async ({ p
       )
       .map(el => el.className),
   )
-  expect(tabbable).toEqual(['intro__enter'])
+  expect(tabbable).toEqual(['intro__skip t-small'])
 
-  // Tab and Shift+Tab can reach nothing else: focus stays on the cover
-  // button or resets to the document root (Chromium's idle state between
-  // wraps), never the skip link, navigation or footer.
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).focus()
+  await page.locator('[data-intro-skip]').focus()
   for (const key of ['Tab', 'Tab', 'Shift+Tab']) {
     await page.keyboard.press(key)
     expect(
       await page.evaluate(() => {
         const el = document.activeElement
-        return el === document.querySelector('.intro__enter') || el === document.body
+        return (
+          (el instanceof HTMLElement && el.classList.contains('intro__skip')) ||
+          el === document.body
+        )
       }),
     ).toBe(true)
   }
@@ -279,16 +308,6 @@ test('the cover has no axe violations', async ({ page }) => {
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'])
     .analyze()
   expect(results.violations).toEqual([])
-})
-
-test('the cover still holds after 16 seconds until clicked', async ({ page }) => {
-  await page.clock.install()
-  await page.goto('/')
-  await expect(page.locator('[data-home-intro]')).toBeVisible()
-  await page.clock.fastForward(16000)
-  expect(await page.evaluate(() => document.documentElement.dataset.intro)).toBe('pending')
-  await expect(page.locator('[data-home-intro]')).toBeVisible()
-  await expect(page.locator('h1[data-hero-lockup]')).toBeHidden()
 })
 
 test('enabling reduced motion while the cover waits reveals the hero', async ({ page }) => {
@@ -344,10 +363,8 @@ test('a rejected animation promise still reveals the hero', async ({ page }) => 
     })
   })
   await page.goto('/')
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
   await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 5000 })
   await expect(page.locator('h1[data-hero-lockup]')).toBeVisible()
-  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
 })
 
 test('a stalled timeline is cleared by the watchdog', async ({ page }) => {
@@ -361,12 +378,11 @@ test('a stalled timeline is cleared by the watchdog', async ({ page }) => {
   })
   await page.clock.install()
   await page.goto('/')
-  await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
+  await page.clock.fastForward(1000)
   await page.waitForFunction(() => document.documentElement.dataset.intro === 'moving')
   await page.clock.fastForward(15000)
   await expect(page.locator('[data-home-intro]')).toBeHidden({ timeout: 5000 })
   await expect(page.locator('h1[data-hero-lockup]')).toBeVisible()
-  expect(await page.evaluate(() => document.activeElement?.tagName.toLowerCase())).toBe('main')
 })
 
 test('a 320×256 viewport reflows without footer overlap', async ({ page }) => {
@@ -394,7 +410,6 @@ test('the desktop paragraph clears the tail and stays inside the viewport', asyn
   for (const width of [900, 1280]) {
     await page.setViewportSize({ width, height: 720 })
     await page.goto('/')
-    await page.getByRole('button', { name: /Enter the Cyprus/ }).click()
     await page.waitForFunction(() => {
       const el = document.querySelector('[data-hero-intro-body]')
       return el instanceof HTMLElement && getComputedStyle(el).opacity !== '0'
@@ -447,8 +462,6 @@ test.describe('without JS', () => {
 test('the 320px Greek hand-off matches the hero lockup', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 })
   await page.goto('/el')
-  // Scoped to the cover: the Astro dev toolbar also renders buttons in dev.
-  await page.locator('[data-home-intro]').getByRole('button').click()
   await page.waitForFunction(() => document.documentElement.dataset.intro === 'revealing')
 
   const diff = await page.evaluate(() => {

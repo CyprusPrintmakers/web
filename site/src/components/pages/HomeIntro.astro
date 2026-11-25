@@ -13,38 +13,36 @@ const { lang, title, body } = Astro.props
 ---
 
 <div class="intro" data-home-intro>
-  <button class="intro__enter" type="button" aria-label={t('home.enter', lang)}>
-    <span class="intro__stage" data-hero-overlay>
-      <HeroBrand as="div" title={title} lang={lang}>
-        <span slot="mark" class="hero-brand__mark intro-mark" aria-hidden="true">
-          <img
-            class="intro-mark__layer intro-mark__layer--light"
-            src="/mark-light.svg"
-            alt=""
-            width="581"
-            height="560"
-            decoding="async"
-          />
-          <img
-            class="intro-mark__layer intro-mark__layer--mid"
-            src="/mark-mid.svg"
-            alt=""
-            width="581"
-            height="560"
-            decoding="async"
-          />
-          <img
-            class="intro-mark__layer intro-mark__layer--black"
-            src="/mark-black.svg"
-            alt=""
-            width="581"
-            height="560"
-            decoding="async"
-          />
-        </span>
-      </HeroBrand>
-    </span>
-  </button>
+  <div class="intro__stage" data-hero-overlay>
+    <HeroBrand as="div" title={title} lang={lang}>
+      <span slot="mark" class="hero-brand__mark intro-mark" aria-hidden="true">
+        <img
+          class="intro-mark__layer intro-mark__layer--light"
+          src="/mark-light.svg"
+          alt=""
+          width="581"
+          height="560"
+          decoding="async"
+        />
+        <img
+          class="intro-mark__layer intro-mark__layer--mid"
+          src="/mark-mid.svg"
+          alt=""
+          width="581"
+          height="560"
+          decoding="async"
+        />
+        <img
+          class="intro-mark__layer intro-mark__layer--black"
+          src="/mark-black.svg"
+          alt=""
+          width="581"
+          height="560"
+          decoding="async"
+        />
+      </span>
+    </HeroBrand>
+  </div>
 
   {
     body && (
@@ -53,6 +51,10 @@ const { lang, title, body } = Astro.props
       </p>
     )
   }
+
+  <button class="intro__skip t-small" type="button" data-intro-skip>
+    {t('home.skip', lang)}
+  </button>
 </div>
 
 <script is:inline src="/scripts/intro.js" defer></script>
@@ -78,15 +80,29 @@ const { lang, title, body } = Astro.props
     pointer-events: none;
   }
 
-  .intro__enter {
-    background: transparent;
-    border: 0;
-    color: inherit;
+  .intro__skip {
+    background: var(--paper);
+    border: var(--rule);
+    bottom: clamp(16px, 3vw, 32px);
+    color: var(--ink);
     cursor: pointer;
-    display: block;
-    height: 100%;
-    padding: 0;
-    width: 100%;
+    padding: 10px 16px;
+    position: fixed;
+    right: clamp(16px, 3vw, 32px);
+    z-index: 2;
+  }
+
+  .intro__skip:hover {
+    text-decoration: underline;
+  }
+
+  .intro__skip:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  html[data-intro='revealing'] .intro__skip {
+    display: none;
   }
 
   .intro__stage {
