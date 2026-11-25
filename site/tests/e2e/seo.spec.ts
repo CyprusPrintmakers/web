@@ -53,19 +53,8 @@ test.describe('seo surface', () => {
     expect(body).toContain('Sitemap:')
   })
 
-  test('a greek member with untranslated prose renders in english and stays out of the index', async ({
-    page,
-  }) => {
-    await page.goto('/el/members/andreas-petrou')
-
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
-    await expect(page.locator('main [lang="en"]').first()).toBeVisible()
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Andreas Petrou')
-  })
-
-  test('fully translated greek pages stay indexable', async ({ page }) => {
-    await page.goto('/el/members/georgiou')
-
+  test('the english members directory is indexable', async ({ page }) => {
+    await page.goto('/members')
     await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
   })
 

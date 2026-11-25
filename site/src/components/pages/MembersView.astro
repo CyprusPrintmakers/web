@@ -1,12 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import LocalizedText from '../ui/LocalizedText.astro'
-import Prose from '../ui/Prose.astro'
 import MemberFilter from '../filters/MemberFilter.astro'
 import { getContent } from '../../lib/content/source'
 import { groupByLetter, sortByFirstName } from '../../lib/members/filter'
 import { localePath, type Locale } from '../../lib/i18n/locales'
-import { pickLocalized, pickRich } from '../../lib/i18n/localized'
+import { pickLocalized } from '../../lib/i18n/localized'
 import { t } from '../../lib/i18n/ui'
 import { isFullyTranslated } from '../../lib/content/translation'
 
@@ -44,18 +43,46 @@ const letters = [...groupByLetter(sorted, lang).keys()]
             {t('members.featured', lang)}
           </h2>
           <ul class="members__featured-list">
-            {featured.map(person => (
-              <li>
-                <a href={localePath(`/members/${person.slug}`, lang)}>
-                  <span class="members__featured-name">
-                    <LocalizedText value={person.name} lang={lang} />
-                  </span>
-                  <span class="members__featured-discipline t-note">
-                    <LocalizedText value={person.discipline} lang={lang} />
-                  </span>
-                </a>
-              </li>
-            ))}
+            {featured.map(person => {
+              const name = pickLocalized(person.name, lang).text
+              const website = person.website?.trim()
+
+              return (
+                <li>
+                  {website ? (
+                    <a
+                      href={website}
+                      rel="noopener"
+                      aria-label={`${name} — ${t('members.website', lang)}`}
+                    >
+                      <span class="members__featured-name">
+                        <LocalizedText value={person.name} lang={lang} />
+                      </span>
+                      <svg
+                        class="members__arrow"
+                        viewBox="0 0 12 12"
+                        width="13"
+                        height="13"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 9L9 3M9 3H4M9 3V8"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                        />
+                      </svg>
+                    </a>
+                  ) : (
+                    <span>
+                      <span class="members__featured-name">
+                        <LocalizedText value={person.name} lang={lang} />
+                      </span>
+                    </span>
+                  )}
+                </li>
+              )
+            })}
           </ul>
         </section>
       )
@@ -67,28 +94,16 @@ const letters = [...groupByLetter(sorted, lang).keys()]
       </h2>
       <ul class="members__committee-list">
         {
-          committee.map(person => {
-            const href = person.memberRef
-              ? localePath(`/members/${person.memberRef}`, lang)
-              : undefined
-
-            return (
-              <li class="members__committee-member">
-                {href ? (
-                  <a class="members__committee-name t-body" href={href}>
-                    <LocalizedText value={person.name} lang={lang} />
-                  </a>
-                ) : (
-                  <span class="members__committee-name t-body">
-                    <LocalizedText value={person.name} lang={lang} />
-                  </span>
-                )}
-                <span class="members__role t-note">
-                  <LocalizedText value={person.role} lang={lang} />
-                </span>
-              </li>
-            )
-          })
+          committee.map(person => (
+            <li class="members__committee-member">
+              <span class="members__committee-name t-body">
+                <LocalizedText value={person.name} lang={lang} />
+              </span>
+              <span class="members__role t-note">
+                <LocalizedText value={person.role} lang={lang} />
+              </span>
+            </li>
+          ))
         }
       </ul>
     </section>
@@ -105,40 +120,39 @@ const letters = [...groupByLetter(sorted, lang).keys()]
           sorted.map((member, index) => {
             const name = pickLocalized(member.name, lang).text
             const letter = name.trim().charAt(0).toLocaleUpperCase(lang)
-            const bio = pickRich(member.bio, lang)
             const website = member.website?.trim()
-            const slug = member.slug
 
             return (
               <li class="members__item" data-member data-letter={letter}>
-                {website && (
-                  <a
-                    class="members__website"
-                    href={website}
-                    rel="noopener"
-                    aria-label={`${name} — ${t('members.website', lang)}`}
-                  >
-                    →
-                  </a>
-                )}
-                <details class="members__entry" id={`member-${slug}`} name="member">
-                  <summary class="members__row">
-                    <span class="members__number" aria-hidden="true">
-                      {index + 1}
-                    </span>
-                    <span class="members__name">
-                      <LocalizedText value={member.name} lang={lang} />
-                    </span>
-                  </summary>
-                  <div class="members__bio">
-                    <Prose value={bio} lang={lang} />
-                    <p class="members__links t-small">
-                      <a href={localePath(`/members/${slug}`, lang)}>
-                        {t('members.profile', lang)} <span aria-hidden="true">→</span>
-                      </a>
-                    </p>
-                  </div>
-                </details>
+                <span class="members__number" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <span class="members__name">
+                  <LocalizedText value={member.name} lang={lang} />
+                  {website && (
+                    <a
+                      class="members__website"
+                      href={website}
+                      rel="noopener"
+                      aria-label={`${name} — ${t('members.website', lang)}`}
+                    >
+                      <svg
+                        class="members__arrow"
+                        viewBox="0 0 12 12"
+                        width="13"
+                        height="13"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 9L9 3M9 3H4M9 3V8"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                        />
+                      </svg>
+                    </a>
+                  )}
+                </span>
               </li>
             )
           })
@@ -149,7 +163,6 @@ const letters = [...groupByLetter(sorted, lang).keys()]
 </BaseLayout>
 
 <script is:inline src="/scripts/members-filter.js" defer></script>
-<script is:inline src="/scripts/members-bio.js" defer></script>
 
 <style>
   .members {
@@ -182,11 +195,15 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     padding: 0;
   }
 
-  .members__featured-list a {
+  .members__featured-list li {
     border-top: var(--rule);
+  }
+
+  .members__featured-list a,
+  .members__featured-list li > span {
+    align-items: baseline;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    gap: 8px;
     padding: 10px 0;
     text-decoration: none;
   }
@@ -198,11 +215,6 @@ const letters = [...groupByLetter(sorted, lang).keys()]
   .members__featured-name {
     font-size: var(--text-body);
     line-height: 1.3;
-  }
-
-  .members__featured-discipline {
-    color: var(--muted-text);
-    line-height: 1.35;
   }
 
   .members__committee {
@@ -236,10 +248,6 @@ const letters = [...groupByLetter(sorted, lang).keys()]
     text-decoration: none;
   }
 
-  .members__committee-name:hover {
-    text-decoration: underline;
-  }
-
   .members__role {
     color: var(--muted-text);
   }
@@ -259,92 +267,43 @@ const letters = [...groupByLetter(sorted, lang).keys()]
   }
 
   .members__item {
-    position: relative;
+    align-items: baseline;
+    column-gap: 24px;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    min-height: 44px;
+    padding: 10px 0;
   }
 
   .members__item[hidden] {
     display: none;
   }
 
-  .members__entry summary {
-    list-style: none;
-  }
-
-  .members__entry summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .members__row {
-    align-items: baseline;
-    column-gap: 24px;
-    cursor: pointer;
-    display: grid;
-    grid-template-areas: 'number name';
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    min-height: 44px;
-    padding: 10px 40px 10px 0;
-  }
-
   .members__number {
     color: var(--muted-text);
     font-size: var(--text-small);
     font-variant-numeric: tabular-nums;
-    grid-area: number;
   }
 
   .members__name {
     font-size: var(--text-body);
-    grid-area: name;
     line-height: 1.3;
   }
 
   .members__website {
-    align-items: center;
+    color: inherit;
     display: inline-flex;
-    font-size: var(--text-small);
-    height: 32px;
-    justify-content: center;
-    line-height: 1;
-    position: absolute;
-    right: 0;
+    margin-left: 8px;
     text-decoration: none;
-    top: 6px;
-    width: 32px;
-    z-index: 1;
+    vertical-align: -1px;
   }
 
-  .members__website:hover {
-    text-decoration: underline;
+  .members__arrow {
+    transition: transform var(--motion-fast) var(--ease-out-expo);
   }
 
-  .members__row:hover .members__name {
-    text-decoration: underline;
-  }
-
-  .members__bio {
-    color: var(--muted-text);
-    margin: 0 0 24px calc(2.5rem + 24px);
-  }
-
-  .members__bio :global(.prose) {
-    font-size: var(--text-note);
-    line-height: 1.45;
-  }
-
-  .members__links {
-    display: flex;
-    gap: 8px 24px;
-    margin: 8px 0 0;
-  }
-
-  .members__links a {
-    color: var(--ink);
-    text-underline-offset: 0.15em;
-  }
-
-  @media (min-width: 700px) {
-    .members__bio {
-      max-width: var(--measure);
-    }
+  .members__website:hover .members__arrow,
+  .members__featured-list a:hover .members__arrow {
+    transform: translate(2px, -2px);
   }
 </style>

@@ -12,6 +12,16 @@
   ],
   "redirects": [
     {
+      "source": "/members/:slug",
+      "destination": "/members",
+      "permanent": true
+    },
+    {
+      "source": "/el/members/:slug",
+      "destination": "/el/members",
+      "permanent": true
+    },
+    {
       "source": "/support",
       "destination": "/membership",
       "permanent": true

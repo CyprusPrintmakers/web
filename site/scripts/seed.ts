@@ -7,7 +7,7 @@ import people from '../src/lib/content/fixtures/members.json' with { type: 'json
 import projects from '../src/lib/content/fixtures/projects.json' with { type: 'json' }
 import news from '../src/lib/content/fixtures/news.json' with { type: 'json' }
 
-type RawDoc = { _id: string; slug: string } & Record<string, unknown>
+type RawDoc = { _id: string; slug?: string } & Record<string, unknown>
 
 type SeedDocument = { _id: string; _type: string } & Record<string, unknown>
 
@@ -146,7 +146,7 @@ function toSanityDocument(kind: string, doc: RawDoc): SeedDocument {
   return {
     _id,
     _type: kind,
-    slug: { _type: 'slug', current: slug },
+    ...(slug !== undefined ? { slug: { _type: 'slug', current: slug } } : {}),
     ...body,
   }
 }

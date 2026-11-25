@@ -1,21 +1,36 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('members index', () => {
-  test('shows the committee block and the full directory', async ({ page }) => {
+  test('shows committee and a name-only directory', async ({ page }) => {
     await page.goto('/members')
 
     await expect(page.getByRole('heading', { name: /committee/i })).toBeVisible()
     await expect(page.locator('[data-member]')).toHaveCount(3)
     await expect(page.locator('[data-member-count]')).toHaveText('3 members')
+    await expect(page.locator('.members__entry')).toHaveCount(0)
+    await expect(page.locator('main a[href^="/members/"]')).toHaveCount(0)
+    await expect(page.locator('main img')).toHaveCount(0)
+    await expect(page.locator('main a[href^="mailto:"]')).toHaveCount(0)
   })
 
-  test('surfaces featured members and links websites without exposing emails', async ({ page }) => {
+  test('puts a website arrow next to the name that has a site', async ({ page }) => {
+    await page.goto('/members')
+
+    const row = page.locator('[data-member]').filter({ hasText: 'Maria Georgiou' })
+    const link = row.getByRole('link', { name: /Website/ })
+    await expect(link).toHaveAttribute('href', 'https://mariageorgiou.example')
+    await expect(link.locator('svg')).toHaveCount(1)
+
+    const noSite = page.locator('[data-member]').filter({ hasText: 'Andreas Petrou' })
+    await expect(noSite.getByRole('link')).toHaveCount(0)
+  })
+
+  test('featured members do not link to profiles', async ({ page }) => {
     await page.goto('/members')
 
     await expect(page.getByRole('heading', { name: 'Featured members' })).toBeVisible()
+    await expect(page.locator('.members__featured-list a[href^="/members/"]')).toHaveCount(0)
     await expect(page.locator('.members__featured-list a')).toHaveCount(2)
-    await expect(page.locator('.members__website').first()).toHaveAttribute('href', /^https?:/)
-    await expect(page.locator('main a[href^="mailto:"]')).toHaveCount(0)
   })
 
   test('filters by first-name letter and updates the count', async ({ page }) => {
@@ -30,41 +45,12 @@ test.describe('members index', () => {
     await expect(page.locator('[data-member-count]')).toHaveText('3 members')
   })
 
-  test('opens a member bio in place with a permalink', async ({ page }) => {
-    await page.goto('/members')
-
-    const details = page.locator('#member-georgiou')
-    await expect(details).not.toHaveAttribute('open', '')
-    await details.locator('summary').click()
-
-    await expect(details).toHaveAttribute('open', '')
-    await expect(details.locator('.members__bio')).toBeVisible()
-    await expect(details.getByRole('link', { name: /full profile/i })).toHaveAttribute(
-      'href',
-      '/members/georgiou',
-    )
-  })
-
-  test('keeps one bio open at a time and toggles with the keyboard', async ({ page }) => {
-    await page.goto('/members')
-
-    await page.locator('#member-georgiou summary').click()
-    await expect(page.locator('#member-georgiou')).toHaveAttribute('open', '')
-
-    await page.locator('#member-athanasiou summary').click()
-    await expect(page.locator('#member-athanasiou')).toHaveAttribute('open', '')
-    await expect(page.locator('#member-georgiou')).not.toHaveAttribute('open', '')
-
-    await page.locator('#member-andreas-petrou summary').focus()
-    await page.keyboard.press('Enter')
-    await expect(page.locator('#member-andreas-petrou')).toHaveAttribute('open', '')
-  })
-
-  test('greek index counts members in greek', async ({ page }) => {
+  test('greek index counts members in greek and stays noindex', async ({ page }) => {
     await page.goto('/el/members')
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'el')
     await expect(page.locator('[data-member-count]')).toHaveText('3 μέλη')
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
   })
 
   test('the full list is in the HTML without JavaScript', async ({ browser }) => {
@@ -76,38 +62,5 @@ test.describe('members index', () => {
     await expect(raw.locator('[data-member]')).toHaveCount(3)
 
     await noJs.close()
-  })
-})
-
-test.describe('member detail', () => {
-  test('renders bio, discipline and portrait', async ({ page }) => {
-    await page.goto('/members/georgiou')
-
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Maria Georgiou')
-    await expect(page.locator('img').first()).toHaveAttribute('width')
-    await expect(page.locator('main a[href^="mailto:"]')).toHaveCount(0)
-  })
-
-  test('committee entries link to member detail pages', async ({ page }) => {
-    await page.goto('/members')
-
-    const link = page.locator('[data-committee] a[href="/members/georgiou"]')
-    await expect(link).toBeVisible()
-  })
-
-  test('greek detail renders with the greek name', async ({ page }) => {
-    await page.goto('/el/members/georgiou')
-
-    await expect(page.locator('html')).toHaveAttribute('lang', 'el')
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Μαρία Γεωργίου')
-  })
-
-  test('english-only members fall back to english prose on greek detail pages', async ({
-    page,
-  }) => {
-    await page.goto('/el/members/andreas-petrou')
-
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Andreas Petrou')
-    await expect(page.locator('main [lang="en"]').first()).toBeVisible()
   })
 })
