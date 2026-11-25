@@ -49,6 +49,16 @@ describe('pickLocalized', () => {
     expect(pickLocalized([{ _key: 'a', language: 'el', value: '  ' }], 'el'))
       .toEqual({ text: '', isFallback: true })
   })
+
+  it('treats an entry with no value as missing', () => {
+    const values = [
+      { _key: 'a', language: 'en', value: undefined },
+      { _key: 'b', language: 'el', value: 'Γεια' },
+    ] as unknown as IntlValue[]
+
+    expect(pickLocalized(values, 'en')).toEqual({ text: '', isFallback: true })
+    expect(pickLocalized(values, 'el')).toEqual({ text: 'Γεια', isFallback: false })
+  })
 })
 
 describe('formatDate', () => {

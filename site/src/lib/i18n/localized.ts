@@ -13,13 +13,18 @@ export type LocalizedValue = {
 }
 
 function usableText(values: IntlValue[] | undefined, lang: Locale): string | undefined {
-  const match = values?.find(entry => entry.language === lang && entry.value.trim() !== '')
+  const match = values?.find(
+    entry =>
+      entry.language === lang &&
+      typeof entry.value === 'string' &&
+      entry.value.trim() !== '',
+  )
   return match?.value.trim()
 }
 
 /** Rich-text twin of `pickLocalized`: requested language wins, English falls back. */
 export function pickRich(values: IntlRich[] | undefined, lang: Locale): RichText {
-  const usable = (entry: IntlRich) => entry.value.length > 0
+  const usable = (entry: IntlRich) => Array.isArray(entry.value) && entry.value.length > 0
   return (
     values?.find(entry => entry.language === lang && usable(entry))?.value ??
     values?.find(entry => entry.language === 'en' && usable(entry))?.value ??

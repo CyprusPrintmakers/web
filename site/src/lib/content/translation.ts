@@ -9,7 +9,7 @@ const REQUIRED_FIELDS: Record<ContentKind, readonly string[]> = {
   membershipPage: ['intro', 'formIntro', 'privacyNote', 'bankDetails', 'donation'],
   member: ['name'],
   committeeMember: ['name', 'role'],
-  project: ['title', 'summary', 'body', 'venue'],
+  project: ['title', 'summary', 'body'],
   newsPost: ['title', 'excerpt', 'body'],
 }
 

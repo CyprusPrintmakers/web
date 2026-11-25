@@ -205,12 +205,27 @@ export async function getInkEffect(
   return value !== false
 }
 
+function normalizeProject(doc: Record<string, unknown>): Record<string, unknown> {
+  return {
+    ...doc,
+    venue: doc.venue ?? [],
+    gallery: doc.gallery ?? [],
+    participants: doc.participants ?? [],
+    links: doc.links ?? [],
+    dates: doc.dates ?? {},
+  }
+}
+
 function prepare<T extends object>(
   doc: T,
   kind: ContentKind,
 ): T & { translations: Translations } {
-  assertRequiredFields(doc, kind, 'en')
-  return { ...doc, translations: computeTranslations(doc, kind) }
+  const normalized =
+    kind === 'project'
+      ? (normalizeProject(doc as Record<string, unknown>) as T)
+      : doc
+  assertRequiredFields(normalized, kind, 'en')
+  return { ...normalized, translations: computeTranslations(normalized, kind) }
 }
 
 function prepareMany<T extends object>(

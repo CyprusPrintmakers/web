@@ -124,6 +124,43 @@ describe('content loader', () => {
     )
   })
 
+  it('normalises null project collections to empty values', async () => {
+    const raw = await loadFixtures()
+    const project = {
+      ...raw.projects[0],
+      gallery: null,
+      participants: null,
+      links: null,
+      dates: null,
+    } as unknown as (typeof raw.projects)[number]
+
+    const content = await createContentLoader(async () => ({
+      ...raw,
+      projects: [project],
+    }))()
+
+    expect(content.projects[0].gallery).toEqual([])
+    expect(content.projects[0].participants).toEqual([])
+    expect(content.projects[0].links).toEqual([])
+    expect(content.projects[0].dates).toEqual({})
+  })
+
+  it('loads a project whose venue is empty', async () => {
+    const raw = await loadFixtures()
+    const [project] = raw.projects
+    const withoutVenue = {
+      ...project,
+      venue: [{ _key: 'venue-en', language: 'en' as const, value: '' }],
+    }
+
+    const content = await createContentLoader(async () => ({
+      ...raw,
+      projects: [withoutVenue],
+    }))()
+
+    expect(content.projects[0].venue).toHaveLength(1)
+  })
+
   it('computes translation completeness per locale and kind', async () => {
     const content = await load()
     const maria = content.members.find(member => member._id === 'member-georgiou')
