@@ -53,24 +53,14 @@ describe('sanity schema', () => {
     )
   })
 
-  it('types member fields through the internationalized array plugin', () => {
+  it('keeps only the fields the public member directory uses', () => {
     const member = byName('member')!
 
-    expect(fieldNames(member)).toEqual(
-      expect.arrayContaining([
-        'name',
-        'slug',
-        'discipline',
-        'bio',
-        'portrait',
-        'email',
-        'status',
-      ]),
+    expect(fieldNames(member).sort()).toEqual(
+      ['featured', 'name', 'order', 'status', 'website'].sort(),
     )
     expect(fieldType(member, 'name')).toBe('internationalizedArrayString')
-    expect(fieldType(member, 'bio')).toBe('internationalizedArrayPortableText')
-    expect(fieldType(member, 'portrait')).toBe('altImage')
-    expect(fieldType(member, 'email')).toBe('string')
+    expect(fieldType(member, 'website')).toBe('url')
   })
 
   it('defines the portableText object type the plugin resolves against', () => {

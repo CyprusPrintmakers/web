@@ -28,7 +28,7 @@ const PREVIEW_SELECT: Record<ContentKind, Record<string, string>> = {
     tiers: 'tiers',
     processSteps: 'processSteps',
   },
-  member: { name: 'name', discipline: 'discipline', bio: 'bio' },
+  member: { name: 'name' },
   committeeMember: { name: 'name', role: 'role', bio: 'bio' },
   project: { title: 'title', summary: 'summary', body: 'body', venue: 'venue' },
   newsPost: { title: 'title', excerpt: 'excerpt', body: 'body' },
@@ -348,7 +348,6 @@ export default [
     title: 'Member',
     type: 'document',
     fields: [
-      slugField(),
       defineField({
         name: 'name',
         title: 'Name',
@@ -356,48 +355,9 @@ export default [
         validation: Rule => Rule.required(),
       }),
       defineField({
-        name: 'discipline',
-        title: 'Discipline',
-        type: 'internationalizedArrayString',
-        validation: Rule => Rule.required(),
-      }),
-      defineField({
-        name: 'bio',
-        title: 'Bio',
-        type: 'internationalizedArrayPortableText',
-        validation: Rule => Rule.required(),
-      }),
-      defineField({
-        name: 'portrait',
-        title: 'Portrait',
-        type: 'altImage',
-      }),
-      defineField({
-        name: 'email',
-        title: 'Email',
-        type: 'string',
-        validation: Rule => Rule.email(),
-      }),
-      defineField({
         name: 'website',
         title: 'Website',
         type: 'url',
-      }),
-      defineField({
-        name: 'instagram',
-        title: 'Instagram handle',
-        type: 'string',
-      }),
-      defineField({
-        name: 'joinedYear',
-        title: 'Joined year',
-        type: 'number',
-        validation: Rule => Rule.integer().min(1990).max(2100),
-      }),
-      defineField({
-        name: 'membershipType',
-        title: 'Membership type',
-        type: 'string',
       }),
       defineField({
         name: 'status',
@@ -464,12 +424,6 @@ export default [
         title: 'Sort order',
         type: 'number',
         validation: Rule => Rule.integer().required(),
-      }),
-      defineField({
-        name: 'memberRef',
-        title: 'Linked member slug',
-        type: 'string',
-        description: 'Slug of the member page this committee entry belongs to.',
       }),
     ],
     preview: {

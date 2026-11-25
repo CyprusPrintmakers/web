@@ -34,11 +34,11 @@ describe('content loader', () => {
   it('has the fixture inventory later tasks depend on', async () => {
     const content = await load()
 
-    expect(content.members.map(member => member.slug)).toEqual([
-      'georgiou',
-      'athanasiou',
-      'andreas-petrou',
-    ])
+    expect(
+      content.members.map(
+        member => member.name.find(entry => entry.language === 'en')?.value,
+      ),
+    ).toEqual(['Maria Georgiou', 'Eleni Athanasiou', 'Andreas Petrou'])
     expect(content.committee).toHaveLength(2)
 
     expect(content.projects).toHaveLength(3)
@@ -126,8 +126,8 @@ describe('content loader', () => {
 
   it('computes translation completeness per locale and kind', async () => {
     const content = await load()
-    const maria = content.members.find(member => member.slug === 'georgiou')
-    const andreas = content.members.find(member => member.slug === 'andreas-petrou')
+    const maria = content.members.find(member => member._id === 'member-georgiou')
+    const andreas = content.members.find(member => member._id === 'member-andreas-petrou')
 
     expect(maria?.translations).toEqual({ en: true, el: true })
     expect(isFullyTranslated(maria!, 'member', 'en')).toBe(true)

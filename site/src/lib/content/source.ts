@@ -82,10 +82,13 @@ const CONTENT_QUERY = `{
     "seo": seo ${SEO_PROJECTION}
   },
   "members": *[_type == "member"] | order(order asc){
-    ...,
-    "slug": slug.current,
-    "bio": bio ${PORTABLE_TEXT_PROJECTION},
-    "portrait": portrait ${IMAGE_PROJECTION}
+    _id,
+    _type,
+    name,
+    website,
+    status,
+    featured,
+    order
   },
   "committee": *[_type == "committeeMember"] | order(order asc){
     ...,

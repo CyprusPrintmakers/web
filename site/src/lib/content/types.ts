@@ -123,16 +123,11 @@ export type MembershipPage = Entity & {
 
 export type MemberStatus = 'active' | 'alumni'
 
-export type Member = Entity & {
+export type Member = {
+  _id: string
+  translations: Translations
   name: IntlValue[]
-  discipline: IntlValue[]
-  bio: IntlRich[]
-  portrait?: ImageDoc
-  email?: string
   website?: string
-  instagram?: string
-  joinedYear?: number
-  membershipType?: string
   status: MemberStatus
   featured: boolean
   order: number
@@ -144,7 +139,6 @@ export type CommitteeMember = Entity & {
   bio?: IntlRich[]
   image?: ImageDoc
   order: number
-  memberRef?: string
 }
 
 export type Project = Entity & {

@@ -41,13 +41,12 @@ export function filterMembers(
 ): Member[] {
   return members.filter(member => {
     const name = pickLocalized(member.name, lang).text
-    const discipline = pickLocalized(member.discipline, lang).text
     const firstLetter = firstName(name).charAt(0)
 
     if (letter !== null && firstLetter.localeCompare(letter, lang, { sensitivity: 'base' }) !== 0)
       return false
 
-    return matches(`${name} ${discipline}`, query.trim(), lang)
+    return matches(name, query.trim(), lang)
   })
 }
 

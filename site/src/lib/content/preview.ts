@@ -32,14 +32,13 @@ export function previewEnv(
   return merged
 }
 
-export type PreviewDocType = 'homePage' | 'aboutPage' | 'member' | 'project' | 'newsPost'
+export type PreviewDocType = 'homePage' | 'aboutPage' | 'project' | 'newsPost'
 
 /** Maps a preview path to the document type it would render. */
 export function slugToType(path: string): { type: PreviewDocType; slug: string } | null {
   if (path === '' || path === 'home' || path === '/') return { type: 'homePage', slug: 'home' }
   if (path === 'about') return { type: 'aboutPage', slug: 'about' }
   const [prefix, slug] = path.split('/')
-  if (prefix === 'members' && slug) return { type: 'member', slug }
   if (prefix === 'projects' && slug) return { type: 'project', slug }
   if (prefix === 'news' && slug) return { type: 'newsPost', slug }
   return null

@@ -11,12 +11,12 @@ describe('member filter', () => {
   })
 
   it('matches a query case- and accent-insensitively', () => {
-    expect(filterMembers(all, 'geo', null, 'en').map(m => m.slug)).toEqual(['georgiou'])
-    expect(filterMembers(all, 'GEOR', null, 'en').map(m => m.slug)).toEqual(['georgiou'])
+    expect(filterMembers(all, 'geo', null, 'en').map(m => m._id)).toEqual(['member-georgiou'])
+    expect(filterMembers(all, 'GEOR', null, 'en').map(m => m._id)).toEqual(['member-georgiou'])
   })
 
   it('filters by Greek first-name letter using Greek collation', () => {
-    expect(filterMembers(all, '', 'Μ', 'el').map(m => m.slug)).toEqual(['georgiou'])
+    expect(filterMembers(all, '', 'Μ', 'el').map(m => m._id)).toEqual(['member-georgiou'])
   })
 
   it('never matches a Greek name with its Latin lookalike', () => {
@@ -26,7 +26,6 @@ describe('member filter', () => {
   it('matches a final sigma against a typed regular sigma', () => {
     const papas = {
       ...all[0],
-      slug: 'papas',
       _id: 'member-papas',
       name: [
         { _key: 'n-en', language: 'en', value: 'Papas' },
@@ -34,27 +33,25 @@ describe('member filter', () => {
       ],
     } as Member
 
-    expect(filterMembers([papas], 'παππας', null, 'el').map(m => m.slug)).toEqual(['papas'])
-    expect(filterMembers([papas], 'ΠΑΠΠΑΣ', null, 'el').map(m => m.slug)).toEqual(['papas'])
+    expect(filterMembers([papas], 'παππας', null, 'el').map(m => m._id)).toEqual(['member-papas'])
+    expect(filterMembers([papas], 'ΠΑΠΠΑΣ', null, 'el').map(m => m._id)).toEqual(['member-papas'])
     expect(filterMembers([papas], 'georgos', null, 'el')).toHaveLength(0)
   })
 
   it('matches accented queries against plain names', () => {
-    expect(filterMembers(all, 'Άθανασίου', null, 'el').map(m => m.slug)).toEqual([
-      'athanasiou',
-    ])
+    expect(filterMembers(all, 'Άθανασίου', null, 'el').map(m => m._id)).toEqual(['member-athanasiou'])
   })
 
   it('sorts members by first name in the active locale', () => {
-    expect(sortByFirstName(all, 'en').map(m => m.slug)).toEqual([
-      'andreas-petrou',
-      'athanasiou',
-      'georgiou',
+    expect(sortByFirstName(all, 'en').map(m => m._id)).toEqual([
+      'member-andreas-petrou',
+      'member-athanasiou',
+      'member-georgiou',
     ])
-    expect(sortByFirstName(all, 'el').map(m => m.slug)).toEqual([
-      'athanasiou',
-      'georgiou',
-      'andreas-petrou',
+    expect(sortByFirstName(all, 'el').map(m => m._id)).toEqual([
+      'member-athanasiou',
+      'member-georgiou',
+      'member-andreas-petrou',
     ])
   })
 
@@ -62,14 +59,14 @@ describe('member filter', () => {
     const keys = [...groupByLetter(all, 'el').keys()]
     expect(keys).toEqual([...keys].sort((a, b) => a.localeCompare(b, 'el')))
     expect(keys).toContain('Μ')
-    expect(groupByLetter(all, 'en').get('M')?.map(m => m.slug)).toEqual(['georgiou'])
+    expect(groupByLetter(all, 'en').get('M')?.map(m => m._id)).toEqual(['member-georgiou'])
   })
 
   it('files Greek names under their Greek initial, not the English one', () => {
     const el = groupByLetter(all, 'el')
-    expect(el.get('Μ')?.map(m => m.slug)).toEqual(['georgiou'])
+    expect(el.get('Μ')?.map(m => m._id)).toEqual(['member-georgiou'])
     expect(el.get('M')).toBeUndefined()
     // Andreas has no Greek name in the fixture, so it keeps its Latin initial.
-    expect(el.get('A')?.map(m => m.slug)).toEqual(['andreas-petrou'])
+    expect(el.get('A')?.map(m => m._id)).toEqual(['member-andreas-petrou'])
   })
 })
